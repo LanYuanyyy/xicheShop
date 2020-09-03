@@ -1,0 +1,290 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" name="viewport" id="viewport"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <title>洗车商城</title>
+  <link rel="stylesheet" href="css/style.css"/>
+
+</head>
+<body>
+<div class="body-container">
+  <div class="fixed header">
+    <div class="topsearch middle">
+      <a href="search.html">
+        <i></i>
+        <input type="text" placeholder="请输入要搜索的服务" readonly="readonly">
+      </a>
+    </div>
+  </div>
+  <div class="topline"></div>
+  <div class="screening">
+    <ul>
+      <li class="area"><span>徐州市</span></li>
+      <li class="sort"><span>全部</span></li>
+      <li class="defult"><span>默认排序</span></li>
+    </ul>
+  </div>
+  <div class="topline"></div>
+  <div class="area-eject">
+    <ul class="area-w" id="areatw">
+      <a href="" class="change-city">切换城市</a>
+      <li onclick="areatw(this)">徐州市</li>
+      <li onclick="areatw(this)">鼓楼区</li>
+      <li onclick="areatw(this)">云龙区</li>
+      <li onclick="areatw(this)">泉山区</li>
+      <li onclick="areatw(this)">贾汪区</li>
+      <li onclick="areatw(this)">铜山区</li>
+    </ul>
+  </div>
+  <div class="sort-eject sort-height">
+    <ul class="sort-sort" id="sort-sort">
+      <div id="type_models">
+        <div class="type_models">
+          <ul class="tab">
+            <li id="tabId1" class="current" onclick="tab('tabId1','tabC1');">全部</li>
+            <li id="tabId2" onclick="tab('tabId2','tabC2');">洗车</li>
+            <li id="tabId3" onclick="tab('tabId3','tabC3');">汽车美容</li>
+            <li id="tabId4" onclick="tab('tabId4','tabC4');">汽车维修</li>
+            <li id="tabId5" onclick="tab('tabId5','tabC5');">汽车保养</li>
+            <li id="tabId6" onclick="tab('tabId6','tabC6');">汽车改装</li>
+          </ul>
+        </div>
+        <div class="type_list show" id="tabC1">
+          <ul>
+            <li onclick="sorts(this)">全部</li>
+          </ul>
+        </div>
+        <div class="type_list hidden" id="tabC2">
+          <ul>
+            <li onclick="sorts(this)">全部</li>
+            <li onclick="sorts(this)">普洗</li>
+            <li onclick="sorts(this)">精洗</li>
+            <li onclick="sorts(this)">自助洗车</li>
+            <li onclick="sorts(this)">蒸汽洗车</li>
+            <li onclick="sorts(this)">臭氧消毒</li>
+          </ul>
+        </div>
+        <div class="type_list hidden" id="tabC3">
+          <ul>
+            <li onclick="sorts(this)">全部</li>
+            <li onclick="sorts(this)">汽车美容</li>
+          </ul>
+        </div>
+        <div class="type_list hidden" id="tabC4">
+          <ul>
+            <li onclick="sorts(this)">全部</li>
+            <li onclick="sorts(this)">汽车维修</li>
+          </ul>
+        </div>
+        <div class="type_list hidden" id="tabC5">
+          <ul>
+            <li onclick="sorts(this)">全部</li>
+            <li onclick="sorts(this)">汽车保养</li>
+          </ul>
+        </div>
+        <div class="type_list hidden" id="tabC6">
+          <ul>
+            <li onclick="sorts(this)">全部</li>
+            <li onclick="sorts(this)">汽车改装</li>
+          </ul>
+        </div>
+      </div>
+    </ul>
+  </div>
+  <div class="grade-eject">
+    <ul class="grade-w" id="gradew">
+      <li onclick="grade1(this)">默认排序</li>
+      <li onclick="grade1(this)">离我最近</li>
+      <li onclick="grade1(this)">好评优先</li>
+      <li onclick="grade1(this)">销量最高</li>
+      <li onclick="grade1(this)">价格最低</li>
+      <li onclick="grade1(this)">价格最高</li>
+    </ul>
+  </div>
+  <div class="business-list">
+    <div class="bus-top">
+      <a href="business_xq.html">
+        <img src="images/shop.png">
+        <div class="txt">
+          <h1 class="eps">畅途养护·淮海西路店</h1>
+          <div class="t_m">
+            <span class="score">4.0</span>
+            <span class="starbox">
+              <em class="red"></em>
+              <em class="red"></em>
+              <em class="red"></em>
+              <em class="red"></em>
+              <em class="gray"></em>
+            </span>
+            <span class="price">人均:￥63.0</span>
+          </div>
+          <div class="t_b">
+            <p class="fl eps">徐州市泉山区淮海西路120号颖都大厦1105</p>
+            <p class="fr kilm">1.8km</p>
+          </div>
+        </div>
+      </a>
+    </div>
+    <div class="bus-mid">
+      <dl>
+        <dt class="eps">微镀晶洗车</dt>
+        <dd>已售327份</dd>
+      </dl>
+      <dl class="sencond">
+        <dt class="price"><em>￥</em>298</dt>
+        <dd>门市价:￥996</dd>
+      </dl>
+      <a href="" class="red-btn">抢购</a>
+    </div>
+    <div class="bus-bot">
+      <a href="" class="more">更多服务</a>
+    </div>
+  </div>
+  <div class="business-list">
+    <div class="bus-top">
+      <a href="business_xq.html">
+        <img src="images/shop.png">
+        <div class="txt">
+          <h1 class="eps">畅途养护·淮海西路店</h1>
+          <div class="t_m">
+            <span class="score">4.0</span>
+            <span class="starbox">
+              <em class="red"></em>
+              <em class="red"></em>
+              <em class="red"></em>
+              <em class="red"></em>
+              <em class="gray"></em>
+            </span>
+            <span class="price">人均:￥63.0</span>
+          </div>
+          <div class="t_b">
+            <p class="fl eps">徐州市泉山区淮海西路120号颖都大厦1105</p>
+            <p class="fr kilm">1.8km</p>
+          </div>
+        </div>
+      </a>
+    </div>
+    <div class="bus-mid">
+      <dl>
+        <dt class="eps">微镀晶洗车</dt>
+        <dd>已售327份</dd>
+      </dl>
+      <dl class="sencond">
+        <dt class="price"><em>￥</em>298</dt>
+        <dd>门市价:￥996</dd>
+      </dl>
+      <a href="" class="red-btn">抢购</a>
+    </div>
+    <div class="bus-bot">
+      <a href="" class="more">更多服务</a>
+    </div>
+  </div>
+  <div class="business-list">
+    <div class="bus-top">
+      <a href="business_xq.html">
+        <img src="images/shop.png">
+        <div class="txt">
+          <h1 class="eps">畅途养护·淮海西路店</h1>
+          <div class="t_m">
+            <span class="score">4.0</span>
+            <span class="starbox">
+              <em class="red"></em>
+              <em class="red"></em>
+              <em class="red"></em>
+              <em class="red"></em>
+              <em class="gray"></em>
+            </span>
+            <span class="price">人均:￥63.0</span>
+          </div>
+          <div class="t_b">
+            <p class="fl eps">徐州市泉山区淮海西路120号颖都大厦1105</p>
+            <p class="fr kilm">1.8km</p>
+          </div>
+        </div>
+      </a>
+    </div>
+    <div class="bus-mid">
+      <dl>
+        <dt class="eps">微镀晶洗车</dt>
+        <dd>已售327份</dd>
+      </dl>
+      <dl class="sencond">
+        <dt class="price"><em>￥</em>298</dt>
+        <dd>门市价:￥996</dd>
+      </dl>
+      <a href="" class="red-btn">抢购</a>
+    </div>
+    <div class="bus-bot">
+      <a href="" class="more">更多服务</a>
+    </div>
+  </div>
+  <div class="business-list">
+    <div class="bus-top">
+      <a href="business_xq.html">
+        <img src="images/shop.png">
+        <div class="txt">
+          <h1 class="eps">畅途养护·淮海西路店</h1>
+          <div class="t_m">
+            <span class="score">4.0</span>
+            <span class="starbox">
+              <em class="red"></em>
+              <em class="red"></em>
+              <em class="red"></em>
+              <em class="red"></em>
+              <em class="gray"></em>
+            </span>
+            <span class="price">人均:￥63.0</span>
+          </div>
+          <div class="t_b">
+            <p class="fl eps">徐州市泉山区淮海西路120号颖都大厦1105</p>
+            <p class="fr kilm">1.8km</p>
+          </div>
+        </div>
+      </a>
+    </div>
+    <div class="bus-mid">
+      <dl>
+        <dt class="eps">微镀晶洗车</dt>
+        <dd>已售327份</dd>
+      </dl>
+      <dl class="sencond">
+        <dt class="price"><em>￥</em>298</dt>
+        <dd>门市价:￥996</dd>
+      </dl>
+      <a href="" class="red-btn">抢购</a>
+    </div>
+    <div class="bus-bot">
+      <a href="" class="more">更多服务</a>
+    </div>
+  </div>
+  <div class="popupbox"></div>
+</div>
+
+</body>
+</html>
+<script src="js/vue.min.js"></script>
+<script src="js/jquery.min.js"></script>
+<script src="js/template-web.js"></script>
+<script src="js/layer_mobile/layer.js"></script>
+<script src="js/screening.js"></script>
+
+<script type="text/javascript">
+  function tab(tabId, tabC){
+    var len = document.getElementById('type_models').getElementsByTagName('li').length;
+    for(i=1; i <= len; i++){
+      if ("tabId"+i === tabId){
+        document.getElementById(tabId).className="current";
+      }else{
+        document.getElementById("tabId"+i).className="nomal";
+      }
+      if ("tabC"+i === tabC){
+        document.getElementById(tabC).className="type_list show";
+      }else{
+        document.getElementById("tabC"+i).className="type_list hidden";
+      }
+    }
+  }
+</script>

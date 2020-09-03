@@ -1,0 +1,272 @@
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no"
+    name="viewport" id="viewport" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <title>洗车商城</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/swiper.min.css" />
+  <style>
+    .body-container {
+      padding-bottom: 50px;
+    }
+
+    .swiper-slide {
+      width: 100%;
+      height: 100%;
+    }
+
+    .swiper-slide img {
+      height: 220px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="body-container" id="app">
+    <div class="fixed header">
+      <a href="javascript:history.back()" class="back"></a>
+      <div class="topsearch center">
+        <a href="search.html">
+          <i></i>
+          <input type="text" placeholder="请输入要搜索的商品" readonly="readonly">
+        </a>
+      </div>
+      <a href="car.html" class="car"><em v-if='cartnums > 0'>{{cartnums}}</em></a>
+    </div>
+    <div class="topline"></div>
+    <div class="index-banner">
+      <div class="swiper-container swiper-banner" ref="banner">
+        <div class="swiper-wrapper">
+          <div class="swiper-slide" v-for='item in bannerList' :key="item.id"
+            @click='JumpBanner(item.type,item.releationid,item.adurl)'>
+            <a href="javascript:;"></a><img :src="item.image"></a>
+          </div>
+        </div>
+        <div class="swiper-pagination"></div>
+      </div>
+    </div>
+    <ul class="mall_nav">
+      <li v-for='(item,index) in typelist' :key='item.id' @click='toFenLei(index,item.id)'>
+        <!-- mall_product_list.html -->
+        <a href="javascript:;">
+          <img :src="item.image">
+          <p class="eps">{{item.name}}</p>
+        </a>
+      </li>
+    </ul>
+    <div class="daily-selection">
+      <div class="main">
+        <h1 class="h1">每日精选</h1>
+        <h3 class="h3">精选好物 不容错过~</h3>
+        <a href="mall_product_list.html" class="go">GO</a>
+        <ul>
+          <li>
+            <a href="mall_product_xq.html">
+              <div class="pic"><img src="images/pro1.png" alt=""></div>
+              <h1 class="eps"><em>￥</em>9.9
+                <del>￥10</del>
+              </h1>
+            </a>
+          </li>
+          <li>
+            <a href="mall_product_xq.html">
+              <div class="pic"><img src="images/pro1.png" alt=""></div>
+              <h1 class="eps"><em>￥</em>9.9
+                <del>￥10</del>
+              </h1>
+            </a>
+          </li>
+          <li>
+            <a href="mall_product_xq.html">
+              <div class="pic"><img src="images/pro1.png" alt=""></div>
+              <h1 class="eps"><em>￥</em>9.9
+                <del>￥10</del>
+              </h1>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="second-hand">
+      <a href="ershou.html">
+        <img src="images/second-hand.png" alt="">
+      </a>
+    </div>
+    <div class="mall-title">
+      <h1>商品推荐 <em class="zstj">专属推荐</em></h1>
+      <a href="mall_product_list.html" class="more">查看更多 <em class="gd">more</em></a>
+    </div>
+    <ul class="remmend-pro">
+      <li>
+        <a href="mall_product_xq.html">
+          <img src="images/pro2.png" alt="">
+          <div class="txt">
+            <h1 class="clamp2">70迈智能行车记录仪Pro M320高清夜视...</h1>
+            <h2 class="eps"><em>￥</em>32.00
+              <del>￥41.60</del>
+            </h2>
+            <span class="sale eps">已售808件</span>
+          </div>
+        </a>
+      </li>
+      <li>
+        <a href="mall_product_xq.html">
+          <img src="images/pro2.png" alt="">
+          <div class="txt">
+            <h1 class="clamp2">70迈智能行车记录仪Pro M320高清夜视...</h1>
+            <h2 class="eps"><em>￥</em>32.00
+              <del>￥41.60</del>
+            </h2>
+            <span class="sale eps">已售808件</span>
+          </div>
+        </a>
+      </li>
+      <li>
+        <a href="mall_product_xq.html">
+          <img src="images/pro2.png" alt="">
+          <div class="txt">
+            <h1 class="clamp2">70迈智能行车记录仪Pro M320高清夜视...</h1>
+            <h2 class="eps"><em>￥</em>32.00
+              <del>￥41.60</del>
+            </h2>
+            <span class="sale eps">已售808件</span>
+          </div>
+        </a>
+      </li>
+      <li>
+        <a href="mall_product_xq.html">
+          <img src="images/pro2.png" alt="">
+          <div class="txt">
+            <h1 class="clamp2">70迈智能行车记录仪Pro M320高清夜视...</h1>
+            <h2 class="eps"><em>￥</em>32.00
+              <del>￥41.60</del>
+            </h2>
+            <span class="sale eps">已售808件</span>
+          </div>
+        </a>
+      </li>
+    </ul>
+    <nav class="nav_list">
+      <ul>
+        <li class="on">
+          <a href="index.html" class="nav1">首页</a>
+        </li>
+        <li>
+          <a href="order.html" class="nav2">订单</a>
+        </li>
+        <li>
+          <a href="my.html" class="nav3">我的</a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</body>
+
+</html>
+<script src="js/md5.js"></script>
+<script src="js/ran.util.js"></script>
+<script src="js/app.js"></script>
+<script src="js/vue.min.js"></script>
+<script src="js/jquery.min.js"></script>
+<script src="js/axios.js"></script>
+<script src="js/axios.conf.js"></script>
+<script src="js/layer_mobile/layer.js"></script>
+<script src="js/swiper.min.js"></script>
+<script src="js/common.js"></script>
+
+<script>
+  new Vue({
+    el: '#app',
+    data: {
+      uid: '',
+      typelist: '',           // 导航菜单
+      bannerList: '',         // 轮播图数据
+      cartnums: '',            // 购物车数量
+    },
+    created() {
+      isLogin()
+
+    },
+    mounted() {
+      this.uid = $.cookie('uid');
+      console.log(this.uid)
+      this.getIndexInfo()
+    },
+    methods: {
+      async getIndexInfo() {
+        this.uid = $.cookie('uid');
+        const res = await axios.get('/app/main/objecthome', { params: { uid: this.uid } })
+        const { data, code } = res.data
+        console.log(data)
+        this.typelist = data.typelist       // 导航菜单数据
+        this.bannerList = data.bannerlist   // 轮播图数据
+        this.cartnums = data.cartnums
+        console.log(this.cartnums)
+        this.index_banner()
+      },
+      // 首页轮播图
+      index_banner() {
+        this.$nextTick(() => {
+          new Swiper(this.$refs.banner, {
+            effect: 'fade',
+            loop: true,
+            // 如果需要分页器
+            pagination: {
+              el: ".swiper-pagination",
+              clickable: true
+            },
+            slidesPerView: 1.2,
+            centeredSlides: true,
+            spaceBetween: 0,
+            initialSlide: 0,
+            autoplay: true,
+            observer: true,
+            observeParents: true
+          });
+        });
+      },
+      // 轮播图跳转方式
+      JumpBanner(type, releationid, adurl) {
+        // console.log(type)                  // 店铺：0；商品：1；广告：2
+        // console.log(releationid)           // type=0 为门店id, type=1:为商品 id
+        // console.log(adurl)                 // type=2 第三方链接地址
+        if (type == 0) {
+          console.log('店铺')
+        } else if (type == 1) {
+          console.log('商品')
+        } else if (type == 2) {
+          console.log('第三方链接地址')
+        }
+      },
+      toFenLei(index, id) {
+        console.log(id)
+        if (id === 0) {
+          location.href = `fenlei.html?index=0`
+        } else {
+          location.href = `fenlei.html?index=${index}`
+        }
+      }
+    },
+  })
+</script>
+<!-- <script>
+  var swiper1 = new Swiper('.swiper-banner', {
+    spaceBetween: 0,
+    centeredSlides: true,
+    loop: true,
+    autoplay: {
+      delay: 4000,
+      disableOnInteraction: false,
+    },
+    pagination: {
+      el: '.swiper-banner .swiper-pagination',
+      clickable: true,
+    }
+  })
+</script> -->

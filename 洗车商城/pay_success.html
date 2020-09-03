@@ -1,0 +1,55 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" name="viewport" id="viewport"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <title>洗车商城</title>
+  <link rel="stylesheet" href="css/style.css" type="text/css"/>
+</head>
+<body class="white">
+<div class="body-container">
+  <div class="pay-success">
+    <img src="images/success.png" class="cg">
+    <h1 class="tit">支付成功</h1>
+    <h2 class="money"><em>￥</em>78.00</h2>
+    <hr>
+    <div class="tips">
+      <p>是否参加十返一或十返十活动；如果参与则此订单任何 时刻都不允许退款；如果不参与则此订单以后都没机会 再参加活动！</p>
+    </div>
+    <a href="javascript:void(0)" class="loginsubmit" onclick="joinin()">立即参加</a>
+    <a href="javascript:void(0)" class="loginsubmit" onclick="window.location.href = 'join_active.html'">立即参加</a>
+    <a href="index.html" class="loginsubmit backhome">返回首页</a>
+  </div>
+  <div class="tips-pop">
+    <a class="add_cart_btn"></a>
+    <h1 class="h1">提示</h1>
+    <div class="unenough">
+      <img src="images/tip.png" alt="">
+      <p>此次金额不足，累计下次参与~</p>
+    </div>
+  </div>
+</div>
+</body>
+</html>
+<script src="js/vue.min.js"></script>
+<script src="js/jquery.min.js"></script>
+<script src="js/template-web.js"></script>
+<script src="js/layer_mobile/layer.js"></script>
+<script>
+  function joinin(){
+    $(".tips-pop").addClass("tip-active");
+    if($(".popupbox").length>0){
+      $(".popupbox").addClass("show");
+    }else{
+      $("body").append('<div class="popupbox"></div>');
+      $(".popupbox").addClass("show");
+    }
+    $(".popupbox,.add_cart_btn").click(function(){
+      $(".tips-pop").removeClass("tip-active");
+      $(".popupbox").removeClass("show");
+      $(".popupbox").remove();
+    })
+  }
+</script>

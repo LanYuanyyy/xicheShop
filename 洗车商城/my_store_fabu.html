@@ -1,0 +1,90 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" name="viewport" id="viewport"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <title>洗车商城</title>
+  <link rel="stylesheet" href="css/style.css" type="text/css"/>
+  <link rel="stylesheet" href="css/swiper.min.css" type="text/css"/>
+</head>
+<body class="white">
+<div class="body-container">
+  <div class="signup_box mtfu">
+    <ul class="ptab">
+      <li>
+        <textarea rows="5" class="long" placeholder="请输入文字描述..."></textarea>
+        <div class="upload_pic">
+          <ul class="radius">
+            <!--<li>
+              <img src="images/spxq.jpg">
+              <a class="close"></a>
+            </li>-->
+            <li>
+              <img src="images/upload4.png">
+              <input type="file" class="file">
+            </li>
+          </ul>
+        </div>
+        <div class="location">
+          <span>徐州 泉山区</span>
+        </div>
+      </li>
+      <li>
+        <p class="tit">价格</p>
+        <input type="text" class="text" placeholder="请输入">
+      </li>
+      <li>
+        <p class="tit">分类</p>
+        <input type="text" class="text choice" placeholder="请选择" readonly="readonly" id="select1">
+      </li>
+      <li>
+        <p class="tit">包邮</p>
+        <input id="switch" type="checkbox" class="switch" />
+      </li>
+    </ul>
+  </div>
+  <div class="submitbtn fixed">
+    <button class="loginsubmit">立即发布</button>
+  </div>
+  <div class="btnline"></div>
+  <div class="select_box select_box1"></div>
+</div>
+</body>
+</html>
+<script src="js/vue.min.js"></script>
+<script src="js/jquery.min.js"></script>
+<script src="js/template-web.js"></script>
+<script src="js/layer_mobile/layer.js"></script>
+<script src="js/swiper-select.min.js"></script>
+<script src="js/dyselect.js"></script>
+
+<script>
+  $(function() {
+    var hgS1 = new selectSwiper({
+      el: '.select_box1',
+      data: ['分类1', '分类2'],
+      init: function(index) {
+        if (index !== -1) {
+          $('#select1').val(this.data[index]);
+        }
+      },
+      okFunUndefind: function() {
+        alert('必须选择一项');
+        return false;
+      },
+      okFun: function(index) {
+        console.log(index);
+        $('#select1').val(this.data[index]);
+      },
+      closeFun: function() {
+        console.log('取消');
+      },
+    });
+    $('#select1').on('click',
+      function() {
+        hgS1.openSelectSwiper();
+      });
+  });
+</script>

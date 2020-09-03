@@ -1,0 +1,132 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" name="viewport" id="viewport"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <title>洗车商城</title>
+  <link rel="stylesheet" href="css/style.css" type="text/css"/>
+
+</head>
+<body>
+<div class="body-container">
+  <ul class="sumbit-box">
+    <h1 class="gds-tit">商品信息</h1>
+    <li>
+      <div class="goods">
+        <img src="images/shop.png">
+        <div class="txt fl">
+          <h3 class="eps">微镀晶洗车</h3>
+          <h4 class="clamp2">整车泡沫冲洗擦干、轮胎轮毂冲洗清洁、 车内吸尘、内饰脚垫...</h4>
+        </div>
+      </div>
+    </li>
+    <li>
+      <p class="fl">购买数量</p>
+      <div class="regulation fr">
+        <input type="button" class="minus">
+        <input type="text" value="1" class="num">
+        <input type="button" class="add">
+      </div>
+    </li>
+    <li>
+      <p class="fl">小计</p>
+      <p class="fr price">￥78</p>
+    </li>
+  </ul>
+  <ul class="sumbit-box">
+    <li>
+      <p class="fl">优惠券</p>
+      <input type="text" placeholder="暂无可用" readonly="readonly" class="fr select" onclick="discount()">
+    </li>
+  </ul>
+  <ul class="sumbit-box">
+    <li>
+      <p class="fl">必净币</p>
+      <p class="fr check" id="isuse">可用209必净币抵用2.09元</p>
+    </li>
+  </ul>
+  <ul class="sumbit-box">
+    <li>
+      <p class="fl">手机号</p>
+      <input type="text" value="188****7575" class="fr">
+    </li>
+    <li>
+      <p class="fl">备注</p>
+      <input type="text" placeholder="请输入" class="fr">
+    </li>
+  </ul>
+  <nav class="nav_list">
+    <p class="fl total">小计：<span>￥78.00</span></p>
+    <a href="pay.html" class="buy rads">去支付</a>
+  </nav>
+  <div class="footline"></div>
+  <div class="Coupon">
+    <a class="add_cart_btn"></a>
+    <div class="coupon-list">
+      <h1 class="yhq">领取优惠券</h1>
+      <ul>
+        <li>
+          <div class="fl">
+            <h1><em>￥</em>100</h1>
+            <p class="eps">部分商品可用，满300元可用</p>
+            <p class="eps">有效期 2019.07.09-2019.07.19</p>
+          </div>
+          <div class="fr">
+            <a class="get">立即领取</a>
+          </div>
+        </li>
+        <li>
+          <div class="fl">
+            <h1><em>￥</em>100</h1>
+            <p class="eps">部分商品可用，满300元可用</p>
+            <p class="eps">有效期 2019.07.09-2019.07.19</p>
+          </div>
+          <div class="fr">
+            <p class="haved"></p>
+          </div>
+        </li>
+        <li>
+          <div class="fl">
+            <h1><em>￥</em>100</h1>
+            <p class="eps">部分商品可用，满300元可用</p>
+            <p class="eps">有效期 2019.07.09-2019.07.19</p>
+          </div>
+          <div class="fr">
+            <a class="get">立即领取</a>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+</body>
+</html>
+<script src="js/vue.min.js"></script>
+<script src="js/jquery.min.js"></script>
+<script src="js/template-web.js"></script>
+<script src="js/layer_mobile/layer.js"></script>
+<script>
+  $("#isuse").click(function(){
+    $(this).toggleClass('check');
+    $(this).toggleClass('checked')
+  });
+
+  function discount(){
+    $(".Coupon").addClass("add_cart-active");
+    if($(".popupbox").length>0){
+      $(".popupbox").addClass("show");
+    }else{
+      $("body").append('<div class="popupbox"></div>');
+      $(".popupbox").addClass("show");
+    }
+    $(".popupbox,.add_cart_btn").click(function(){
+      $(".Coupon").removeClass("add_cart-active");
+      setTimeout(function(){
+        $(".popupbox").removeClass("show");
+        $(".popupbox").remove();
+      },250);
+    })
+  }
+</script>

@@ -1,0 +1,121 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" name="viewport" id="viewport"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <title>洗车商城</title>
+  <link rel="stylesheet" href="css/style.css" type="text/css"/>
+</head>
+<body>
+<div class="body-container">
+  <div class="fixed car-head blue">
+    <a href="javascript:void(0)" class="fr" id="edit" onclick="changeVal(this);">编辑</a>
+  </div>
+  <div class="navs fixed collect">
+    <ul class="shop-navs flex">
+      <li><a href="my_collect_business.html">商家</a></li>
+      <li><a href="my_collect_service.html">服务</a></li>
+      <li><a href="my_collect_store.html">店铺</a></li>
+      <li class="active"><a href="my_collect_goods.html">商品</a></li>
+    </ul>
+  </div>
+  <div class="topline"></div>
+  <div class="topline"></div>
+  <div class="business-list">
+    <div class="bus-top">
+      <input type="checkbox" id="1" class="check">
+      <label for="1"></label>
+      <a href="mall_product_xq.html">
+        <img src="images/pro2.png">
+        <div class="txt">
+          <p class="clamp2 tit">70迈智能行车记录仪Pro M320高清夜视防抖...</p>
+          <div class="t_m">
+            <span class="score">￥<span>32.00</span></span>
+            <del>￥41.60</del>
+          </div>
+        </div>
+      </a>
+    </div>
+  </div>
+  <div class="business-list">
+    <div class="bus-top">
+      <input type="checkbox" id="2" class="check">
+      <label for="2"></label>
+      <a href="mall_product_xq.html">
+        <img src="images/pro2.png">
+        <div class="txt">
+          <p class="clamp2 tit">70迈智能行车记录仪Pro M320高清夜视防抖...</p>
+          <div class="t_m">
+            <span class="score">￥<span>32.00</span></span>
+            <del>￥41.60</del>
+          </div>
+        </div>
+      </a>
+    </div>
+  </div>
+  <div class="business-list">
+    <div class="bus-top">
+      <input type="checkbox" id="3" class="check">
+      <label for="3"></label>
+      <a href="mall_product_xq.html">
+        <img src="images/pro2.png">
+        <div class="txt">
+          <p class="clamp2 tit">70迈智能行车记录仪Pro M320高清夜视防抖...</p>
+          <div class="t_m">
+            <span class="score">￥<span>32.00</span></span>
+            <del>￥41.60</del>
+          </div>
+        </div>
+      </a>
+    </div>
+  </div>
+  <div class="business-list">
+    <div class="bus-top">
+      <input type="checkbox" id="4" class="check">
+      <label for="4"></label>
+      <a href="mall_product_xq.html">
+        <img src="images/pro2.png">
+        <div class="txt">
+          <p class="clamp2 tit">70迈智能行车记录仪Pro M320高清夜视防抖...</p>
+          <div class="t_m">
+            <span class="score">￥<span>32.00</span></span>
+            <del>￥41.60</del>
+          </div>
+        </div>
+      </a>
+    </div>
+  </div>
+</div>
+<nav class="nav_list">
+  <input type="checkbox" id="all" class="check">
+  <label for="all">全选</label>
+  <a href="mall_buy.html" class="buy rads red">删除</a>
+</nav>
+<div class="footline"></div>
+</div>
+</body>
+</html>
+<script src="js/vue.min.js"></script>
+<script src="js/jquery.min.js"></script>
+<script src="js/template-web.js"></script>
+<script src="js/layer_mobile/layer.js"></script>
+<script>
+  $('.nav_list,.footline').hide();
+  $('.check + label').hide();
+  function changeVal(obj){
+    var val=document.getElementById("edit");
+    if(val.innerHTML=="编辑"){
+      obj.innerHTML="完成";
+      $('.nav_list,.footline').show();
+      $('.check + label').show();
+      $('.business-list .bus-top .txt').addClass('short');
+    }else if(val.innerHTML=="完成"){
+      obj.innerHTML="编辑";
+      $('.nav_list,.footline').hide();
+      $('.check + label').hide();
+      $('.business-list .bus-top .txt').removeClass('short');
+    }
+  }
+</script>

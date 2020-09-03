@@ -1,0 +1,88 @@
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no"
+    name="viewport" id="viewport" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <title>洗车商城</title>
+  <link rel="stylesheet" href="css/style.css" type="text/css" />
+  <link rel="stylesheet" href="js/layer_mobile/need/layer.css">
+</head>
+
+<body>
+  <div class="body-container" id="app">
+    <div class="catebox">
+      <div class="cate_l">
+        <ul v-for="(item,index) in Parent" :key="item.id">
+          <li :class="active==index?'cur':''"><a href="javascript:;" @click="change(index,item.name)">{{item.name}}</a>
+          </li>
+        </ul>
+      </div>
+      <div class="cate_r">
+        <h1 class="titlink">{{typename}}</h1>
+        <ul>
+          <li v-for='item in Children' :key="item.id" @click='toGoodList(item.id)'>
+            <a href="javascript:;">
+              <img :src="item.img_url">
+              <p class="eps">{{item.name}}</p>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>
+<script src="js/vue.min.js"></script>
+<script src="js/jquery.min.js"></script>
+<script src="js/common.js"></script>
+<script src="js/md5.js"></script>
+<script src="js/ran.util.js"></script>
+<script src="js/app.js"></script>
+<script src="js/axios.js"></script>
+<script src="js/axios.conf.js"></script>
+<script src="js/layer_mobile/layer.js"></script>
+<script>
+  new Vue({
+    el: '#app',
+    data: {
+      Parent: '',     // 父级分类
+      Children: '',   // 子级
+      index: 0,       // 下标为0
+      active: 0,      // 被选中的类名
+      typename: '',   // 选中分类名称
+    },
+    created() {
+      this.index = getQueryValue('index')
+      this.active = this.index                  // 页面一进来让active等于传进来的 index
+    },
+    mounted() {
+      this.getAlltype()
+    },
+    methods: {
+      async getAlltype() {
+        const res = await axios.get('/app/goods/goodstype')
+        const { data, code } = res.data
+        console.log(data)
+        this.Parent = data
+        this.typename = this.Parent[this.index].name        // 页面一进来根据 this.index来获取对应下标的名称
+        this.Children = this.Parent[this.index].children    // 页面一进来根据 this.index来获取对应下标的子集
+      },
+      change(index, name) {
+        this.index = index
+        this.active = index;    //把index值赋给active，点击改变样式
+        this.typename = name
+        this.Children = this.Parent[this.index].children
+      },
+      toGoodList(id) {
+        location.href = `mall_product_list.html?cationid=${id}`
+      }
+    },
+  })
+
+</script>

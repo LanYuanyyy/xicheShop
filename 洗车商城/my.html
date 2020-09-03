@@ -1,0 +1,185 @@
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns="">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no"
+    name="viewport" id="viewport" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <title>洗车商城</title>
+  <script src="js/vue.min.js"></script>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+  <div class="body-container" id="app">
+    <div class="my_infor">
+      <a href="my_profile.html">
+        <img :src="userInfo.image" alt="">
+        <div class="info fl">
+          <h1 class="eps">{{userInfo.usernanme}}</h1>
+          <p class="eps">ID：{{userInfo.i_d}}</p>
+        </div>
+      </a>
+    </div>
+    <ul class="account_yue">
+      <li class="first">
+        <img src="images/icon18.png" alt="">
+        <p>我的账户</p>
+      </li>
+      <li>
+        <a href="my_acount.html">
+          <h1 class="eps">320.36</h1>
+          <p>余额</p>
+        </a>
+      </li>
+      <li>
+        <a href="my_coupon.html">
+          <h1 class="eps">6</h1>
+          <p>优惠券</p>
+        </a>
+      </li>
+      <li>
+        <a href="my_bijingbi.html">
+          <h1 class="eps">1000</h1>
+          <p>必净币</p>
+        </a>
+      </li>
+    </ul>
+    <div class="my_order">
+      <div class="my_title">
+        <h1 class="fl">商品订单</h1>
+        <a href="my_order.html" class="fr">全部订单</a>
+      </div>
+      <ul>
+        <li><a href="my_order.html"><img src="images/order1.png">
+            <p>待付款</p>
+          </a></li>
+        <li><a href="my_order.html"><img src="images/order2.png">
+            <p>待发货</p><em class="num">5</em>
+          </a></li>
+        <li><a href="my_order.html"><img src="images/order3.png">
+            <p>待收货</p>
+          </a></li>
+        <li><a href="my_order.html"><img src="images/order4.png">
+            <p>已完成</p>
+          </a></li>
+        <li><a href="my_order.html"><img src="images/order5.png">
+            <p>售后</p>
+          </a></li>
+      </ul>
+    </div>
+    <div class="my_order">
+      <div class="my_title">
+        <a href="order.html">
+          <h1>我的服务</h1>
+        </a>
+      </div>
+      <ul>
+        <li><a href="order.html">
+            <h1 class="eps">1</h1>
+            <p>待付款</p>
+          </a></li>
+        <li><a href="order.html">
+            <h1 class="eps">2</h1>
+            <p>待使用</p>
+          </a></li>
+        <li><a href="order.html">
+            <h1 class="eps">12</h1>
+            <p>待评价</p>
+          </a></li>
+        <li><a href="order.html">
+            <h1 class="eps">0</h1>
+            <p>退款</p>
+          </a></li>
+      </ul>
+    </div>
+    <div class="mynav">
+      <ul>
+        <li><a href="my_store_wsq.html"><img src="images/mynav7.png">
+            <p>我的店铺</p>
+          </a></li>
+      </ul>
+    </div>
+    <div class="mynav">
+      <ul>
+        <li><a href="news.html"><img src="images/mynav1.png">
+            <p>消息中心</p>
+          </a></li>
+        <li><a href="my_collect_business.html"><img src="images/mynav2.png">
+            <p>我的收藏</p>
+          </a></li>
+        <li><a href="my_evaluation.html"><img src="images/mynav3.png">
+            <p>我的评价</p>
+          </a></li>
+        <li><a href="my_activity.html"><img src="images/mynav4.png">
+            <p>我的活动</p>
+          </a></li>
+      </ul>
+    </div>
+    <div class="mynav">
+      <ul>
+        <li><a href="my_ruzhu.html"><img src="images/mynav5.png">
+            <p>申请入驻</p>
+          </a></li>
+        <li><a href="my_set.html"><img src="images/mynav6.png">
+            <p>设置中心</p>
+          </a></li>
+      </ul>
+    </div>
+    <nav class="nav_list">
+      <ul>
+        <li>
+          <a href="index.html" class="nav1">首页</a>
+        </li>
+        <li>
+          <a href="order.html" class="nav2">订单</a>
+        </li>
+        <li class="on">
+          <a href="my.html" class="nav3">我的</a>
+        </li>
+      </ul>
+    </nav>
+    <div class="footline"></div>
+  </div>
+</body>
+
+</html>
+<script src="js/jquery.min.js"></script>
+<script src="js/template-web.js"></script>
+<script src="js/common.js"></script>
+<script src="js/md5.js"></script>
+<script src="js/ran.util.js"></script>
+<script src="js/app.js"></script>
+<script src="js/axios.js"></script>
+<script src="js/axios.conf.js"></script>
+<script src="js/layer_mobile/layer.js"></script>
+<script>
+  new Vue({
+    el: '#app',
+    data: {
+      uid: '',
+      userInfo: ''
+    },
+    created() {
+      this.uid = getItem("uid");
+      this.getUserHome()
+    },
+    methods: {
+      async getUserHome() {
+        const res = await axios.get('/app/user/userhome', { params: { uid: this.uid } })
+        const { data, code } = res.data
+        console.log(data)
+        this.userInfo = data.userinfo
+        console.log(this.userInfo)
+        if (this.userInfo.i_d === '') {
+          console.log('跳到注册手机号页码')
+          location.href = 'register.html'
+        }
+        // console.log(res)
+      }
+    },
+  })
+</script>

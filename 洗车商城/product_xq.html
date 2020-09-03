@@ -1,0 +1,137 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" name="viewport" id="viewport"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <title>洗车商城</title>
+  <link rel="stylesheet" href="css/style.css" type="text/css"/>
+  <link rel="stylesheet" href="css/swiper.min.css" type="text/css"/>
+  <link rel="stylesheet" href="css/baguettebox.min.css" type="text/css"/>
+</head>
+<body>
+  <div class="body-container">
+    <div class="swiper-container swiper-pro">
+      <div class="swiper-wrapper">
+        <div class="swiper-slide">
+          <img src="images/spxq.jpg" id="shaow-img">
+          <div class="video-box">
+            <video src="http://vfx.mtime.cn/Video/2019/03/21/mp4/190321153853126488.mp4" controls="controls" autoplay="autoplay" poster="images/spxq.jpg"></video>
+          </div>
+          <a class="video-play" onclick="handlePlay()">
+            <i class="play"></i>
+          01′30″
+        </a>
+      </div>
+      <div class="swiper-slide"><img src="images/spxq.jpg"></div>
+      <div class="swiper-slide"><img src="images/spxq.jpg"></div>
+      <div class="swiper-slide"><img src="images/spxq.jpg"></div>
+      <div class="swiper-slide"><img src="images/spxq.jpg"></div>
+    </div>
+    <div class="swiper-pagination"></div>
+  </div>
+  <div class="goods-detail">
+    <a href="javascript:void(0)" class="share"><span>分享</span></a>
+    <h1>微镀晶洗车</h1>
+    <h3>整车泡沫冲洗擦干、轮胎轮毂冲洗清洁、车内吸尘、内饰脚垫等精细除尘</h3>
+    <div class="goods-detail_bt">
+      <p class="fl price">
+        <em>￥</em>32.9
+        <span class="msj">门市价：￥32.9</span>
+      </p>
+      <p class="fr">
+        <span class="dark">今日仅剩 <em class="rad">8</em></span> |
+        <span>已售 227</span>
+      </p>
+    </div>
+  </div>
+  <div class="evaluation">
+    <div class="detail_tit noborder white">购买须知</div>
+    <ul class="buy_know white">
+      <li class="k1">
+        <h1>适用车型</h1>
+        <p>四门五座轿车</p>
+      </li>
+      <li class="k2">
+        <h1>有效期</h1>
+        <p>仅限付款当天24:00前有效</p>
+      </li>
+      <li class="k3">
+        <h1>预约信息</h1>
+        <p>此服务需提前致电门店进行预约</p>
+      </li>
+      <li class="k4">
+        <h1>温馨提示</h1>
+        <p>如需发票，请您在消费时向商户进行咨询</p>
+      </li>
+    </ul>
+  </div>
+  <div class="evaluation white">
+    <div class="detail_tit noborder">评价（<span>3000</span>）</div>
+    <div class="eval_list">
+      <div class="name">
+        <img src="images/nav1.png">
+        <div class="eps username">
+          <p class="">卡**拉</p>
+          <span class="starbox">
+            <em class="red"></em>
+            <em class="red"></em>
+            <em class="red"></em>
+            <em class="red"></em>
+            <em class="gray"></em>
+          </span>
+        </div>
+      </div>
+      <p class="comments mtfu">洗车真的是超干净，服务真的是一级棒，下次还选这家~</p>
+      <div class="baguetteBoxOne flex">
+        <a href="images/shop.png"><img src="images/shop.png"></a>
+        <a href="images/shop.png"><img src="images/shop.png"></a>
+        <a href="images/shop.png"><img src="images/shop.png"></a>
+        <a href="images/shop.png"><img src="images/shop.png"></a>
+        <a href="images/shop.png"><img src="images/shop.png"></a>
+        <a href="images/shop.png"><img src="images/shop.png"></a>
+      </div>
+      <a href="all_evaluation.html" class="seeall">查看全部评价</a>
+    </div>
+  </div>
+  <div class="white margtb">
+    <div class="detail_tit noborder">图文详情</div>
+    <div class="busin-info">
+      <img src="images/spxq.jpg" alt="">
+    </div>
+  </div>
+  <nav class="nav_list">
+    <ul>
+      <a href="javascript:void(0)" class="collect"></a>
+      <!--<a href="javascript:void(0)" class="collect ysc"></a>已收藏-->
+      <a href="buy.html" class="buy">立即购买</a>
+    </ul>
+  </nav>
+  <div class="footline"></div>
+</div>
+</body>
+</html>
+<script src="js/vue.min.js"></script>
+<script src="js/jquery.min.js"></script>
+<script src="js/template-web.js"></script>
+<script src="js/layer_mobile/layer.js"></script>
+<script src="js/baguettebox.min.js"></script>
+<script src="js/swiper.min.js"></script>
+<script>
+  function handlePlay() {
+    $('.video-box').show();
+    $('#shaow-img,.video-play').hide();
+  }
+
+  var swiper = new Swiper('.swiper-pro', {
+    pagination: {
+      el: '.swiper-pagination',
+      type: 'fraction',
+    }
+  });
+
+  baguetteBox.run('.baguetteBoxOne', {
+    animation: 'fadeIn',
+  });
+</script>

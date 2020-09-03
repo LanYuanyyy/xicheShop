@@ -1,0 +1,169 @@
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no"
+    name="viewport" id="viewport" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <title>洗车商城</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <script src="js/vue.min.js"></script>
+  <script src="js/vant.min.js"></script>
+  <style>
+    #cur {
+      color: #47b7fc
+    }
+
+    .selecet-list {
+      width: 100%;
+      margin-top: 44px;
+      position: absolute;
+      padding-top: 10px;
+      background-color: #fff;
+      top: -120px;
+    }
+
+    .selecet-list ul li {
+      background-color: #fff;
+      /* border-bottom: 1px solid #cccccc; */
+      padding-left: 30px;
+      height: 40px;
+    }
+  </style>
+
+</head>
+
+<body>
+  <div class="body-container">
+    <div class="fixed header">
+      <div class="topsearch middle">
+        <a href="search.html">
+          <i></i>
+          <input type="text" placeholder="请输入要搜索的商品" readonly="readonly">
+        </a>
+      </div>
+    </div>
+    <div class="topline"></div>
+    <div class="screening">
+      <ul>
+        <li class="defult"><span>综合排序</span></li>
+      </ul>
+    </div>
+    <div class="selecet-list">
+      <ul>
+        <li>综合排序</li>
+        <li>价格最低</li>
+        <li>价格最高</li>
+        <li>销量最高</li>
+      </ul>
+    </div>
+    <!-- <div class="topline"></div>
+    <div class="grade-eject compre">
+      <ul class="grade-w" id="gradew">
+        <li @click='defaultSort'>综合排序</li>
+        <li>价格最低</li>
+        <li>价格最高</li>
+        <li>销量最高</li>
+      </ul>
+    </div> -->
+    <ul class="remmend-pro">
+      <li>
+        <a href="mall_product_xq.html">
+          <img src="images/pro2.png" alt="">
+          <div class="txt">
+            <h1 class="clamp2">70迈智能行车记录仪Pro M320高清夜视...</h1>
+            <h2 class="eps"><em>￥</em>32.00 <del>￥41.60</del></h2>
+            <span class="sale eps">已售808件</span>
+          </div>
+        </a>
+      </li>
+      <li>
+        <a href="mall_product_xq.html">
+          <img src="images/pro2.png" alt="">
+          <div class="txt">
+            <h1 class="clamp2">70迈智能行车记录仪Pro M320高清夜视...</h1>
+            <h2 class="eps"><em>￥</em>32.00 <del>￥41.60</del></h2>
+            <span class="sale eps">已售808件</span>
+          </div>
+        </a>
+      </li>
+      <li>
+        <a href="mall_product_xq.html">
+          <img src="images/pro2.png" alt="">
+          <div class="txt">
+            <h1 class="clamp2">70迈智能行车记录仪Pro M320高清夜视...</h1>
+            <h2 class="eps"><em>￥</em>32.00 <del>￥41.60</del></h2>
+            <span class="sale eps">已售808件</span>
+          </div>
+        </a>
+      </li>
+      <li>
+        <a href="mall_product_xq.html">
+          <img src="images/pro2.png" alt="">
+          <div class="txt">
+            <h1 class="clamp2">70迈智能行车记录仪Pro M320高清夜视...</h1>
+            <h2 class="eps"><em>￥</em>32.00 <del>￥41.60</del></h2>
+            <span class="sale eps">已售808件</span>
+          </div>
+        </a>
+      </li>
+    </ul>
+    <div class="popupbox"></div>
+  </div>
+</body>
+
+</html>
+<script src="js/jquery.min.js"></script>
+<script src="js/template-web.js"></script>
+<script src="js/layer_mobile/layer.js"></script>
+<!-- <script src="js/screening.js"></script> -->
+<script src="js/common.js"></script>
+<script src="js/md5.js"></script>
+<script src="js/ran.util.js"></script>
+<script src="js/app.js"></script>
+<script src="js/axios.js"></script>
+<script src="js/axios.conf.js"></script>
+<script>
+  new Vue({
+    data: {
+      page: '1',
+      cationid: '',                  // 分类id
+      keywords: '',                  // 搜索关键字
+      store_id: '',                  // 门店id(店铺详情内商品列表)
+      isrecommend: '',               // 是否推荐（是传1）
+      isdaily: '',                   // 是否每日精选（是传1)
+      sort_type: '1',                // 排序 1	综合	2	价格	3	销量
+      orderMode: '0',                // 排序方式 0 升序 1 降序
+    },
+    created() {
+      this.cationid = getQueryValue('cationid')
+      console.log(this.cationid)
+      this.getGoodsList()
+    },
+    mounted() { },
+    methods: {
+      async getGoodsList(key) {
+        const res = await axios.get('/app/goods/objectgoodslist', {
+          params: {
+            keywords: key || '',                    // 搜索内容
+            isdaily: this.isdaily,                  // 是否每日精选（是传1)
+            isrecommend: this.isrecommend,          // 是否推荐（是传1）
+            store_id: this.store_id,                // 门店id(店铺详情内商品列表)
+            cate_id: this.cationid,                 // 分类id
+            pageindex: this.page,                   // 页码
+            sort_type: this.sort_type,              // 排序
+            orderMode: this.orderMode,              // 排序方式
+          }
+        })
+        console.log(res)
+      },
+      defaultSort() {
+        this.sort_type = 1
+        console.log(this.this.sort_type)
+      }
+    }
+  })
+</script>

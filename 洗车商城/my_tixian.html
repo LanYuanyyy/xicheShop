@@ -1,0 +1,57 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" name="viewport" id="viewport"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <title>洗车商城</title>
+  <link rel="stylesheet" href="css/style.css" type="text/css"/>
+</head>
+<body>
+<div class="body-container">
+  <div class="signup_box mtfu">
+    <ul>
+      <li>
+        <p class="tit">银行卡号</p>
+        <input type="text" placeholder="请输入" class="text">
+      </li>
+      <li>
+        <p class="tit">姓名</p>
+        <input type="text" placeholder="请输入" class="text">
+      </li>
+      <li>
+        <p class="tit">开户行</p>
+        <input type="text" placeholder="请输入" class="text">
+      </li>
+      <li>
+        <p class="tit">预留手机号</p>
+        <input type="text" placeholder="请输入" class="text">
+      </li>
+    </ul>
+  </div>
+  <div class="tp_money margtb">
+    <p>提现金额<span>（满100元起提，收取0.1%手续费）</span></p>
+    <h1 class="fh">￥</h1>
+    <input type="text" class="number">
+    <input type="button" class="allout" value="全部提现">
+    <h1 class="withdrawable">可提现金额：<span><em>72373.00</em> 元</span></h1>
+  </div>
+  <div class="submitbtn fixed">
+    <button class="loginsubmit">确认提现</button>
+  </div>
+  <div class="btnline"></div>
+</div>
+</body>
+</html>
+<script src="js/vue.min.js"></script>
+<script src="js/jquery.min.js"></script>
+<script src="js/template-web.js"></script>
+<script src="js/layer_mobile/layer.js"></script>
+<script>
+  $(function(){
+    $(".allout").click(function(){
+      $(".number").val($('.withdrawable span').find('em').text());
+    })
+  })
+</script>

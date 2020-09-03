@@ -1,0 +1,152 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" name="viewport" id="viewport"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <title>洗车商城</title>
+  <link rel="stylesheet" href="css/style.css" type="text/css"/>
+</head>
+<body class="white">
+<div class="body-container">
+  <div class="signup_box">
+    <ul>
+      <li>
+        <p class="tit">收货人</p>
+        <input type="text" class="text left" placeholder="请输入">
+      </li>
+      <li>
+        <p class="tit">联系电话</p>
+        <input type="text" class="text left" placeholder="请输入">
+      </li>
+      <li>
+        <p class="tit">所在地区</p>
+        <input type="text" placeholder="请选择" class="text choice" readonly="readonly" id="myAddrs">
+      </li>
+      <li>
+        <p class="tit">详细地址</p>
+        <textarea placeholder="请输入详细的地址信息，如道路、小区、 门牌号等等"></textarea>
+      </li>
+    </ul>
+  </div>
+  <div class="submitbtn fixed">
+    <button class="loginsubmit">保存</button>
+  </div>
+  <div class="btnline"></div>
+</div>
+</body>
+</html>
+<script src="js/vue.min.js"></script>
+<script src="js/jquery.min.js"></script>
+<script src="js/template-web.js"></script>
+<script src="js/layer_mobile/layer.js"></script>
+<script src="js/jquery.scs.min.js"></script>
+<script src="js/CNAddrArr.min.js"></script>
+<script>
+  $(function() {
+    function getAddrsArrayById(id) {
+      var results = [];
+      if (addr_arr[id] != undefined)
+        addr_arr[id].forEach(function(subArr) {
+          results.push({
+            key: subArr[0],
+            val: subArr[1]
+          });
+        });
+      else {
+        return;
+      }
+      return results;
+    }
+
+    function getStartIndexByKeyFromStartArr(startArr, key) {
+      var result = 0;
+      if (startArr != undefined)
+        startArr.forEach(function(obj, index) {
+          if (obj.key == key) {
+            result = index;
+            return false;
+          }
+        });
+      return result;
+    }
+
+    $("#myAddrs").click(function() {
+      var PROVINCES = [],
+        startCities = [],
+        startDists = [];
+      addr_arr[0].forEach(function(prov) {
+        PROVINCES.push({
+          key: prov[0],
+          val: prov[1]
+        });
+      });
+
+      var $input = $(this),
+        dataKey = $input.attr("data-key"),
+        provKey = 1,
+        cityKey = 36,
+        distKey = 37,
+        distStartIndex = 0,
+        cityStartIndex = 0,
+        provStartIndex = 0;
+
+      if (dataKey != "" && dataKey != undefined) {
+        var sArr = dataKey.split("-");
+        if (sArr.length == 3) {
+          provKey = sArr[0];
+          cityKey = sArr[1];
+          distKey = sArr[2];
+
+        } else if (sArr.length == 2) {
+          provKey = sArr[0];
+          cityKey = sArr[1];
+        }
+        startCities = getAddrsArrayById(provKey);
+        startDists = getAddrsArrayById(cityKey);
+        provStartIndex = getStartIndexByKeyFromStartArr(PROVINCES, provKey);
+        cityStartIndex = getStartIndexByKeyFromStartArr(startCities, cityKey);
+        distStartIndex = getStartIndexByKeyFromStartArr(startDists, distKey);
+      }
+      var navArr = [{
+        title: "省",
+        id: "scs_items_prov"
+      }, {
+        title: "市",
+        id: "scs_items_city"
+      }, {
+        title: "区",
+        id: "scs_items_dist"
+      }];
+      SCS.init({
+        navArr: navArr,
+        onOk: function(selectedKey, selectedValue) {
+          $input.val(selectedValue).attr("data-key", selectedKey);
+        }
+      });
+      var distScroller = new SCS.scrollCascadeSelect({
+        el: "#" + navArr[2].id,
+        dataArr: startDists,
+        startIndex: distStartIndex
+      });
+      var cityScroller = new SCS.scrollCascadeSelect({
+        el: "#" + navArr[1].id,
+        dataArr: startCities,
+        startIndex: cityStartIndex,
+        onChange: function(selectedItem, selectedIndex) {
+          distScroller.render(getAddrsArrayById(selectedItem.key), 0); //re-render distScroller when cityScroller change
+        }
+      });
+      var provScroller = new SCS.scrollCascadeSelect({
+        el: "#" + navArr[0].id,
+        dataArr: PROVINCES,
+        startIndex: provStartIndex,
+        onChange: function(selectedItem, selectedIndex) {
+          cityScroller.render(getAddrsArrayById(selectedItem.key), 0);
+          distScroller.render(getAddrsArrayById(cityScroller.getSelectedItem().key), 0);
+        }
+      });
+    });
+  });
+</script>
