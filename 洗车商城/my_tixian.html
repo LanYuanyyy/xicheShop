@@ -1,57 +1,146 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
+
 <head>
   <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-  <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" name="viewport" id="viewport"/>
+  <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no"
+    name="viewport" id="viewport" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="format-detection" content="telephone=no,email=no,adress=no">
   <title>洗车商城</title>
-  <link rel="stylesheet" href="css/style.css" type="text/css"/>
+  <script src="js/vue.min.js"></script>
+  <link rel="stylesheet" href="css/style.css" type="text/css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vant@1.6/lib/index.css">
+  <script src="https://cdn.jsdelivr.net/npm/vant@1.6/lib/vant.min.js"></script>
+  <script src="js/jquery.min.js"></script>
+  <style>
+    .van-popup {
+      background-color: rgba(0, 0, 0, 0);
+    }
+  </style>
 </head>
+
 <body>
-<div class="body-container">
-  <div class="signup_box mtfu">
-    <ul>
-      <li>
-        <p class="tit">银行卡号</p>
-        <input type="text" placeholder="请输入" class="text">
-      </li>
-      <li>
-        <p class="tit">姓名</p>
-        <input type="text" placeholder="请输入" class="text">
-      </li>
-      <li>
-        <p class="tit">开户行</p>
-        <input type="text" placeholder="请输入" class="text">
-      </li>
-      <li>
-        <p class="tit">预留手机号</p>
-        <input type="text" placeholder="请输入" class="text">
-      </li>
-    </ul>
+  <div class="body-container" id="app">
+    <div class="signup_box mtfu">
+      <ul>
+        <li>
+          <p class="tit">银行卡号</p>
+          <input type="text" placeholder="请输入" class="text" v-model='bandcard'>
+        </li>
+        <li>
+          <p class="tit">姓名</p>
+          <input type="text" placeholder="请输入" class="text" v-model='name'>
+        </li>
+        <li>
+          <p class="tit">开户行</p>
+          <input type="text" placeholder="请输入" class="text" v-model='bandname'>
+        </li>
+        <li>
+          <p class="tit">预留手机号</p>
+          <input type="text" placeholder="请输入" class="text" v-model='mobile'>
+        </li>
+      </ul>
+    </div>
+    <div class="tp_money margtb">
+      <p>提现金额<span>（满{{walinfo.limitmoney}}元起提，收取{{walinfo.rate}}%手续费）</span></p>
+      <h1 class="fh">￥</h1>
+      <input type="text" class="number" v-model='money'>
+      <input type="button" class="allout" value="全部提现" @click='allMoney'>
+      <h1 class="withdrawable">可提现金额：<span><em>{{walinfo.balance}}</em> 元</span></h1>
+    </div>
+    <div class="submitbtn fixed">
+      <button class="loginsubmit" @click='Withdrawal'>确认提现</button>
+    </div>
+    <div class="btnline"></div>
   </div>
-  <div class="tp_money margtb">
-    <p>提现金额<span>（满100元起提，收取0.1%手续费）</span></p>
-    <h1 class="fh">￥</h1>
-    <input type="text" class="number">
-    <input type="button" class="allout" value="全部提现">
-    <h1 class="withdrawable">可提现金额：<span><em>72373.00</em> 元</span></h1>
-  </div>
-  <div class="submitbtn fixed">
-    <button class="loginsubmit">确认提现</button>
-  </div>
-  <div class="btnline"></div>
-</div>
 </body>
+
 </html>
-<script src="js/vue.min.js"></script>
-<script src="js/jquery.min.js"></script>
 <script src="js/template-web.js"></script>
-<script src="js/layer_mobile/layer.js"></script>
+<script src="js/common.js"></script>
+<script src="js/md5.js"></script>
+<script src="js/ran.util.js"></script>
+<script src="js/app.js"></script>
+<script src="js/axios.js"></script>
+<script src="js/axios.conf.js"></script>
 <script>
-  $(function(){
-    $(".allout").click(function(){
+  new Vue({
+    el: '#app',
+    data: {
+      uid: '',
+      bandcard: '',                 // 银行卡号
+      name: '',                     // 姓名
+      bandname: '',                 // 开户行
+      mobile: '',                   // 手机号	
+      money: '',                    // 金额
+      walinfo: ''
+    },
+    created() {
+      this.uid = getItem('uid')
+      console.log(this.uid)
+      this.getWithdraWal()
+    },
+    methods: {
+      async getWithdraWal() {
+        const res = await axios.get('/app/user/withdrawalinfo', { params: { uid: this.uid } })
+        this.walinfo = res.data.data
+        console.log(this.walinfo)
+      },
+      allMoney() {
+        this.money = this.walinfo.balance
+      },
+      async Withdrawal() {
+        // console.log('111')
+        if (!this.bandcard) {
+          this.$toast('请输入银行卡号');
+          return
+        }
+        if (!this.name) {
+          this.$toast('请输入姓名');
+          return
+        }
+        if (!this.bandname) {
+          this.$toast('请输入开户行');
+          return
+        }
+        if (!this.mobile) {
+          this.$toast('请输入手机号');
+          return
+        }
+        if (!this.money) {
+          this.$toast('请输入提现金额');
+          return
+        }
+        const res = await axios.post('/app/user/withdrawal', {
+          uid: this.uid,
+          bandcard: this.bandcard,
+          name: this.name,
+          bandname: this.bandname,
+          mobile: this.mobile,
+          money: this.money
+        })
+        console.log(res)
+        if (res.data.code == 200) {
+          this.$dialog.alert({
+            title: '提示',
+            message: res.data.message
+          }).then(() => {
+            location.href = 'my.html'
+          });
+        }
+      }
+    },
+  })
+</script>
+
+
+
+<!-- <script>
+  $(function () {
+    $(".allout").click(function () {
       $(".number").val($('.withdrawable span').find('em').text());
     })
   })
-</script>
+</script> -->

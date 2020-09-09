@@ -1,90 +1,386 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
+
 <head>
   <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-  <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" name="viewport" id="viewport"/>
+  <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no"
+    name="viewport" id="viewport" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="format-detection" content="telephone=no,email=no,adress=no">
   <title>洗车商城</title>
-  <link rel="stylesheet" href="css/style.css" type="text/css"/>
-  <link rel="stylesheet" href="css/swiper.min.css" type="text/css"/>
+  <script src="js/vue.min.js"></script>
+  <script src="http://res.wx.qq.com/open/js/jweixin-1.6.0.js"></script>
+  <link rel="stylesheet" href="css/style.css" type="text/css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vant@1.6/lib/index.css">
+  <script src="https://cdn.jsdelivr.net/npm/vant@1.6/lib/vant.min.js"></script>
+  <script src="js/jquery.min.js"></script>
+  <style>
+    .van-switch {
+      float: right;
+    }
+
+    .van-popup {
+      background-color: rgba(0, 0, 0, 0);
+    }
+  </style>
 </head>
+
 <body class="white">
-<div class="body-container">
-  <div class="signup_box mtfu">
-    <ul class="ptab">
-      <li>
-        <textarea rows="5" class="long" placeholder="请输入文字描述..."></textarea>
-        <div class="upload_pic">
-          <ul class="radius">
-            <!--<li>
+  <div class="body-container" id="app">
+    <div class="signup_box mtfu">
+      <ul class="ptab">
+        <li>
+          <textarea rows="5" class="long" placeholder="请输入文字描述..." v-model='remark'></textarea>
+          <div class="upload_pic">
+            <ul class="radius">
+              <!--<li>
               <img src="images/spxq.jpg">
               <a class="close"></a>
             </li>-->
-            <li>
-              <img src="images/upload4.png">
-              <input type="file" class="file">
-            </li>
-          </ul>
-        </div>
-        <div class="location">
-          <span>徐州 泉山区</span>
-        </div>
-      </li>
-      <li>
-        <p class="tit">价格</p>
-        <input type="text" class="text" placeholder="请输入">
-      </li>
-      <li>
-        <p class="tit">分类</p>
-        <input type="text" class="text choice" placeholder="请选择" readonly="readonly" id="select1">
-      </li>
-      <li>
-        <p class="tit">包邮</p>
-        <input id="switch" type="checkbox" class="switch" />
-      </li>
-    </ul>
+              <li>
+                <img ref='upload1' src="images/upload4.png" v-if='!isShowdefuld'>
+                <img ref='upload1' :src="image" v-if='isShowdefuld'>
+                <!-- <input type="file" class="file"> -->
+                <van-uploader :after-read="onReadfan" class="file">
+                  <van-icon name="photograph" />
+                </van-uploader>
+              </li>
+            </ul>
+          </div>
+          <div class="location" @click='isShowAddress'>
+            <span>{{isAddress[0]}} {{isAddress[1]}}</span>
+          </div>
+        </li>
+        <li>
+          <p class="tit">商品名称</p>
+          <input type="text" class="text" placeholder="请输入" v-model='name'>
+        </li>
+        <li>
+          <p class="tit">价格</p>
+          <input type="text" class="text" placeholder="请输入" v-model='priceL'>
+        </li>
+        <li>
+          <p class="tit">分类</p>
+          <input @click='ClassificationSelection' v-model='fenleiName' type="text" class="text choice" placeholder="请选择"
+            readonly="readonly" id="select1">
+        </li>
+        <li v-if='checked == false'>
+          <p class="tit">运费</p>
+          <input type="text" class="text" placeholder="请输入" v-model='freight'>
+        </li>
+        <li>
+          <p class="tit">包邮</p>
+          <!-- <input id="switch" type="checkbox" class="switch" /> -->
+          <van-switch v-model="checked" @change='changeSwitch' />
+        </li>
+      </ul>
+    </div>
+    <div class="submitbtn fixed">
+      <button class="loginsubmit" @click='createsecondgoods'>立即发布</button>
+    </div>
+    <div class="btnline"></div>
+    <div class="select_box select_box1"></div>
+    <van-actionsheet v-model="show">
+      <van-area :area-list="areaList" @confirm='onAddrConfirm' @cancel='cancelAddres' />
+    </van-actionsheet>
+    <van-actionsheet v-model="fenlei">
+      <van-picker :columns="columns" title="选择一级分类" @cancel="onCancel" @confirm="onConfirm" show-toolbar />
+    </van-actionsheet>
+    <van-actionsheet v-model="secondlevel">
+      <van-picker :columns="second" title="选择二级分类" @cancel="onCancel" @confirm="secondConfirm" show-toolbar />
+    </van-actionsheet>
+    <van-popup v-model="isloshow">
+      <van-loading />
+    </van-popup>
   </div>
-  <div class="submitbtn fixed">
-    <button class="loginsubmit">立即发布</button>
-  </div>
-  <div class="btnline"></div>
-  <div class="select_box select_box1"></div>
-</div>
 </body>
+
 </html>
-<script src="js/vue.min.js"></script>
-<script src="js/jquery.min.js"></script>
 <script src="js/template-web.js"></script>
-<script src="js/layer_mobile/layer.js"></script>
-<script src="js/swiper-select.min.js"></script>
-<script src="js/dyselect.js"></script>
+<script src="js/common.js"></script>
+<script src="js/md5.js"></script>
+<script src="js/ran.util.js"></script>
+<script src="js/app.js"></script>
+<script src="js/axios.js"></script>
+<script src="js/axios.conf.js"></script>
+<script src="js/Address.js"></script>
+
 
 <script>
-  $(function() {
+  new Vue({
+    el: '#app',
+    data: {
+      areaList: areaList,
+      show: false,
+      fenlei: false,
+      secondlevel: false,
+      latitude: '',
+      longitude: '',
+      key: 'BXQBZ-SOG36-CFRS5-ECY4Q-4NOKK-JAF5F',
+      ProvinceAndCity: [],
+      isAddress: ['徐州市', '泉山区'],
+      image: '',            // 图片路径
+      addressinfo: '',      // 地址
+      remark: '',           // 详情
+      priceL: '',           // 单价
+      checked: false,       // 是否包邮
+      freight: '',          // 运费
+      Allcol: [],           // 所有分类
+      columns: [],          // 一级分类
+      fnid: '',             // 父级分类id
+      sonid: '',            // 子级分类id
+      second: [],           // 一级分类下的子级
+      fenleiName: '',       // 选中的二级分类的名字
+      name: '',             // 商品名称
+      uid: '',
+      gid: '',
+      isloshow: false,
+      isShowdefuld: false
+    },
+    created() {
+      this.getwxinfo()
+      this.getGoodstype()
+      this.uid = getItem('uid')
+      this.gid = getQueryValue('gid')
+      console.log(this.uid)
+      console.log(this.gid)
+      if (this.gid) {
+        this.getGoodsinfo()
+      }
+    },
+    methods: {
+      async getGoodsinfo() {
+        this.isloshow = true
+        const res = await axios.get(`app/goods/secondgoodsinfo/${this.gid}`)
+        this.isloshow = false
+        this.isShowdefuld = true
+        console.log(res)
+        const { data, code } = res.data
+        console.log('商品详情', data)
+        this.name = data.name
+        this.addressinfo = data.addressinfo
+        this.priceL = data.price
+        this.remark = data.remark
+        this.sonid = data.typeid
+        this.fenleiName = data.typename
+        this.image = data.image[0]
+        this.freight = data.freight
+        if (this.freight == 0) {
+          this.checked = true
+        }
+      },
+      createsecondgoods() {
+        if (!this.remark) {
+          this.$toast('请填写商品详情');
+          return
+        }
+        if (!this.image) {
+          this.$toast('请上传商品图片');
+          return
+        }
+        if (!this.name) {
+          this.$toast('请填写商品名称');
+          return
+        }
+        if (!this.priceL) {
+          this.$toast('请填写商品价格');
+          return
+        }
+        if (!this.fenleiName) {
+          this.$toast('请选择商品分类');
+          return
+        }
+        if (this.checked === false && !this.freight) {
+          this.$toast('请填写运费');
+          return
+        }
+        this.onSubmits()
+      },
+      async onSubmits() {
+        const res = await axios.post('app/goods/createsecondgoods', {
+          uid: this.uid,                      // 用户id
+          typeid: this.sonid,                 // 类型id
+          price: this.priceL,                 // 商品价格
+          freight: this.freight,              // 运费
+          addressinfo: this.addressinfo,      // 地址
+          image: this.image,                  // 图片
+          remark: this.remark,                // 详情
+          name: this.name,                    // 名称
+          gid: this.gid,                      // 商品id编辑使用
+        })
+        if (res.data.code == 200) {
+          location.href = 'my_store.html'
+        }
+        // console.log(res)
+      },
+      changeSwitch() {
+        console.log(this.checked)
+        if (this.checked) {
+          this.freight = 0
+        }
+      },
+      // 分类选择
+      ClassificationSelection() {
+        this.fenlei = true
+      },
+      // 获取分类列表
+      async getGoodstype() {
+        const res = await axios.get('/app/goods/secondgoodstype')
+        console.log(res)
+        const { data, code } = res.data
+        this.Allcol = data
+        console.log(this.Allcol)
+        data.forEach(item => {
+          this.columns.push(item.name)
+        })
+        // this.columns = res.data.data[0].children
+      },
+      onCancel() {
+        this.fenlei = false
+        this.secondlevel = false
+      },
+      // 确认选中
+      onConfirm(value, index) {
+        let newCon = []
+        let All = JSON.parse(JSON.stringify(this.Allcol))
+        this.second = []
+        newCon = All.filter(item => item.name == value)
+        this.fnid = newCon[0].id
+        newCon[0].children.forEach(item => {
+          this.second.push(item.name)
+        })
+        console.log(this.second)
+        if (newCon[0].children.length === 0) {
+          this.fenlei = false
+          this.fenleiName = newCon[0].name
+        } else {
+          this.fenlei = false
+          this.secondlevel = true
+        }
+      },
+      // 二级分类
+      secondConfirm(value, index) {
+        let isArr = []        // 对应的父级
+        let sonArr = []
+        let All = JSON.parse(JSON.stringify(this.Allcol))
+        isArr = All.filter(item => item.id == this.fnid)
+        sonArr = isArr[0].children.filter(item => item.name == value)
+        this.sonid = sonArr[0].id
+        this.fenleiName = sonArr[0].name
+        this.secondlevel = false
+      },
+      // 上传图片
+      onReadfan(file) {
+        console.log(file)
+        this.uploadImage(file)
+      },
+      uploadImage(file) {
+        let params = new FormData()
+        params.append('file', file.file)
+        axios.post(
+          '/app/upload/image',
+          params,
+          { headers: { 'Content-Type': 'multipart/form-data' } }).then((res) => {
+            console.log(res)
+            this.image = res.data.data.url
+            this.$refs.upload1.src = this.image
+            console.log(this.image)
+          })
+      },
+      isShowAddress() {
+        this.show = true
+      },
+      // 确认选择地址
+      onAddrConfirm(e) {
+        let newArr = new Array
+        this.ProvinceAndCity = [],
+          e.forEach(element => {
+            this.ProvinceAndCity.push(element.name)
+          })
+        this.ProvinceAndCity.forEach(item => {
+          if (newArr.indexOf(item) === -1) {
+            newArr.push(item)
+          }
+        })
+        if (newArr.length === 3) {
+          newArr.shift()
+        }
+        this.isAddress = newArr
+        this.addressinfo = this.isAddress.join(',')
+        console.log(this.addressinfo)
+        this.show = false
+      },
+      // 取消选择地址
+      cancelAddres() {
+        this.show = false
+      },
+
+      async getwxinfo() {
+        let that = this;
+        const res = await axios.get('/app/user/getwxinfo', { params: { url: location.href } })
+        console.log(res)
+        wx.config({
+          debug: false,
+          appId: AppID,
+          timestamp: res.data.data.timestamp,
+          nonceStr: res.data.data.nonce_str,
+          signature: res.data.data.signature,
+          jsApiList: ["getLocation"]
+        })
+        wx.ready(function () {
+          wx.getLocation({
+            type: 'wgs84', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
+            success: function (res) {
+              that.latitude = res.latitude
+              that.longitude = res.longitude;
+              // axios.get('https://apis.map.qq.com/ws/geocoder/v1/', {
+              //   params: {
+              //     dataType: "jsonp",
+              //     jsonp: "callback",
+              //     location: that.latitude + "," + that.longitude,
+              //     key: that.key,
+              //     output: 'jsonp'
+              //   }
+              // }).then(res => {
+              //   console.log(res)
+              // })
+            }
+          });
+        });
+        wx.error(function (res) {
+          console.log(res);
+        });
+      }
+    },
+  })
+</script>
+
+<!-- <script>
+  $(function () {
     var hgS1 = new selectSwiper({
       el: '.select_box1',
       data: ['分类1', '分类2'],
-      init: function(index) {
+      init: function (index) {
         if (index !== -1) {
           $('#select1').val(this.data[index]);
         }
       },
-      okFunUndefind: function() {
+      okFunUndefind: function () {
         alert('必须选择一项');
         return false;
       },
-      okFun: function(index) {
+      okFun: function (index) {
         console.log(index);
         $('#select1').val(this.data[index]);
       },
-      closeFun: function() {
+      closeFun: function () {
         console.log('取消');
       },
     });
     $('#select1').on('click',
-      function() {
+      function () {
         hgS1.openSelectSwiper();
       });
   });
-</script>
+</script> -->

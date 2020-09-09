@@ -106,6 +106,10 @@ html{font-size:50px;width:100%;}
 .loginsubmit.fixed{
   bottom: 0.4rem;
 }
+.loginsubmit.radiu{
+  border-radius: 1rem;
+  width: 13rem;
+}
 .loginsubmit.redradiu{
   border-radius: 1rem;
   background-color: #ff7d37;
@@ -2400,6 +2404,9 @@ html{font-size:50px;width:100%;}
 }
 .pay-success .money em{
   font-size: 0.72rem;
+}
+.pay-success .money.red{
+  color: #f00d0d;
 }
 .pay-success .tips{
   padding: 0.6rem 0.46rem 1.4rem;

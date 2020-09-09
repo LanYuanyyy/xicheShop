@@ -52,7 +52,7 @@
       </ul>
     </div>
     <div class="submitbtn fixed">
-      <button class="loginsubmit">保存</button>
+      <button class="loginsubmit" @click='modifyUser'>保存</button>
     </div>
     <div class="btnline"></div>
   </div>
@@ -96,6 +96,13 @@
       },
       setMobile() {
         location.href = `my_mobile1.html?mobeil=${this.mobile}`
+      },
+      async modifyUser() {   // 接口报500
+        const res = await axios.put('/app/user/edituser', {
+          uid: this.uid,
+          username: this.username
+        })
+        console.log(res)
       }
     },
   })

@@ -1,54 +1,116 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
+
 <head>
   <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-  <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" name="viewport" id="viewport"/>
+  <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no"
+    name="viewport" id="viewport" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="format-detection" content="telephone=no,email=no,adress=no">
   <title>洗车商城</title>
-  <link rel="stylesheet" href="css/style.css" type="text/css"/>
+  <script src="js/vue.min.js"></script>
+  <link rel="stylesheet" href="css/style.css" type="text/css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vant@1.6/lib/index.css">
+  <script src="https://cdn.jsdelivr.net/npm/vant@1.6/lib/vant.min.js"></script>
+  <script src="js/jquery.min.js"></script>
+  <style>
+    .van-popup {
+      background-color: rgba(0, 0, 0, 0);
+    }
+  </style>
 </head>
+
 <body>
-<div class="body-container">
-  <div class="white hidden">
-    <div class="my-balance">
-      <p>余额（元）</p>
-      <h1>700.00</h1>
+  <div class="body-container" id="app">
+    <div class="white hidden">
+      <div class="my-balance">
+        <p>余额（元）</p>
+        <h1>{{money}}</h1>
+      </div>
+      <ul class="account-opera">
+        <li><a href="my_chongzhi.html" class="in">充值</a></li>
+        <li><a href="my_tixian.html" class="out">提现</a></li>
+      </ul>
     </div>
-    <ul class="account-opera">
-      <li><a href="my_chongzhi.html" class="in">充值</a></li>
-      <li><a href="my_tixian.html" class="out">提现</a></li>
-    </ul>
+    <div class="account_details">
+      <h1 class="tit"><span>余额记录</span></h1>
+      <ul>
+        <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad" :immediate-check='false'>
+          <li v-for='item in recordList'>
+            <p class="fl eps">{{item.remark}}</p>
+            <p class="fr add" v-if='item.attribute == 1'>+{{item.money}}</p>
+            <p class="fr add" v-if='item.attribute == 0'>-{{item.money}}</p>
+            <p class="time">{{item.addtime}}</p>
+          </li>
+        </van-list>
+        <!-- <li>
+          <p class="fl eps">充值</p>
+          <p class="fr add">+100.00</p>
+          <p class="time">2019-06-28</p>
+        </li>
+        <li>
+          <p class="fl eps">消费</p>
+          <p class="fr">-100.00</p>
+          <p class="time">2019-06-28</p>
+        </li>
+        <li>
+          <p class="fl eps">提现</p>
+          <p class="fr add">-100.00</p>
+          <p class="time">2019-06-28</p>
+        </li> -->
+      </ul>
+    </div>
   </div>
-  <div class="account_details">
-    <h1 class="tit"><span>余额记录</span></h1>
-    <ul>
-      <li>
-        <p class="fl eps">充值</p>
-        <p class="fr add">+100.00</p>
-        <p class="time">2019-06-28</p>
-      </li>
-      <li>
-        <p class="fl eps">充值</p>
-        <p class="fr add">+100.00</p>
-        <p class="time">2019-06-28</p>
-      </li>
-      <li>
-        <p class="fl eps">消费</p>
-        <p class="fr">-100.00</p>
-        <p class="time">2019-06-28</p>
-      </li>
-      <li>
-        <p class="fl eps">提现</p>
-        <p class="fr add">-100.00</p>
-        <p class="time">2019-06-28</p>
-      </li>
-    </ul>
-  </div>
-</div>
 </body>
+
 </html>
-<script src="js/vue.min.js"></script>
-<script src="js/jquery.min.js"></script>
 <script src="js/template-web.js"></script>
-<script src="js/layer_mobile/layer.js"></script>
+<script src="js/common.js"></script>
+<script src="js/md5.js"></script>
+<script src="js/ran.util.js"></script>
+<script src="js/app.js"></script>
+<script src="js/axios.js"></script>
+<script src="js/axios.conf.js"></script>
+<script>
+  new Vue({
+    el: '#app',
+    data: {
+      uid: '',
+      page: 0,
+      loading: false,
+      finished: false,
+      isLogin: false,
+      recordList: [],
+      money: ''
+    },
+    created() {
+      this.uid = getItem('uid')
+      this.money = getQueryValue('balance')
+      console.log(this.uid)
+      this.onLoad()
+    },
+    methods: {
+      async getAcountList() {
+        const res = await axios.get('/app/user/bill', { params: { uid: this.uid, pageindex: this.page } })
+        console.log(res)
+        const { data, code } = res.data
+        let countList = data
+        this.loading = false;
+        if (countList.length == 0) {
+          console.log("到底了");
+          this.finished = true;
+        }
+        this.recordList = this.recordList.concat(countList)
+        console.log(this.recordList)
+        // console.log(list)
+      },
+      onLoad() {
+        this.page++;
+        this.loading = true;
+        this.getAcountList();
+      },
+
+    },
+  })
+</script>

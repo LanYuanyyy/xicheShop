@@ -10,7 +10,15 @@
   <meta name="format-detection" content="telephone=no,email=no,adress=no">
   <title>洗车商城</title>
   <script src="js/vue.min.js"></script>
-  <link rel="stylesheet" href="css/style.css" />
+  <script src="http://res.wx.qq.com/open/js/jweixin-1.6.0.js"></script>
+  <link rel="stylesheet" href="css/style.css" type="text/css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vant@1.6/lib/index.css">
+  <script src="https://cdn.jsdelivr.net/npm/vant@1.6/lib/vant.min.js"></script>
+  <style>
+    .van-popup {
+      background-color: rgba(0, 0, 0, 0);
+    }
+  </style>
 </head>
 
 <body>
@@ -30,20 +38,20 @@
         <p>我的账户</p>
       </li>
       <li>
-        <a href="my_acount.html">
-          <h1 class="eps">320.36</h1>
+        <a @click='tobalance(userInfo.balance)'>
+          <h1 class="eps">{{userInfo.balance}}</h1>
           <p>余额</p>
         </a>
       </li>
       <li>
         <a href="my_coupon.html">
-          <h1 class="eps">6</h1>
+          <h1 class="eps">{{userInfo.couponnums}}</h1>
           <p>优惠券</p>
         </a>
       </li>
       <li>
-        <a href="my_bijingbi.html">
-          <h1 class="eps">1000</h1>
+        <a @click='tobijingb(userInfo.score)'>
+          <h1 class="eps">{{userInfo.score}}</h1>
           <p>必净币</p>
         </a>
       </li>
@@ -55,19 +63,19 @@
       </div>
       <ul>
         <li><a href="my_order.html"><img src="images/order1.png">
-            <p>待付款</p>
+            <p>待付款</p><em class="num" v-if='objectorder.nopay > 0'>{{objectorder.nopay}}</em>
           </a></li>
         <li><a href="my_order.html"><img src="images/order2.png">
-            <p>待发货</p><em class="num">5</em>
+            <p>待发货</p><em class="num" v-if='objectorder.nosend > 0'>{{objectorder.nosend}}</em>
           </a></li>
         <li><a href="my_order.html"><img src="images/order3.png">
-            <p>待收货</p>
+            <p>待收货</p><em class="num" v-if='objectorder.noreceive > 0'>{{objectorder.noreceive}}</em>
           </a></li>
         <li><a href="my_order.html"><img src="images/order4.png">
-            <p>已完成</p>
+            <p>已完成</p><em class="num" v-if='objectorder.complete'>{{objectorder.complete}}</em>
           </a></li>
         <li><a href="my_order.html"><img src="images/order5.png">
-            <p>售后</p>
+            <p>售后</p><em class="num" v-if='objectorder.returnnums > 0'>{{objectorder.returnnums}}</em>
           </a></li>
       </ul>
     </div>
@@ -79,26 +87,27 @@
       </div>
       <ul>
         <li><a href="order.html">
-            <h1 class="eps">1</h1>
+            <h1 class="eps">{{serverorder.nopay}}</h1>
             <p>待付款</p>
           </a></li>
         <li><a href="order.html">
-            <h1 class="eps">2</h1>
+            <h1 class="eps">{{serverorder.nouse}}</h1>
             <p>待使用</p>
           </a></li>
         <li><a href="order.html">
-            <h1 class="eps">12</h1>
+            <h1 class="eps">{{serverorder.noeveluation}}</h1>
             <p>待评价</p>
           </a></li>
         <li><a href="order.html">
-            <h1 class="eps">0</h1>
+            <h1 class="eps">{{serverorder.returnnums}}</h1>
             <p>退款</p>
           </a></li>
       </ul>
     </div>
     <div class="mynav">
       <ul>
-        <li><a href="my_store_wsq.html"><img src="images/mynav7.png">
+        <li @click='myShop'>
+          <a href="javascript:;"><img src="images/mynav7.png">
             <p>我的店铺</p>
           </a></li>
       </ul>
@@ -121,7 +130,7 @@
     </div>
     <div class="mynav">
       <ul>
-        <li><a href="my_ruzhu.html"><img src="images/mynav5.png">
+        <li @click='ApplyForResidence'><a><img src="images/mynav5.png">
             <p>申请入驻</p>
           </a></li>
         <li><a href="my_set.html"><img src="images/mynav6.png">
@@ -143,6 +152,9 @@
       </ul>
     </nav>
     <div class="footline"></div>
+    <van-popup v-model="isshow">
+      <van-loading />
+    </van-popup>
   </div>
 </body>
 
@@ -161,7 +173,12 @@
     el: '#app',
     data: {
       uid: '',
-      userInfo: ''
+      userInfo: '',
+      objectorder: '',         //  商品订单
+      serverorder: '',         //  服务订单
+      secondhandstore: '',     //  是否开通二手店铺
+      serverstore: '',         // 是否开通服务类店铺
+      isshow: false
     },
     created() {
       this.uid = getItem("uid");
@@ -169,16 +186,51 @@
     },
     methods: {
       async getUserHome() {
+        this.isshow = true
         const res = await axios.get('/app/user/userhome', { params: { uid: this.uid } })
+        setTimeout(() => {
+          this.isshow = false
+        }, 1000)
         const { data, code } = res.data
         console.log(data)
         this.userInfo = data.userinfo
-        console.log(this.userInfo)
+        this.objectorder = data.objectorder
+        this.serverorder = data.serverorder
+        this.secondhandstore = data.secondhandstore
+        this.serverstore = data.serverstore
+        console.log('个人信息', this.userInfo)
+        console.log('是否开通二手店铺，我的店铺', this.secondhandstore)
+        console.log('商品订单', this.objectorder)
+        console.log('我的服务', this.serverorder)
         if (this.userInfo.i_d === '') {
           console.log('跳到注册手机号页码')
           location.href = 'register.html'
         }
         // console.log(res)
+      },
+      myShop() {
+        if (this.secondhandstore == null) {
+          location.href = 'my_store_wsq.html'
+          console.log('去注册')
+        } else if (this.secondhandstore.state === 1) {
+          console.log('去二手商城管理页面')
+          location.href = 'my_store.html'
+        } else if (this.secondhandstore == 2) {
+          console.log('正在审核')
+        } else if (this.secondhandstore == 3) {
+          console.log('审核被拒绝,去从新编辑页面')
+        }
+      },
+      tobalance(balance) {
+        // href = "my_acount.html"
+        console.log(balance)
+        location.href = `my_acount.html?balance=${balance}`
+      },
+      tobijingb(bj) {
+        location.href = `my_bijingbi.html?bjb=${bj}`
+      },
+      ApplyForResidence() {
+        location.href = `my_ruzhu.html?serverstore=${this.serverstore}`
       }
     },
   })

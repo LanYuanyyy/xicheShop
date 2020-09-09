@@ -1,110 +1,261 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
+
 <head>
   <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-  <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" name="viewport" id="viewport"/>
+  <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no"
+    name="viewport" id="viewport" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="format-detection" content="telephone=no,email=no,adress=no">
   <title>洗车商城</title>
-  <link rel="stylesheet" href="css/style.css" type="text/css"/>
-  <link rel="stylesheet" href="css/swiper.min.css" type="text/css"/>
+  <script src="js/vue.min.js"></script>
+  <link rel="stylesheet" href="css/style.css" type="text/css" />
+  <script src="http://res.wx.qq.com/open/js/jweixin-1.6.0.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vant@1.6/lib/index.css">
+  <script src="https://cdn.jsdelivr.net/npm/vant@1.6/lib/vant.min.js"></script>
+  <script src="js/jquery.min.js"></script>
+  <style>
+    .van-uploader {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+    }
+
+    .van-icon {
+      position: absolute;
+      top: 50%;
+      left: 43%;
+      transform: translate(-50%, -50%);
+    }
+  </style>
 </head>
+
 <body>
-<div class="body-container">
-  <div class="signup_box mtfu">
-    <ul>
-      <li>
-        <p class="tit">姓名</p>
-        <input type="text" class="text left" placeholder="请输入姓名">
-      </li>
-      <li>
-        <p class="tit">电话</p>
-        <input type="text" class="text left" placeholder="请输入手机号">
-      </li>
-    </ul>
-    <ul>
-      <li>
-        <p class="tit">商家类型</p>
-        <input type="text" class="text left choice" placeholder="请选择" readonly="readonly" id="select1">
-      </li>
-      <li>
-        <p class="tit">商家名称</p>
-        <input type="text" class="text left" placeholder="请输入">
-      </li>
-      <li>
-        <p class="tit">所在地区</p>
-        <input type="text" placeholder="请选择" class="text left choice" readonly="readonly" id="myAddrs">
-      </li>
-      <li>
-        <p class="tit">详细地址</p>
-        <textarea placeholder="请输入详细的地址信息，如道路、小区、 门牌号等等"></textarea>
-      </li>
-    </ul>
-    <ul>
-      <li>
-        <p class="tit per">法人身份证正反面</p>
-        <div class="certificsbox">
-          <div class="cert-upld">
-            <img src="images/upload1.png">
-            <input type="file" class="file">
+  <div class="body-container" id="app">
+    <div class="signup_box mtfu">
+      <ul>
+        <li>
+          <p class="tit">姓名</p>
+          <input type="text" class="text left" placeholder="请输入姓名" v-model='name'>
+        </li>
+        <li>
+          <p class="tit">电话</p>
+          <input type="text" class="text left" placeholder="请输入手机号" v-model='mobile'>
+        </li>
+      </ul>
+      <ul>
+        <li>
+          <p class="tit">商家类型</p>
+          <input type="text" class="text left choice" placeholder="请选择" readonly="readonly" id="select1">
+        </li>
+        <li>
+          <p class="tit">商家名称</p>
+          <input type="text" class="text left" placeholder="请输入" v-model='storename'>
+        </li>
+        <li @click='isShowAddress'>
+          <p class="tit">所在地区</p>
+          <input type="text" placeholder="请选择" v-model='addinfo' class="text left choice" readonly="readonly"
+            id="myAddrs">
+        </li>
+        <li>
+          <p class="tit">详细地址</p>
+          <textarea placeholder="请输入详细的地址信息，如道路、小区、 门牌号等等" v-model='addressinfo'></textarea>
+        </li>
+      </ul>
+      <ul>
+        <li>
+          <p class="tit per">法人身份证正反面</p>
+          <div class="certificsbox">
+            <div class="cert-upld">
+              <img ref='upload1' src="images/upload1.png">
+              <van-uploader :after-read="onReadfanOne" class="file">
+                <van-icon name="photograph" />
+              </van-uploader>
+            </div>
+            <div class="cert-upld">
+              <img ref="upload2" src="images/upload2.png">
+              <van-uploader :after-read="onReadfanTwo" class="file">
+                <van-icon name="photograph" />
+              </van-uploader>
+            </div>
           </div>
-          <div class="cert-upld">
-            <img src="images/upload2.png">
-            <input type="file" class="file">
+        </li>
+      </ul>
+      <ul>
+        <li>
+          <p class="tit per">营业执照照片</p>
+          <div class="certificsbox">
+            <div class="cert-upld">
+              <img ref="upload3" src="images/upload3.png">
+              <van-uploader :after-read="onReadfanThree" class="file">
+                <van-icon name="photograph" />
+              </van-uploader>
+            </div>
           </div>
-        </div>
-      </li>
-    </ul>
-    <ul>
-      <li>
-        <p class="tit per">营业执照照片</p>
-        <div class="certificsbox">
-          <div class="cert-upld">
-            <img src="images/upload3.png">
-            <input type="file" class="file">
+        </li>
+      </ul>
+      <ul>
+        <li>
+          <p class="tit per">门店照片</p>
+          <div class="upload_pic">
+            <ul>
+              <li v-for='(item,index) in StoreImageList' :key="item">
+                <img :src="item">
+                <a class="close" @click='deleteImg(index)'></a>
+              </li>
+              <li>
+                <img src="images/upload4.png">
+                <van-uploader :after-read="onReadfanList" class="file">
+                  <van-icon name="photograph" />
+                </van-uploader>
+                <!-- <input type="file" class="file"> -->
+              </li>
+            </ul>
           </div>
-        </div>
-      </li>
-    </ul>
-    <ul>
-      <li>
-        <p class="tit per">门店照片</p>
-        <div class="upload_pic">
-          <ul>
-            <li>
-              <img src="images/spxq.jpg">
-              <a class="close"></a>
-            </li>
-            <li>
-              <img src="images/spxq.jpg">
-              <a class="close"></a>
-            </li>
-            <li>
-              <img src="images/upload4.png">
-              <input type="file" class="file">
-            </li>
-          </ul>
-        </div>
-      </li>
-    </ul>
+        </li>
+      </ul>
+    </div>
+    <div class="submitbtn fixed">
+      <button class="loginsubmit" @click='apply'>提交申请</button>
+    </div>
+    <div class="btnline"></div>
+    <div class="select_box select_box1"></div>
+    <van-actionsheet v-model="show">
+      <van-area :area-list="areaList" @confirm='onAddrConfirm' @cancel='cancelAddres' />
+    </van-actionsheet>
   </div>
-  <div class="submitbtn fixed">
-    <button class="loginsubmit">提交申请</button>
-  </div>
-  <div class="btnline"></div>
-  <div class="select_box select_box1"></div>
-</div>
 </body>
+
 </html>
-<script src="js/vue.min.js"></script>
-<script src="js/jquery.min.js"></script>
 <script src="js/template-web.js"></script>
-<script src="js/layer_mobile/layer.js"></script>
-<script src="js/swiper-select.min.js"></script>
-<script src="js/dyselect.js"></script>
-<script src="js/jquery.scs.min.js"></script>
-<script src="js/CNAddrArr.min.js"></script>
+<script src="js/common.js"></script>
+<script src="js/md5.js"></script>
+<script src="js/ran.util.js"></script>
+<script src="js/app.js"></script>
+<script src="js/axios.js"></script>
+<script src="js/axios.conf.js"></script>
+<script src="js/Address.js"></script>
+
 <script>
+  new Vue({
+    el: '#app',
+    data: {
+      uid: '',                          // 会员id
+      name: '',                         // 姓名
+      mobile: '',                       // 手机号
+      onetype: '',                      // 商家类型id(第一级)
+      twotype: '',                      // 商家类型id(第二级)
+      storename: '',                    // 商家名称
+      cityid: '',                       // 城市id
+      areaid: '',                       // 区域id
+      addressinfo: '',                  // 详细地址
+      IDCardImagePositive: '',          // 身份证正面
+      IDCardImageBack: '',              // 身份证反面
+      BusinessLicense: '',              // 营业执照
+      StoreImageList: [],               // 门店照片多张
+      city: '',                         // 城市名
+      area: '',                         // 区域名
+      longitude: '',                    // 经度
+      latitude: '',                     // 纬度
+      show: false,
+      areaList: areaList,
+      isAddress: [],
+      addinfo: ''
+    },
+    created() {
+      this.uid = getItem('uid')
+      this.getOpencityarea()
+    },
+    methods: {
+      onReadfanOne(file) {
+        console.log(file)
+        let isImg = 1
+        this.uploadImage(file, isImg)
+      },
+      onReadfanTwo(file) {
+        let isImg = 2
+        this.uploadImage(file, isImg)
+      },
+      onReadfanThree(file) {
+        let isImg = 3
+        this.uploadImage(file, isImg)
+      },
+      onReadfanList(file) {
+        let isImg = 4
+        this.uploadImage(file, isImg)
+      },
+      // 删除图片
+      deleteImg(index) {
+        this.StoreImageList.splice(index, 1)
+        // console.log(this.StoreImageList)
+      },
+      uploadImage(file, isImg) {
+        let params = new FormData()
+        params.append('file', file.file)
+        axios.post(
+          '/app/upload/image',
+          params,
+          { headers: { 'Content-Type': 'multipart/form-data' } }).then((res) => {
+            console.log(res)
+            if (isImg === 1) {          // 身份反面
+              this.$refs.upload1.src = res.data.data.url
+              this.IDCardImageBack = res.data.data.url
+              console.log(this.IDCardImageBack)
+            } else if (isImg === 2) {     // 身份证正面
+              this.$refs.upload2.src = res.data.data.url
+              this.IDCardImagePositive = res.data.data.url
+              console.log(this.IDCardImagePositive)
+            } else if (isImg === 3) {    // 营业执照
+              this.$refs.upload3.src = res.data.data.url
+              this.BusinessLicense = res.data.data.url
+              console.log(this.BusinessLicense)
+            } else if (isImg === 4) {
+              this.StoreImageList.push(res.data.data.url)
+              console.log(this.StoreImageList)
+            }
+          })
+      },
+      isShowAddress() {
+        this.show = true
+      },
+      async getOpencityarea() {
+        const res = await axios.get('/app/cities/opencityarea')
+        console.log(res)
+      },
+      onAddrConfirm(e) {
+        let newArr = new Array
+        this.ProvinceAndCity = [],
+          e.forEach(element => {
+            this.ProvinceAndCity.push(element.name)
+          })
+        this.ProvinceAndCity.forEach(item => {
+          if (newArr.indexOf(item) === -1) {
+            newArr.push(item)
+          }
+        })
+        if (newArr.length === 3) {
+          newArr.shift()
+        }
+        this.isAddress = newArr
+        this.city = this.isAddress[0]     // 城市名称
+        this.area = this.isAddress[1]     // 区域名称
+        this.addinfo = this.isAddress.join(' ')
+        this.show = false
+      },
+      cancelAddres() {
+        this.show = false
+      },
+      // 提交
+      apply() {
+        // console.log(this.name)
+      }
+    },
+  })
+</script>
+
+<!-- <script>
   $(function() {
     var hgS1 = new selectSwiper({
       el: '.select_box1',
@@ -237,4 +388,4 @@
       });
     });
   });
-</script>
+</script> -->

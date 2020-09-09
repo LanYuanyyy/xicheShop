@@ -1,54 +1,169 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
+
 <head>
   <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-  <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" name="viewport" id="viewport"/>
+  <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no"
+    name="viewport" id="viewport" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="format-detection" content="telephone=no,email=no,adress=no">
   <title>洗车商城</title>
-  <link rel="stylesheet" href="css/style.css" type="text/css"/>
+  <script src="js/vue.min.js"></script>
+  <link rel="stylesheet" href="css/style.css" type="text/css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vant@1.6/lib/index.css">
+  <script src="https://cdn.jsdelivr.net/npm/vant@1.6/lib/vant.min.js"></script>
+  <style>
+    .file1 {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .file2 {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+  </style>
 </head>
+
 <body>
-<div class="body-container">
-  <div class="signup_box mtfu">
-    <ul>
-      <li>
-        <p class="tit">姓名</p>
-        <input type="text" class="text left" placeholder="请输入姓名">
-      </li>
-      <li>
-        <p class="tit">电话</p>
-        <input type="text" class="text left" placeholder="请输入手机号">
-      </li>
-      <li>
-        <p class="tit">身份证号</p>
-        <input type="text" class="text left" placeholder="请输入身份证号">
-      </li>
-    </ul>
-    <ul>
-      <li>
-        <p class="tit per">身份证正反面</p>
-        <div class="certificsbox">
-          <div class="cert-upld">
-            <img src="images/upload1.png">
-            <input type="file" class="file">
+  <div class="body-container" id="app">
+    <div class="signup_box mtfu">
+      <ul>
+        <li>
+          <p class="tit">姓名</p>
+          <input type="text" class="text left" placeholder="请输入姓名" v-model='name'>
+        </li>
+        <li>
+          <p class="tit">电话</p>
+          <input type="text" class="text left" placeholder="请输入手机号" v-model='mobile'>
+        </li>
+        <li>
+          <p class="tit">身份证号</p>
+          <input type="text" class="text left" placeholder="请输入身份证号" v-model='number'>
+        </li>
+      </ul>
+      <ul>
+        <li>
+          <p class="tit per">身份证正反面</p>
+          <div class="certificsbox">
+            <div class="cert-upld">
+              <img ref="upload1" src="images/upload1.png">
+              <van-uploader :after-read="onReadfan" class="file1">
+                <van-icon name="photograph" />
+              </van-uploader>
+            </div>
+            <div class="cert-upld">
+              <img ref="upload2" src="images/upload2.png">
+              <van-uploader :after-read="onReadzheng" class="file2">
+                <van-icon name="photograph" />
+              </van-uploader>
+            </div>
           </div>
-          <div class="cert-upld">
-            <img src="images/upload2.png">
-            <input type="file" class="file">
-          </div>
-        </div>
-      </li>
-    </ul>
+        </li>
+      </ul>
+    </div>
+    <div class="submitbtn fixed">
+      <button class="loginsubmit" @click='apply'>提交申请</button>
+      <!-- onclick="location.href = 'my_store.html'" -->
+    </div>
+    <div class="btnline"></div>
+
   </div>
-  <div class="submitbtn fixed">
-    <button class="loginsubmit" onclick="location.href = 'my_store.html'">提交申请</button>
-  </div>
-  <div class="btnline"></div>
-</div>
 </body>
+
 </html>
-<script src="js/vue.min.js"></script>
 <script src="js/jquery.min.js"></script>
 <script src="js/template-web.js"></script>
-<script src="js/layer_mobile/layer.js"></script>
+<script src="js/common.js"></script>
+<script src="js/md5.js"></script>
+<script src="js/ran.util.js"></script>
+<script src="js/app.js"></script>
+<script src="js/axios.js"></script>
+<script src="js/axios.conf.js"></script>
+
+<script>
+  new Vue({
+    el: '#app',
+    data: {
+      imageTop: '',              // 身份证正面
+      imageBack: '',             // 身份证反面
+      name: '',
+      mobile: '',
+      number: '',                // 身份证号码
+      uid: ''
+    },
+    created() {
+      this.uid = getItem('uid')
+      console.log(this.uid)
+    },
+    methods: {
+      apply() {
+        if (!this.name) {
+          this.$toast('请输入姓名');
+          return
+        }
+        if (!this.mobile) {
+          this.$toast('请输入手机号')
+        }
+        if (!this.mobile) {
+          this.$toast('请输入身份账号')
+          return
+        }
+        this.SubmitApplication()
+      },
+      async SubmitApplication() {
+        const res = await axios.post('/app/apply/opensecondhandstore', {
+          uid: this.uid,
+          name: this.name,
+          mobile: this.mobile,
+          IDCardNum: this.number,
+          IDCardImagePositive: this.imageTop,
+          IDCardImageBack: this.imageBack
+        })
+        console.log(res)
+        const { data, code } = res.data
+        // if (code == 200) {
+        //   location.href = 'my_store.html'
+        //   提示 提交成功等待审核 返回个人中心 
+        // }
+      },
+      onReadfan(file) {
+        // console.log(file)
+        let id = 1
+        this.uploadImage(file, id)
+      },
+      onReadzheng(file) {
+        // console.log(file)
+        let id = 2
+        this.uploadImage(file, id)
+      },
+      uploadImage(file, id) {
+        let params = new FormData()
+        params.append('file', file.file)
+        axios.post(
+          '/app/upload/image',
+          params,
+          { headers: { 'Content-Type': 'multipart/form-data' } }).then((res) => {
+            console.log(res)
+            if (id === 1) {
+              console.log('反面')
+              this.imageBack = res.data.data.url
+              this.$refs.upload1.src = this.imageBack
+              console.log(this.imageBack)
+            }
+            if (id === 2) {
+              console.log('正面')
+              this.imageTop = res.data.data.url
+              this.$refs.upload2.src = this.imageTop
+              console.log(this.imageTop)
+            }
+          })
+      }
+    },
+  })
+</script>

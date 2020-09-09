@@ -1,99 +1,531 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
+
 <head>
   <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-  <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" name="viewport" id="viewport"/>
+  <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no"
+    name="viewport" id="viewport" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="format-detection" content="telephone=no,email=no,adress=no">
   <title>洗车商城</title>
-  <link rel="stylesheet" href="css/style.css" type="text/css"/>
+  <script src="js/vue.min.js"></script>
+  <link rel="stylesheet" href="css/style.css" type="text/css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vant@1.6/lib/index.css">
+  <script src="https://cdn.jsdelivr.net/npm/vant@1.6/lib/vant.min.js"></script>
+  <script src="js/jquery.min.js"></script>
+  <style>
+    .van-popup {
+      background-color: rgba(0, 0, 0, 0);
+    }
+  </style>
 </head>
+
 <body>
-<div class="body-container">
-  <div class="busin-content">
-    <div class="top-text">
-      <h1>3600.00</h1>
-      <p>交易额（元）</p>
-    </div>
-    <div class="my_order">
-      <div class="my_title bleft">
-        <h1>订单管理</h1>
+  <div class="body-container" id="app">
+    <div class="busin-content">
+      <div class="top-text">
+        <h1>{{money}}</h1>
+        <p>交易额（元）</p>
       </div>
-      <ul>
-        <li><a href="my_store_order.html"><h1 class="eps">1</h1><p>待发货</p></a></li>
-        <li><a href="my_store_order.html"><h1 class="eps">2</h1><p>已发货</p></a></li>
-        <li><a href="my_store_order.html"><h1 class="eps">12</h1><p>已完成</p></a></li>
-        <li><a href="my_store_order.html"><h1 class="eps">0</h1><p>退款/售后</p></a></li>
-      </ul>
-    </div>
-    <div class="my_order mt20">
-      <div class="my_title bleft">
-        <h1 class="fl">在售宝贝（32）</h1>
-        <a href="my_store_fabu.html" class="input fr">发布</a>
+      <div class="my_order">
+        <div class="my_title bleft">
+          <h1>订单管理</h1>
+        </div>
+        <ul>
+          <li><a href="my_store_order.html">
+              <h1 class="eps">{{nosend}}</h1>
+              <p>待发货</p>
+            </a></li>
+          <li><a href="my_store_order.html">
+              <h1 class="eps">{{noreceive}}</h1>
+              <p>已发货</p>
+            </a></li>
+          <li><a href="my_store_order.html">
+              <h1 class="eps">{{complete}}</h1>
+              <p>已完成</p>
+            </a></li>
+          <li><a href="my_store_order.html">
+              <h1 class="eps">{{returnnums}}</h1>
+              <p>退款/售后</p>
+            </a></li>
+        </ul>
+      </div>
+      <div class="nav-change" id="float">
+        <ul class="shop-navs flex" id="show_num">
+          <li :class="{active:actives == 1}" @click="nTabs(1)">在售宝贝（{{sellnums}}）</li>
+          <li :class="{active:actives == 2}" @click="nTabs(2)">下架宝贝（{{warehouse}}）</li>
+        </ul>
       </div>
     </div>
-  </div>
-  <div class="make_sure_order">
-    <ul>
-      <li>
-        <a href="mall_product_xq.html"><img src="images/pro2.png"></a>
-        <div class="info long">
-          <a href="mall_product_xq.html">
-            <h1 class="clamp2">斯麦欧（Simaiou）汽车头枕腰靠套装太空记忆棉车用座...</h1>
-          </a>
-          <div class="weight">
-            <p class="p1"><em>￥</em>237.9</p>
+    <!-- <div id="show_num_Content0" class="none">
+      <div class="make_sure_order">
+        <ul>
+          <li>
+            <a href="mall_product_xq.html"><img src="images/pro2.png"></a>
+            <div class="info long">
+              <a href="mall_product_xq.html">
+                <h1 class="clamp2">斯麦欧（Simaiou）汽车头枕腰靠套装太空记忆棉车用座...</h1>
+              </a>
+              <div class="weight">
+                <p class="p1"><em>￥</em>237.9</p>
+              </div>
+            </div>
+          </li>
+        </ul>
+        <div class="btns radius">
+          <a href="" class="fr loginsubmit gray">下架</a>
+          <a href="" class="fr loginsubmit gray">编辑</a>
+        </div>
+      </div>
+      <div class="make_sure_order">
+        <ul>
+          <li>
+            <a href="mall_product_xq.html"><img src="images/pro2.png"></a>
+            <div class="info long">
+              <a href="mall_product_xq.html">
+                <h1 class="clamp2">斯麦欧（Simaiou）汽车头枕腰靠套装太空记忆棉车用座...</h1>
+              </a>
+              <div class="weight">
+                <p class="p1"><em>￥</em>237.9</p>
+              </div>
+            </div>
+          </li>
+        </ul>
+        <div class="btns radius">
+          <a href="" class="fr loginsubmit gray">下架</a>
+          <a href="" class="fr loginsubmit gray">编辑</a>
+        </div>
+      </div>
+      <div class="make_sure_order">
+        <ul>
+          <li>
+            <a href="mall_product_xq.html"><img src="images/pro2.png"></a>
+            <div class="info long">
+              <a href="mall_product_xq.html">
+                <h1 class="clamp2">斯麦欧（Simaiou）汽车头枕腰靠套装太空记忆棉车用座...</h1>
+              </a>
+              <div class="weight">
+                <p class="p1"><em>￥</em>237.9</p>
+              </div>
+            </div>
+          </li>
+        </ul>
+        <div class="btns radius">
+          <a href="" class="fr loginsubmit gray">下架</a>
+          <a href="" class="fr loginsubmit gray">编辑</a>
+        </div>
+      </div>
+      <div class="make_sure_order">
+        <ul>
+          <li>
+            <a href="mall_product_xq.html"><img src="images/pro2.png"></a>
+            <div class="info long">
+              <a href="mall_product_xq.html">
+                <h1 class="clamp2">斯麦欧（Simaiou）汽车头枕腰靠套装太空记忆棉车用座...</h1>
+              </a>
+              <div class="weight">
+                <p class="p1"><em>￥</em>237.9</p>
+              </div>
+            </div>
+          </li>
+        </ul>
+        <div class="btns radius">
+          <a href="" class="fr loginsubmit gray">下架</a>
+          <a href="" class="fr loginsubmit gray">编辑</a>
+        </div>
+      </div>
+      <div class="make_sure_order">
+        <ul>
+          <li>
+            <a href="mall_product_xq.html"><img src="images/pro2.png"></a>
+            <div class="info long">
+              <a href="mall_product_xq.html">
+                <h1 class="clamp2">斯麦欧（Simaiou）汽车头枕腰靠套装太空记忆棉车用座...</h1>
+              </a>
+              <div class="weight">
+                <p class="p1"><em>￥</em>237.9</p>
+              </div>
+            </div>
+          </li>
+        </ul>
+        <div class="btns radius">
+          <a href="" class="fr loginsubmit gray">下架</a>
+          <a href="" class="fr loginsubmit gray">编辑</a>
+        </div>
+      </div>
+      <div class="make_sure_order">
+        <ul>
+          <li>
+            <a href="mall_product_xq.html"><img src="images/pro2.png"></a>
+            <div class="info long">
+              <a href="mall_product_xq.html">
+                <h1 class="clamp2">斯麦欧（Simaiou）汽车头枕腰靠套装太空记忆棉车用座...</h1>
+              </a>
+              <div class="weight">
+                <p class="p1"><em>￥</em>237.9</p>
+              </div>
+            </div>
+          </li>
+        </ul>
+        <div class="btns radius">
+          <a href="" class="fr loginsubmit gray">下架</a>
+          <a href="" class="fr loginsubmit gray">编辑</a>
+        </div>
+      </div>
+      <div class="make_sure_order">
+        <ul>
+          <li>
+            <a href="mall_product_xq.html"><img src="images/pro2.png"></a>
+            <div class="info long">
+              <a href="mall_product_xq.html">
+                <h1 class="clamp2">斯麦欧（Simaiou）汽车头枕腰靠套装太空记忆棉车用座...</h1>
+              </a>
+              <div class="weight">
+                <p class="p1"><em>￥</em>237.9</p>
+              </div>
+            </div>
+          </li>
+        </ul>
+        <div class="btns radius">
+          <a href="" class="fr loginsubmit gray">下架</a>
+          <a href="" class="fr loginsubmit gray">编辑</a>
+        </div>
+      </div>
+      <div class="make_sure_order">
+        <ul>
+          <li>
+            <a href="mall_product_xq.html"><img src="images/pro2.png"></a>
+            <div class="info long">
+              <a href="mall_product_xq.html">
+                <h1 class="clamp2">斯麦欧（Simaiou）汽车头枕腰靠套装太空记忆棉车用座...</h1>
+              </a>
+              <div class="weight">
+                <p class="p1"><em>￥</em>237.9</p>
+              </div>
+            </div>
+          </li>
+        </ul>
+        <div class="btns radius">
+          <a href="" class="fr loginsubmit gray">下架</a>
+          <a href="" class="fr loginsubmit gray">编辑</a>
+        </div>
+      </div>
+      <div class="make_sure_order">
+        <ul>
+          <li>
+            <a href="mall_product_xq.html"><img src="images/pro2.png"></a>
+            <div class="info long">
+              <a href="mall_product_xq.html">
+                <h1 class="clamp2">斯麦欧（Simaiou）汽车头枕腰靠套装太空记忆棉车用座...</h1>
+              </a>
+              <div class="weight">
+                <p class="p1"><em>￥</em>237.9</p>
+              </div>
+            </div>
+          </li>
+        </ul>
+        <div class="btns radius">
+          <a href="" class="fr loginsubmit gray">下架</a>
+          <a href="" class="fr loginsubmit gray">编辑</a>
+        </div>
+      </div>
+    </div> -->
+    <div id="show_num_Content1">
+      <van-list class="site-list" v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad"
+        :immediate-check="false">
+        <div class="make_sure_order" v-for='item in sitelist'>
+          <ul>
+            <li>
+              <a href="mall_product_xq.html"><img :src="item.image"></a>
+              <div class="info long">
+                <a href="mall_product_xq.html">
+                  <h1 class="clamp2">{{item.goodsname}}</h1>
+                  <p v-if='item.goodsaudit == -1'>审核被拒绝，可在次编辑</p>
+                </a>
+                <div class="weight">
+                  <p class="p1"><em>￥</em>{{item.price}}</p>
+                </div>
+              </div>
+            </li>
+          </ul>
+          <div class="btns radius">
+            <a class="fr loginsubmit gray" @click='deletel(item.gid)' v-if='item.goodsshow == 0'>删除</a>
+            <!-- goodsaudit = 1 审核通过才能进行上架操作 -->
+            <a class="fr loginsubmit gray" @click='upperShelves(item.gid)'
+              v-if='item.goodsaudit == 1 && item.goodsshow == 0'>上架</a>
+            <a class="fr loginsubmit gray" v-if='item.goodsshow == 1' @click='lowerShelves(item.gid)'>下架</a>
+            <a class="fr loginsubmit gray" @click='onEdit(item.gid)'>编辑</a>
           </div>
         </div>
-      </li>
-    </ul>
-    <div class="btns radius">
-      <a href="" class="fr loginsubmit gray">删除</a>
-      <a href="" class="fr loginsubmit gray">编辑</a>
-    </div>
-  </div>
-  <div class="make_sure_order">
-    <ul>
-      <li>
-        <a href="mall_product_xq.html"><img src="images/pro2.png"></a>
-        <div class="info long">
-          <a href="mall_product_xq.html">
-            <h1 class="clamp2">斯麦欧（Simaiou）汽车头枕腰靠套装太空记忆棉车用座...</h1>
-          </a>
-          <div class="weight">
-            <p class="p1"><em>￥</em>237.9</p>
-          </div>
+      </van-list>
+      <!-- <div class="make_sure_order">
+        <ul>
+          <li>
+            <a href="mall_product_xq.html"><img src="images/pro2.png"></a>
+            <div class="info long">
+              <a href="mall_product_xq.html">
+                <h1 class="clamp2">斯麦欧（Simaiou）汽车头枕腰靠套装太空记忆棉车用座...</h1>
+              </a>
+              <div class="weight">
+                <p class="p1"><em>￥</em>237.9</p>
+              </div>
+            </div>
+          </li>
+        </ul>
+        <div class="btns radius">
+          <a href="" class="fr loginsubmit gray">删除</a>
+          <a href="" class="fr loginsubmit gray">上架</a>
+          <a href="" class="fr loginsubmit gray">编辑</a>
         </div>
-      </li>
-    </ul>
-    <div class="btns radius">
-      <a href="" class="fr loginsubmit gray">删除</a>
-      <a href="" class="fr loginsubmit gray">编辑</a>
-    </div>
-  </div>
-  <div class="make_sure_order">
-    <ul>
-      <li>
-        <a href="mall_product_xq.html"><img src="images/pro2.png"></a>
-        <div class="info long">
-          <a href="mall_product_xq.html">
-            <h1 class="clamp2">斯麦欧（Simaiou）汽车头枕腰靠套装太空记忆棉车用座...</h1>
-          </a>
-          <div class="weight">
-            <p class="p1"><em>￥</em>237.9</p>
-          </div>
+      </div>
+      <div class="make_sure_order">
+        <ul>
+          <li>
+            <a href="mall_product_xq.html"><img src="images/pro2.png"></a>
+            <div class="info long">
+              <a href="mall_product_xq.html">
+                <h1 class="clamp2">斯麦欧（Simaiou）汽车头枕腰靠套装太空记忆棉车用座...</h1>
+              </a>
+              <div class="weight">
+                <p class="p1"><em>￥</em>237.9</p>
+              </div>
+            </div>
+          </li>
+        </ul>
+        <div class="btns radius">
+          <a href="" class="fr loginsubmit gray">删除</a>
+          <a href="" class="fr loginsubmit gray">上架</a>
+          <a href="" class="fr loginsubmit gray">编辑</a>
         </div>
-      </li>
-    </ul>
-    <div class="btns radius">
-      <a href="" class="fr loginsubmit gray">删除</a>
-      <a href="" class="fr loginsubmit gray">编辑</a>
+      </div> -->
     </div>
+    <button class="input-goods fixed" @click='toFabu'>发布</button>
+    <div class="topline"></div>
+    <van-popup v-model="isshow">
+      <van-loading />
+    </van-popup>
   </div>
-</div>
+
+  <script src="js/template-web.js"></script>
+  <script src="js/common.js"></script>
+  <script src="js/md5.js"></script>
+  <script src="js/ran.util.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/axios.js"></script>
+  <script src="js/axios.conf.js"></script>
+  <script>
+    new Vue({
+      el: '#app',
+      data: {
+        actives: 1,
+        page: 1,
+        uid: '',
+        money: '',             // 交易金额
+        nosend: '',            // 待发货数量
+        noreceive: '',         // 已发货
+        complete: '',          // 完成数量
+        sellnums: '',          // 在售商品数量
+        warehouse: '',         // 已下架的宝贝数量
+        returnnums: '',        // 售后数量
+        type: 1,               // 1 上架    0 下架
+        loading: false,
+        finished: false,
+        isshow: false,
+        sitelist: []
+      },
+      created() {
+        this.uid = getItem('uid')
+        this.getSecondStoreInfo()
+        this.onLoad()
+      },
+      methods: {
+        // 删除操作
+        deletel(id) {
+          console.log(id)
+          this.$dialog.confirm({
+            message: '是否删除此商品'
+          }).then(() => {
+            let action = 1
+            this.delGoods(id)
+            this.type = 0
+            this.page = 1
+            this.sitelist = []
+            this.finished = false
+            this.isshow = true
+            setTimeout(() => {
+              this.onLoad()
+              this.getSecondStoreInfo()
+              this.isshow = false
+            }, 1000)
+          }).catch(() => {
+          })
+        },
+        // 下架操作
+        lowerShelves(id) {
+          this.$dialog.confirm({
+            message: '是否下架此商品'
+          }).then(() => {
+            let action = 0
+            this.setShelfat(id, action)
+            this.type = 1
+            this.page = 1
+            this.sitelist = []
+            this.finished = false
+            this.isshow = true
+            setTimeout(() => {
+              this.onLoad()
+              this.getSecondStoreInfo()
+              this.isshow = false
+            }, 1000)
+            // location.reload()
+          }).catch(() => {
+            this.$toast('取消操作')
+          })
+        },
+        // 上架操作
+        upperShelves(id) {
+          this.$dialog.confirm({
+            message: '是否上架此商品'
+          }).then(() => {
+            let action = 1
+            this.setShelfat(id, action)
+            // location.reload()
+            this.type = 0
+            this.page = 1
+            this.sitelist = []
+            this.finished = false
+            this.isshow = true
+            setTimeout(() => {
+              this.onLoad()
+              this.getSecondStoreInfo()
+              this.isshow = false
+            }, 1000)
+          }).catch(() => {
+            this.$toast('取消操作')
+          })
+
+        },
+        // 上下架下架接口
+        async setShelfat(id, action) {
+          const res = await axios.patch(`app/goods/shelfat/${id}`, {
+            action
+          })
+          console.log(res)
+        },
+        // 删除商品接口
+        async delGoods(id) {
+          const res = await axios.delete(`app/goods/deletesecondgoods/${id}`)
+          console.log(res)
+        },
+        onLoad() {
+          this.getGoodslist()
+        },
+        async getSecondStoreInfo() {
+          this.isshow = true
+          const res = await axios.get('/app/store/secondstoreinfo', { params: { uid: this.uid } })
+          const { data, code } = res.data
+          this.isshow = false
+          console.log(data)
+          this.money = data.money
+          this.nosend = data.nosend
+          this.noreceive = data.noreceive
+          this.complete = data.compelet
+          this.sellnums = data.sellnums
+          this.warehouse = data.warehouse
+          this.returnnums = data.returnnums
+        },
+
+        async getGoodslist() {
+          const res = await axios.get('/app/goods/secondstoregoodslist', {
+            params: {
+              uid: this.uid,
+              pageindex: this.page,
+              type: this.type
+            }
+          })
+          const { data, code } = res.data
+          console.log(res)
+          if (data != undefined && data.length > 0) {
+            let list = []
+            data.forEach(item => {
+              list.push({
+                gid: item.gid,
+                goodsaudit: item.goodsaudit,
+                goodsname: item.goodsname,
+                goodsshow: item.goodsshow,
+                image: item.image,
+                oldprice: item.oldprice,
+                price: item.price
+              })
+            })
+            this.sitelist = this.sitelist.concat(list)
+            ++this.page
+            this.loading = false;
+          } else {
+            this.finished = true
+          }
+        },
+
+        nTabs(num) {
+          if (num === 1) {
+            this.actives = 1
+            this.type = 1
+            this.page = 1
+            this.sitelist = []
+            this.finished = false
+            this.onLoad()
+            console.log('在售宝贝')
+          } else if (num === 2) {
+            this.actives = 2
+            this.type = 0
+            this.page = 1
+            this.sitelist = []
+            this.finished = false
+            this.onLoad()
+            console.log('下架宝贝')
+          }
+        },
+        toFabu() {
+          location.href = 'my_store_fabu.html'
+        },
+        onEdit(id) {
+          location.href = `my_store_fabu.html?gid=${id}`
+        }
+      },
+    })
+  </script>
+
+  <script>
+    // function nTabs(thisObj, Num) {
+    //   if (thisObj.className == "active") return;
+    //   var tabObj = thisObj.parentNode.id;
+    //   var tabList = document.getElementById(tabObj).getElementsByTagName("li");
+    //   for (i = 0; i < tabList.length; i++) {
+    //     if (i == Num) {
+    //       thisObj.className = "active";
+    //       document.getElementById(tabObj + "_Content" + i).style.display = "block";
+    //     } else {
+    //       tabList[i].className = "normal";
+    //       document.getElementById(tabObj + "_Content" + i).style.display = "none";
+    //     }
+    //   }
+    // }
+    window.onload = function () {
+      var oDiv = document.getElementById("float"),
+        H = 0,
+        Y = oDiv
+      while (Y) { H += Y.offsetTop; Y = Y.offsetParent }
+      window.onscroll = function () {
+        var s = document.body.scrollTop || document.documentElement.scrollTop
+        if (s > H) {
+          oDiv.style = "position:fixed;top:0;left:0;right:0;margin:0 auto;width:100%;z-index:99;max-width:15rem;"
+        } else {
+          oDiv.style = "position:relative"
+        }
+      }
+    }
+  </script>
 </body>
+
 </html>
-<script src="js/vue.min.js"></script>
-<script src="js/jquery.min.js"></script>
-<script src="js/template-web.js"></script>
-<script src="js/layer_mobile/layer.js"></script>
