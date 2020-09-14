@@ -38,22 +38,21 @@ function AppConf() {
      * @param secret
      */
     const c = function (props, timestamp, secret) {
+        // debugger
         secret = secret || '';
         let propStr = '';
         if (props) {
-            propStr = Object.keys(props).sort().reduce((pre, cur) => {
-                let value = props[cur];
+            propStr = Object.keys(props).sort(function (a, b) { return a.toLowerCase() > b.toLowerCase() ? 1 : -1; }).reduce((body, key) => {
+                let value = props[key];
                 value = value === null || value === undefined ? '' : value;
-                if (value instanceof Array) {
-                    return pre;
-                } else if (value instanceof Object) {
-                    return pre;
+                if (value instanceof Array || value instanceof Object) {
+                    return `${body}${key}`;
                 }
-
-                return `${pre}${cur}${value}`;
+                return `${body}${key}${value}`;
             }, '');
         }
         const content = `${propStr}${timestamp}${secret}`;
+        // console.log(content)
         var ret = md5(content);
         return ret;
     }

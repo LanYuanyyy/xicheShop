@@ -1,64 +1,148 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
+
 <head>
   <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-  <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" name="viewport" id="viewport"/>
+  <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no"
+    name="viewport" id="viewport" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="format-detection" content="telephone=no,email=no,adress=no">
   <title>洗车商城</title>
-  <link rel="stylesheet" href="css/style.css" type="text/css"/>
+  <script src="js/vue.min.js"></script>
+  <link rel="stylesheet" href="css/style.css" type="text/css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vant@1.6/lib/index.css">
+  <script src="https://cdn.jsdelivr.net/npm/vant@1.6/lib/vant.min.js"></script>
+  <script src="js/jquery.min.js"></script>
 </head>
+
 <body>
-<div class="body-container">
-  <div class="navs fixed">
-    <ul class="shop-navs flex">
-      <li class="active"><a href="">待开奖</a></li>
-      <li><a href="">已开奖</a></li>
-    </ul>
-  </div>
-  <div class="topline"></div>
-  <div class="business-list marg">
-    <div class="bus-top">
-      <a href="my_activity_xq.html">
-        <img src="images/active.png">
-        <div class="txt">
-          <h1 class="eps">十返一活动</h1>
-          <p class="reword none">预计下周一 18:08:08 开奖</p>
+  <div class="body-container" id="app">
+    <div class="navs fixed">
+      <ul class="shop-navs flex">
+        <li :class="{active:isactive}" @click='daikaijiang'><a>待开奖</a></li>
+        <li :class="{active:isactives}" @click='kaijiang'><a>已开奖</a></li>
+      </ul>
+    </div>
+    <div class="topline"></div>
+    <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad" :immediate-check='false'>
+      <div class="business-list marg" v-for='item in newsList' :key="item.id" @click='details(item.id)'>
+        <div class="bus-top">
+          <a>
+            <img :src="item.image">
+            <div class="txt">
+              <h1 class="eps">{{item.name}}</h1>
+              <p class="reword none" v-if='state == 0'>{{item.subtitle}}</p>
+              <p class="reword already" v-if='state == 1'>{{item.subtitle}}</p>
+              <p class="if" v-if='item.iswin == 0'>未中奖</p>
+              <p class="if" v-if='item.iswin == 1'>中奖：<span>￥{{item.win_money}}</span></p>
+            </div>
+          </a>
         </div>
-      </a>
+      </div>
+    </van-list>
+    <!--已开奖未中奖-->
+    <div class="business-list marg">
+      <div class="bus-top">
+        <a href="my_activity_xq.html">
+          <img src="images/active.png">
+          <div class="txt">
+            <h1 class="eps">十返一活动</h1>
+            <p class="reword already">2020-06-01 已开奖</p>
+            <p class="if">未中奖</p>
+          </div>
+        </a>
+      </div>
+    </div>
+    <!--已开奖中奖-->
+    <div class="business-list marg">
+      <div class="bus-top">
+        <a href="my_activity_xq.html">
+          <img src="images/active.png">
+          <div class="txt">
+            <h1 class="eps">十返一活动</h1>
+            <p class="reword already">2020-06-01 已开奖</p>
+            <p class="if">中奖：<span>￥300</span></p>
+          </div>
+        </a>
+      </div>
     </div>
   </div>
-  <!--已开奖未中奖-->
-  <div class="business-list marg">
-    <div class="bus-top">
-      <a href="my_activity_xq.html">
-        <img src="images/active.png">
-        <div class="txt">
-          <h1 class="eps">十返一活动</h1>
-          <p class="reword already">2020-06-01 已开奖</p>
-          <p class="if">未中奖</p>
-        </div>
-      </a>
-    </div>
   </div>
-  <!--已开奖中奖-->
-  <div class="business-list marg">
-    <div class="bus-top">
-      <a href="my_activity_xq.html">
-        <img src="images/active.png">
-        <div class="txt">
-          <h1 class="eps">十返一活动</h1>
-          <p class="reword already">2020-06-01 已开奖</p>
-          <p class="if">中奖：<span>￥300</span></p>
-        </div>
-      </a>
-    </div>
-  </div>
-</div>
-</div>
 </body>
+
 </html>
-<script src="js/vue.min.js"></script>
-<script src="js/jquery.min.js"></script>
 <script src="js/template-web.js"></script>
-<script src="js/layer_mobile/layer.js"></script>
+<script src="js/common.js"></script>
+<script src="js/md5.js"></script>
+<script src="js/ran.util.js"></script>
+<script src="js/app.js"></script>
+<script src="js/axios.js"></script>
+<script src="js/axios.conf.js"></script>
+<script>
+  new Vue({
+    el: '#app',
+    data: {
+      uid: '',
+      page: 0,
+      state: 0,
+      newsList: [],
+      loading: false,
+      finished: false,
+      isLogin: false,
+      isactive: true,
+      isactives: false
+    },
+    created() {
+      this.uid = getItem('uid')
+      console.log(this.uid)
+      this.onLoad()
+    },
+    methods: {
+      async getMypartactivity() {
+        const res = await axios.get('/app/activity/mypartactivity', {
+          params: {
+            uid: this.uid,
+            pageindex: this.page,
+            state: this.state
+          }
+        })
+        const { data, code } = res.data
+        console.log(data)
+        let list = data
+        this.loading = false;
+        if (list.length == 0) {
+          console.log("到底了");
+          this.finished = true;
+        }
+        this.newsList = this.newsList.concat(list)
+      },
+      onLoad() {
+        this.page++;
+        this.loading = true;
+        this.getMypartactivity();
+      },
+      details(id) {
+        console.log(id)
+        // href = "my_activity_xq.html"
+        location.href = `my_activity_xq.html?id=${id}`
+      },
+      daikaijiang() {
+        this.isactive = true
+        this.isactives = false
+        this.state = 0
+        this.page = 1
+        this.newsList = []
+        this.getMypartactivity()
+      },
+      kaijiang() {
+        this.isactives = true
+        this.isactive = false
+        this.state = 1
+        this.page = 1
+        this.newsList = []
+        this.getMypartactivity()
+      }
+    },
+  })
+</script>

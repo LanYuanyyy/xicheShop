@@ -1,112 +1,155 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
+
 <head>
   <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-  <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" name="viewport" id="viewport"/>
+  <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no"
+    name="viewport" id="viewport" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="format-detection" content="telephone=no,email=no,adress=no">
   <title>洗车商城</title>
-  <link rel="stylesheet" href="css/style.css" type="text/css"/>
+  <script src="js/vue.min.js"></script>
+  <link rel="stylesheet" href="css/style.css" type="text/css" />
+  <script src="http://res.wx.qq.com/open/js/jweixin-1.6.0.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vant@1.6/lib/index.css">
+  <script src="https://cdn.jsdelivr.net/npm/vant@1.6/lib/vant.min.js"></script>
+  <script src="js/jquery.min.js"></script>
+  <style>
+    .van-popup {
+      background-color: rgba(0, 0, 0, 0);
+    }
+  </style>
 </head>
+
 <body>
-<div class="body-container">
-  <div class="order-status">
-    <div class="flex">
-      <h1>待付款</h1>
-      <p>剩余时间   01:00:22</p>
+  <div class="body-container" id="app">
+    <div class="order-status">
+      <div class="flex">
+        <h1>待付款</h1>
+        <p>剩余时间 01:00:22</p>
+      </div>
     </div>
-  </div>
-  <div class="business-list margtfu">
-    <div class="order-top">
-      <h1 class="fl eps name">畅途养护·淮海西路店</h1>
-    </div>
-    <div class="bus-top">
-      <a href="order_xq.html">
-        <img src="images/shop.png" class="small">
-        <div class="txt">
-          <h2 class="eps">微镀晶洗车</h2>
-          <p class="num">× 1</p>
-          <p class="price">￥79.00</p>
+    <div class="business-list margtfu">
+      <div class="order-top">
+        <h1 class="fl eps name">畅途养护·淮海西路店</h1>
+      </div>
+      <div class="bus-top">
+        <a href="order_xq.html">
+          <img src="images/shop.png" class="small">
+          <div class="txt">
+            <h2 class="eps">微镀晶洗车</h2>
+            <p class="num">× 1</p>
+            <p class="price">￥79.00</p>
+          </div>
+        </a>
+      </div>
+      <div class="coupon-code">
+        <h2 class="qmxx">券码信息</h2>
+        <div class="cell">
+          <p class="fl"><em>·</em> 2762 7729 6703</p>
+          <a href="" class="fr return">退款</a>
         </div>
-      </a>
-    </div>
-    <div class="coupon-code">
-      <h2 class="qmxx">券码信息</h2>
-      <div class="cell">
-        <p class="fl"><em>·</em> 2762 7729 6703</p>
-        <a href="" class="fr return">退款</a>
-      </div>
-      <div class="cell">
-        <del class="fl"><em>·</em> 2762 7729 6703</del>
-        <a href="" class="fr used">已使用</a>
-      </div>
-    </div>
-  </div>
-  <ul class="sumbit-box">
-    <li>
-      <p class="fl">手机号</p>
-      <p class="fr">18896967575</p>
-    </li>
-    <li>
-      <p class="fl">备注</p>
-      <p class="fr">无</p>
-    </li>
-  </ul>
-  <ul class="sumbit-box">
-    <li>
-      <p class="fl">订单编号</p>
-      <p class="fr">1116223212356</p>
-    </li>
-    <li>
-      <p class="fl">下单时间</p>
-      <p class="fr">2020-03-30  21:30:12</p>
-    </li>
-  </ul>
-  <ul class="sumbit-box">
-    <li>
-      <p class="fl">商品总额</p>
-      <p class="fr">￥79.00</p>
-    </li>
-    <li>
-      <p class="fl">优惠券</p>
-      <p class="fr price">-￥20.00</p>
-    </li>
-  </ul>
-  <ul class="sumbit-box">
-    <li>
-      <p class="fl">必净币抵用</p>
-      <p class="fr price">-￥2.09</p>
-    </li>
-  </ul>
-  <ul class="sumbit-box">
-    <li>
-      <p class="fl">实付款</p>
-      <p class="fr price">￥59.00</p>
-    </li>
-  </ul>
-  <ul class="sumbit-box">
-    <li>
-      <p class="fl">详细说明</p>
-      <p class="fr">详细说明详细说明详细说明</p>
-      <div class="clear img-info">
-        <p>临时有事，用不上了，以后再来~</p>
-        <div class="flex-album">
-          <div class="pic"><img src="images/shop.png"></div>
-          <div class="pic"><img src="images/shop.png"></div>
-          <div class="pic"><img src="images/shop.png"></div>
+        <div class="cell">
+          <del class="fl"><em>·</em> 2762 7729 6703</del>
+          <a href="" class="fr used">已使用</a>
         </div>
       </div>
-    </li>
-  </ul>
-  <nav class="nav_list">
-    <a href="pay.html" class="buy rads">去支付</a>
-    <a href="" class="cancel">取消订单</a>
-  </nav>
-  <div class="footline"></div>
-</div>
+    </div>
+    <ul class="sumbit-box">
+      <li>
+        <p class="fl">手机号</p>
+        <p class="fr">18896967575</p>
+      </li>
+      <li>
+        <p class="fl">备注</p>
+        <p class="fr">无</p>
+      </li>
+    </ul>
+    <ul class="sumbit-box">
+      <li>
+        <p class="fl">订单编号</p>
+        <p class="fr">1116223212356</p>
+      </li>
+      <li>
+        <p class="fl">下单时间</p>
+        <p class="fr">2020-03-30 21:30:12</p>
+      </li>
+    </ul>
+    <ul class="sumbit-box">
+      <li>
+        <p class="fl">商品总额</p>
+        <p class="fr">￥79.00</p>
+      </li>
+      <li>
+        <p class="fl">优惠券</p>
+        <p class="fr price">-￥20.00</p>
+      </li>
+    </ul>
+    <ul class="sumbit-box">
+      <li>
+        <p class="fl">必净币抵用</p>
+        <p class="fr price">-￥2.09</p>
+      </li>
+    </ul>
+    <ul class="sumbit-box">
+      <li>
+        <p class="fl">实付款</p>
+        <p class="fr price">￥59.00</p>
+      </li>
+    </ul>
+    <ul class="sumbit-box">
+      <li>
+        <p class="fl">详细说明</p>
+        <p class="fr">详细说明详细说明详细说明</p>
+        <div class="clear img-info">
+          <p>临时有事，用不上了，以后再来~</p>
+          <div class="flex-album">
+            <div class="pic"><img src="images/shop.png"></div>
+            <div class="pic"><img src="images/shop.png"></div>
+            <div class="pic"><img src="images/shop.png"></div>
+          </div>
+        </div>
+      </li>
+    </ul>
+    <nav class="nav_list">
+      <a href="pay.html" class="buy rads">去支付</a>
+      <a href="" class="cancel">取消订单</a>
+      <a href="" class="cancel">申请退款</a>
+    </nav>
+    <div class="footline"></div>
+  </div>
 </body>
+
 </html>
-<script src="js/vue.min.js"></script>
-<script src="js/jquery.min.js"></script>
-<script src="js/template-web.js"></script>
-<script src="js/layer_mobile/layer.js"></script>
+<script src="js/common.js"></script>
+<script src="js/md5.js"></script>
+<script src="js/ran.util.js"></script>
+<script src="js/app.js"></script>
+<script src="js/axios.js"></script>
+<script src="js/axios.conf.js"></script>
+<script>
+  new Vue({
+    el: '#app',
+    data: {
+      uid: '',
+      oid: ''
+    },
+    created() {
+      this.uid = getItem('uid')
+      this.oid = getQueryValue('oid')
+      this.getOrderinfo()
+    },
+    methods: {
+      async getOrderinfo() {
+        const res = await axios.get('/app/order/orderinfo', {
+          params: {
+            uid: this.uid,
+            oid: this.oid
+          }
+        })
+        console.log(res)
+      }
+    },
+  })
+</script>

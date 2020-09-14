@@ -178,6 +178,7 @@
       serverorder: '',         //  服务订单
       secondhandstore: '',     //  是否开通二手店铺
       serverstore: '',         // 是否开通服务类店铺
+      objectstore: '',
       isshow: false
     },
     created() {
@@ -198,6 +199,7 @@
         this.serverorder = data.serverorder
         this.secondhandstore = data.secondhandstore
         this.serverstore = data.serverstore
+        this.objectstore = data.objectstore
         console.log('个人信息', this.userInfo)
         console.log('是否开通二手店铺，我的店铺', this.secondhandstore)
         console.log('商品订单', this.objectorder)
@@ -230,7 +232,12 @@
         location.href = `my_bijingbi.html?bjb=${bj}`
       },
       ApplyForResidence() {
-        location.href = `my_ruzhu.html?serverstore=${this.serverstore}`
+        console.log(this.serverstore instanceof Object)
+        if (this.serverstore instanceof Object || this.objectstore instanceof Object) {
+          location.href = `my_ruzhu.html?serverstore=${this.serverstore.state}&remark=${this.serverstore.remark}&objectstore=${this.objectstore.state}&objectremark=${this.objectstore.remark}`
+        } else {
+          location.href = `my_ruzhu.html?serverstore=${this.serverstore}&objectstore=${this.objectstore}`
+        }
       }
     },
   })

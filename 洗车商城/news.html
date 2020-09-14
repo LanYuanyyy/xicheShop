@@ -25,7 +25,17 @@
   <div class="body-container" id="app">
     <div class="message-box">
       <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad" :immediate-check='false'>
-        <div class="bg_box">
+        <div class="bg_box" v-for='item in newsList'>
+          <p class="time">{{item.addtime}}</p>
+          <ul>
+            <h2 class="title">{{item.title}}</h2>
+            <li>
+              <img :src="item.image" class="fl">
+              <h3 class="fl">{{item.remark}}</h3>
+            </li>
+          </ul>
+        </div>
+        <!-- <div class="bg_box">
           <p class="time">星期六 12:39</p>
           <ul>
             <h2 class="title">您的订单已完成</h2>
@@ -34,17 +44,7 @@
               <h3 class="fl">您在长途养车·淮海西路店，购买的“微镀晶洗车”服务，已于2020-05-20 13:14 使用，本次服务已完成，期待您的评</h3>
             </li>
           </ul>
-        </div>
-        <div class="bg_box">
-          <p class="time">星期六 12:39</p>
-          <ul>
-            <h2 class="title">您的订单已完成</h2>
-            <li>
-              <img src="images/pro2.png" class="fl">
-              <h3 class="fl">您在长途养车·淮海西路店，购买的“微镀晶洗车”服务，已于2020-05-20 13:14 使用，本次服务已完成，期待您的评</h3>
-            </li>
-          </ul>
-        </div>
+        </div> -->
       </van-list>
       <!-- <ul>
         <h2 class="title">您的订单已完成</h2>
@@ -95,14 +95,13 @@
     created() {
       this.uid = getItem('uid')
       console.log(this.uid)
-      // this.getNewList()
-      this.onLoad();
+      this.getNewList()
     },
     methods: {
-
       async getNewList() {
         const res = await axios.get('/app/user/newslist', { params: { uid: this.uid, pageindex: this.page } })
         const { data, code } = res.data
+        console.log(data)
         let list = data
         this.loading = false;
         if (list.length == 0) {

@@ -1,74 +1,196 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
+
 <head>
   <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-  <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" name="viewport" id="viewport"/>
+  <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no"
+    name="viewport" id="viewport" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="format-detection" content="telephone=no,email=no,adress=no">
   <title>洗车商城</title>
-  <link rel="stylesheet" href="css/style.css" type="text/css"/>
-  <link rel="stylesheet" href="css/swiper.min.css" type="text/css"/>
-
+  <link rel="stylesheet" href="css/swiper.min.css" type="text/css" />
+  <script src="js/vue.min.js"></script>
+  <link rel="stylesheet" href="css/style.css" type="text/css" />
+  <script src="http://res.wx.qq.com/open/js/jweixin-1.6.0.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vant@1.6/lib/index.css">
+  <script src="https://cdn.jsdelivr.net/npm/vant@1.6/lib/vant.min.js"></script>
+  <script src="js/jquery.min.js"></script>
+  <style>
+    .van-popup {
+      background-color: rgba(0, 0, 0, 0);
+    }
+  </style>
 </head>
+
 <body>
-<div class="body-container">
-  <div class="refund-box">
-    <p class="refd-tit">退款原因<em>*</em></p>
-    <input type="text" class="text select" placeholder="请选择" readonly="readonly">
-    <p class="refd-tit">退款金额<em>*</em><span>（不可修改）</span></p>
-    <input type="text" class="text" value="56.8" readonly="readonly">
-    <p class="refd-tit">退款说明<span>（可不填）</span></p>
-    <div class="rfd_descrip">
-      <textarea rows="5" placeholder="选填" class="fl"></textarea>
-      <p class="fr nums">200字以内</p>
-      <div class="upload_pic">
-        <ul>
-          <li><img src="images/shop.png"><a class="close"></a></li>
-          <li><img src="images/upload.png"><input type="file" class="file"></li>
-        </ul>
+  <div class="body-container" id="app">
+    <div class="refund-box">
+      <p class="refd-tit">退款原因<em>*</em></p>
+      <input type="text" class="text select" placeholder="请选择" v-model='name' readonly="readonly" @click='reason'>
+      <p class="refd-tit">退款金额<em>*</em><span>（不可修改）</span></p>
+      <input type="text" class="text" v-model='money' readonly="readonly">
+      <p class="refd-tit">退款说明<span>（可不填）</span></p>
+      <div class="rfd_descrip">
+        <textarea rows="5" placeholder="选填" v-model='returnmessage' class="fl"></textarea>
+        <p class="fr nums">200字以内</p>
+        <div class="upload_pic">
+          <ul>
+            <li v-for='(item,index) in imageList'><img :src="item"><a class="close" @click='deleImg(index)'></a></li>
+            <li><img src="images/upload.png">
+              <van-uploader :after-read="onReadfanOne" class="file">
+                <van-icon name="photograph" />
+              </van-uploader>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
+    <div class="select_box"></div>
+    <div class="submitbtn fixed">
+      <button class="loginsubmit" @click='applyreturn'>提交申请</button>
+    </div>
+    <div class="btnline"></div>
+    <van-actionsheet v-model="show">
+      <van-picker show-toolbar title="标题" :columns="columns" @confirm="onConfirm" />
+    </van-actionsheet>
   </div>
-  <div class="select_box"></div>
-  <div class="submitbtn fixed">
-    <button class="loginsubmit">提交申请</button>
-  </div>
-  <div class="btnline"></div>
-</div>
 </body>
-</html>
-<script src="js/vue.min.js"></script>
-<script src="js/jquery.min.js"></script>
-<script src="js/template-web.js"></script>
-<script src="js/layer_mobile/layer.js"></script>
-<script src="js/swiper-select.min.js"></script>
-<script src="js/dyselect.js"></script>
 
+</html>
+<script src="js/common.js"></script>
+<script src="js/md5.js"></script>
+<script src="js/ran.util.js"></script>
+<script src="js/app.js"></script>
+<script src="js/axios.js"></script>
+<script src="js/axios.conf.js"></script>
 <script>
-  $(function() {
+  new Vue({
+    el: '#app',
+    data: {
+      uid: '',
+      show: false,
+      columns: [],
+      ReasonList: [],
+      reasonid: '',
+      money: '',
+      oid: '',
+      sid: '',
+      name: '',
+      returnmessage: '',
+      imageList: []
+    },
+    created() {
+      this.uid = getItem('uid')
+      this.oid = getQueryValue('oid')
+      this.sid = getQueryValue('sid')
+      this.getReason()
+      this.getApplyreturnmoney()
+    },
+    methods: {
+      async applyreturn() {
+        const res = await axios.post('app/returnorder/applyreturn', {
+          uid: this.uid,
+          oid: this.oid,
+          sid: this.sid,
+          reasonid: this.reasonid + '',
+          type: '1',
+          returnmessage: this.returnmessage,
+          imageList: this.imageList.join('|'),
+          backmoney: this.money + ''
+        })
+        const { data, code } = res.data
+        if (code == 200) {
+          this.$dialog.alert({
+            title: '标题',
+            message: '退款申请提交成功'
+          }).then(() => {
+            // on close
+            location.href = 'order.html'
+          });
+        }
+      },
+      reason() {
+        this.show = true
+      },
+      onConfirm(value) {
+        this.name = value
+        let newArr = JSON.parse(JSON.stringify(this.ReasonList))
+        let arr = newArr.filter(v => v.name == value)
+        this.reasonid = arr[0].id
+        this.show = false
+      },
+      async getReason() {
+        const res = await axios.get(`/app/returnorder/reason/1`)
+        const { data, code } = res.data
+        this.ReasonList = data
+        console.log(this.ReasonList)
+        this.ReasonList.forEach(i => this.columns.push(i.name))
+      },
+      async getApplyreturnmoney() {
+        const res = await axios.get('app/returnorder/applyreturnmoney', {
+          params: {
+            oid: this.oid,
+            uid: this.uid,
+            sid: this.sid,
+          }
+        })
+        const { data, code } = res.data
+        this.money = +data
+        console.log(this.money)
+      },
+      onReadfanOne(file) {
+        console.log(file)
+        this.uploadImage(file)
+      },
+      uploadImage(file) {
+        this.isshow = true
+        let params = new FormData()
+        params.append('file', file.file)
+        axios.post(
+          '/app/upload/image',
+          params,
+          { headers: { 'Content-Type': 'multipart/form-data' } }).then((res) => {
+            this.isshow = false
+            console.log(res.data.data.url)
+            this.imageList.push(res.data.data.url)
+          })
+      },
+      deleImg(index) {
+        this.imageList.splice(index, 1)
+      }
+    },
+  })
+</script>
+
+
+<!-- <script src="js/swiper-select.min.js"></script> -->
+<!-- <script src="js/dyselect.js"></script> -->
+<!-- <script>
+  $(function () {
     var hgS1 = new selectSwiper({
       el: '.select_box',
       data: ['原因1', '原因2', '原因3'],
-      init: function(index) {
+      init: function (index) {
         if (index !== -1) {
           $('.select').val(this.data[index]);
         }
       },
-      okFunUndefind: function() {
+      okFunUndefind: function () {
         alert('必须选择一项');
         return false;
       },
-      okFun: function(index) {
+      okFun: function (index) {
         console.log(index);
         $('.select').val(this.data[index]);
       },
-      closeFun: function() {
+      closeFun: function () {
         console.log('取消');
       },
     });
     $('.select').on('click',
-      function() {
+      function () {
         hgS1.openSelectSwiper();
       });
   })
-</script>
+</script> -->

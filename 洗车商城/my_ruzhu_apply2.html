@@ -29,6 +29,10 @@
       left: 43%;
       transform: translate(-50%, -50%);
     }
+
+    .van-popup {
+      background-color: rgba(0, 0, 0, 0);
+    }
   </style>
 </head>
 
@@ -46,18 +50,13 @@
         </li>
       </ul>
       <ul>
-        <li @click='SelectType'>
-          <p class="tit">商家类型</p>
-          <input type="text" v-model='typeNameAll' class="text left choice" placeholder="请选择" readonly="readonly"
-            id="select1">
-        </li>
         <li>
           <p class="tit">商家名称</p>
           <input type="text" class="text left" placeholder="请输入" v-model='storename'>
         </li>
         <li @click='isShowAddress'>
           <p class="tit">所在地区</p>
-          <input type="text" placeholder="请选择" v-model='addressName' class="text left choice" readonly="readonly"
+          <input type="text" placeholder="请选择" v-model='ProvinceAndCity' class="text left choice" readonly="readonly"
             id="myAddrs">
         </li>
         <li>
@@ -127,17 +126,11 @@
     <div class="btnline"></div>
     <div class="select_box select_box1"></div>
     <van-actionsheet v-model="show">
-      <van-picker :columns="cityidList" title="选择城市" @cancel="onCancel" @confirm="onConfirm" show-toolbar />
+      <van-area :area-list="areaList" @confirm='onAddrConfirm' @cancel='cancelAddres' />
     </van-actionsheet>
-    <van-actionsheet v-model="isshow">
-      <van-picker :columns="areaList" title="选择区域" @cancel="onCancel" @confirm="onConfirmAdd" show-toolbar />
-    </van-actionsheet>
-    <van-actionsheet v-model="business">
-      <van-picker :columns="Businesslist" title="选择商家类型" @cancel="onCancel" @confirm="onConfirmType" show-toolbar />
-    </van-actionsheet>
-    <van-actionsheet v-model="businessTow">
-      <van-picker :columns="towBusiList" title="选择商家类型" @cancel="onCancel" @confirm="ConfirmTypeTow" show-toolbar />
-    </van-actionsheet>
+    <van-popup v-model="isshow">
+      <van-loading />
+    </van-popup>
   </div>
 </body>
 
@@ -149,11 +142,14 @@
 <script src="js/app.js"></script>
 <script src="js/axios.js"></script>
 <script src="js/axios.conf.js"></script>
+<script src="js/Address.js"></script>
+
 
 <script>
   new Vue({
     el: '#app',
     data: {
+      areaList: areaList,
       uid: '',                          // 会员id
       name: '',                         // 姓名
       mobile: '',                       // 手机号
@@ -162,6 +158,7 @@
       storename: '',                    // 商家名称
       cityid: '',                       // 城市id
       areaid: '',                       // 区域id
+      provinceid: '',                   // 省份id
       addressinfo: '',                  // 详细地址
       IDCardImagePositive: '',          // 身份证正面
       IDCardImageBack: '',              // 身份证反面
@@ -169,57 +166,40 @@
       StoreImageList: [],               // 门店照片多张
       city: '',                         // 城市名
       area: '',                         // 区域名
-      longitude: '',                    // 经度
-      latitude: '',                     // 纬度
-      show: false,
-      isshow: false,
-      allCityid: [],                    // 用于存储所有可选城市
-      cityidList: [],                   // 可选的城市 用于展示
-      areaList: [],                     // 可选的城市下的区域 用于展示
-      allArealist: [],                  // 用于存储区域
-      addressName: '',                  // 用于显示在input上
-      business: false,                  // 显示选择商家
-      oneBusiness: [],                  // 商家的一级分类 用于存储
-      Businesslist: [],                 // 商家的一级分类 用于展示
-      typeNameOne: '',                  // 商家类型名称 一级
-      towBusiness: [],                  // 商家二级分类 用于存储
-      towBusiList: [],                  // 商家二级分类 用于展示
-      businessTow: false,
-      typeNameTow: '',                  // 商家类型名称 二级
-      typeNameAll: '',                  // 商家名称 用于显示在input上
+      province: '',                     // 省份名称
       sign: '',
+      show: false,
+      ProvinceAndCity: '',
+      isshow: false
     },
     created() {
       this.uid = getItem('uid')
       this.sign = getQueryValue('sign')
-      this.getOpencityarea()
-      this.getAlltype()
       if (this.sign == 1) {
-        this.getServerstore()
+        this.getObjectstore()
       }
     },
     methods: {
       // 在次编辑
-      async getServerstore() {
-        const res = await axios.get('/app/apply/serverstore', { params: { uid: this.uid } })
+      async getObjectstore() {
+        this.isshow = true
+        const res = await axios.get('/app/apply/objectstore', { params: { uid: this.uid } })
         const { data, code } = res.data
         console.log(data)
         this.addressinfo = data.addressinfo
-        this.addressName = data.city + ' ' + data.area
+        this.ProvinceAndCity = data.province + ' ' + data.city + ' ' + data.area
         this.city = data.city
         this.area = data.area
         this.name = data.name
         this.areaid = data.areaid
         this.cityid = data.cityid
-        this.onetype = data.onetype
-        this.twotype = data.twotype
-        this.typeNameAll = data.typename
         this.storename = data.storename
         this.mobile = data.mobile
         this.BusinessLicense = data.businesslicense
         this.IDCardImageBack = data.imageback
         this.IDCardImagePositive = data.imagepositive
         this.StoreImageList = data.storeimage
+        this.isshow = false
       },
       // 提交
       apply() {
@@ -229,10 +209,6 @@
         }
         if (!this.mobile) {
           this.$toast('请输入手机号');
-          return
-        }
-        if (!this.twotype) {
-          this.$toast('请选择商家类型');
           return
         }
         if (!this.storename) {
@@ -266,15 +242,15 @@
         this.Submitapplication()
       },
       async Submitapplication() {
-        const res = await axios.post('/app/apply/openserverstore', {
+        const res = await axios.post('/app/apply/openobjectstore', {
           uid: this.uid,
           name: this.name,
           mobile: this.mobile,
-          onetype: this.onetype,
-          twotype: this.twotype,
           storename: this.storename,
           cityid: this.cityid,
           areaid: this.areaid,
+          province: this.province,
+          provinceid: this.provinceid,
           addressinfo: this.addressinfo,
           IDCardImagePositive: this.IDCardImagePositive,
           IDCardImageBack: this.IDCardImageBack,
@@ -314,14 +290,16 @@
         // console.log(this.StoreImageList)
       },
       uploadImage(file, isImg) {
+        this.isshow = true
         let params = new FormData()
         params.append('file', file.file)
         axios.post(
           '/app/upload/image',
           params,
           { headers: { 'Content-Type': 'multipart/form-data' } }).then((res) => {
+            this.isshow = false
             console.log(res)
-            if (isImg === 1) {          // 身份反面
+            if (isImg === 1) {            // 身份反面
               this.$refs.upload1.src = res.data.data.url
               this.IDCardImageBack = res.data.data.url
               console.log(this.IDCardImageBack)
@@ -329,7 +307,7 @@
               this.$refs.upload2.src = res.data.data.url
               this.IDCardImagePositive = res.data.data.url
               console.log(this.IDCardImagePositive)
-            } else if (isImg === 3) {    // 营业执照
+            } else if (isImg === 3) {     // 营业执照
               this.$refs.upload3.src = res.data.data.url
               this.BusinessLicense = res.data.data.url
               console.log(this.BusinessLicense)
@@ -339,85 +317,41 @@
             }
           })
       },
-      // 获取城市信息
-      async getOpencityarea() {
-        const res = await axios.get('/app/cities/opencityarea')
-        const { data, code } = res.data
-        this.allCityid = data
-        data.forEach(item => {
-          this.cityidList.push(item.name)
-        })
-      },
-      // 获取商家分类
-      async getAlltype() {
-        const res = await axios.get('/app/main/alltype')
-        const { data, code } = res.data
-        console.log(data)
-        this.oneBusiness = data
-        data.forEach(item => this.Businesslist.push(item.name))
-      },
-      SelectType() {
-        this.business = true
-      },
-      // 选择商家类型 一级
-      onConfirmType(value) {
-        console.log(value)
-        let newType = []
-        this.towBusiList = []
-        let All = JSON.parse(JSON.stringify(this.oneBusiness))
-        newType = All.filter(item => item.name == value)
-        this.onetype = newType[0].id            // 商家类型id一级
-        this.typeNameOne = newType[0].name      // 商家名称一级
-        this.towBusiness = newType[0].children  // 此分类下的字类
-        this.towBusiness.forEach(val => this.towBusiList.push(val.name))
-        this.business = false
-        this.businessTow = true
-        console.log(newType)
-        console.log(this.towBusiList)
-      },
-      ConfirmTypeTow(value) {
-        console.log(value)
-        let newTypeTow = []
-        newTypeTow = this.towBusiness.filter(item => item.name == value)
-        console.log(newTypeTow)
-        this.twotype = newTypeTow[0].id       // 商家类型id二级
-        this.typeNameTow = newTypeTow[0].name // 商家名称 二级
-        this.typeNameAll = this.typeNameOne + ' ' + this.typeNameTow
-        this.businessTow = false
-      },
-      // 选择省市区
       isShowAddress() {
         this.show = true
       },
-      // 确认选择
-      onConfirm(value, index) {                 // 城市
-        let newCity = []
-        this.areaList = []
-        let All = JSON.parse(JSON.stringify(this.allCityid))
-        newCity = All.filter(item => item.name == value)
-        this.cityid = newCity[0].id             // 选中的城市id
-        this.city = value                       // 选中的城市名称
-        this.allArealist = newCity[0].children  // 选中该城市下所有的区域
-        this.allArealist.forEach(val => {       // 用于展示
-          this.areaList.push(val.name)
+      onAddrConfirm(e) {
+        let newArr = new Array
+        let idArr = new Array
+        let filteArr = new Array
+        this.ProvinceAndCity = [],
+          e.forEach(element => {
+            this.ProvinceAndCity.push(element.name)
+            idArr.push(element.code)
+          })
+        this.ProvinceAndCity.forEach(item => {
+          if (newArr.indexOf(item) === -1) {
+            newArr.push(item)
+          }
         })
+        this.provinceid = idArr[0]
+        this.cityid = idArr[1]
+        this.areaid = idArr[2]
+        if (newArr.length == 2) {
+          this.city = newArr[0]
+          this.area = newArr[1]
+        }
+        if (newArr.length === 3) {
+          this.province = newArr[0]
+          this.city = newArr[1]
+          this.area = newArr[2]
+        }
+        this.ProvinceAndCity = newArr.join(' ')
+        console.log(this.ProvinceAndCity)
         this.show = false
-        this.isshow = true
       },
-      onConfirmAdd(value) {
-        let newArea = []
-        newArea = this.allArealist.filter(item => item.name == value)
-        this.areaid = newArea[0].id
-        this.area = newArea[0].name
-        this.addressName = this.city + ' ' + this.area
-        this.isshow = false
-        console.log(this.addressName)
-      },
-      onCancel() {
+      cancelAddres() {
         this.show = false
-        this.isshow = false
-        this.business = false
-        this.businessTow = false
       },
 
     },

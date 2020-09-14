@@ -1,25 +1,96 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
+
 <head>
   <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-  <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" name="viewport" id="viewport"/>
+  <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no"
+    name="viewport" id="viewport" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="format-detection" content="telephone=no,email=no,adress=no">
   <title>洗车商城</title>
-  <link rel="stylesheet" href="css/style.css"/>
+  <script src="js/vue.min.js"></script>
+  <link rel="stylesheet" href="css/style.css" type="text/css" />
+  <script src="http://res.wx.qq.com/open/js/jweixin-1.6.0.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vant@1.6/lib/index.css">
+  <script src="https://cdn.jsdelivr.net/npm/vant@1.6/lib/vant.min.js"></script>
+  <script src="js/jquery.min.js"></script>
 </head>
+
 <body>
-<div class="body-container">
-  <div class="mynav nomagin">
-    <ul>
-      <li><a href="my_ruzhu_apply.html"><img src="images/rz1.png"><p>入驻车主服务商家</p></a></li>
-      <li><a href="my_ruzhu_apply.html"><img src="images/rz2.png"><p>入驻购物商城店铺</p></a></li>
-    </ul>
+  <div class="body-container" id="app">
+    <div class="mynav nomagin">
+      <ul>
+        <li v-if='serverstore != 1' @click='fuWu'>
+          <a><img src="images/rz1.png">
+            <p>入驻车主服务商家</p>
+          </a></li>
+        <li v-if='objectstore != 1'>
+          <a @click='dianpu'><img src="images/rz2.png">
+            <p>入驻购物商城店铺</p>
+          </a></li>
+      </ul>
+    </div>
   </div>
-</div>
 </body>
+
 </html>
-<script src="js/vue.min.js"></script>
-<script src="js/jquery.min.js"></script>
 <script src="js/template-web.js"></script>
-<script src="js/layer_mobile/layer.js"></script>
+<script src="js/common.js"></script>
+<script src="js/md5.js"></script>
+<script src="js/ran.util.js"></script>
+<script src="js/app.js"></script>
+<script src="js/axios.js"></script>
+<script src="js/axios.conf.js"></script>
+<script>
+  new Vue({
+    el: '#app',
+    data: {
+      serverstore: '',     // 是否开通车主服务商家
+      remark: '',          // 车主服务被拒绝的原因
+      objectstore: '',     // 开通购物商城状态
+      objectremark: '',     // 被拒绝原因
+    },
+    created() {
+      this.serverstore = getQueryValue('serverstore')
+      this.remark = getQueryValue('remark')
+      this.objectstore = getQueryValue('objectstore')
+      this.objectremark = getQueryValue('objectremark')
+      console.log(this.objectremark)
+    },
+    methods: {
+      fuWu() {
+        if (this.serverstore == 0) {
+          console.log('正常审核')
+          this.$dialog.alert({
+            message: '正在审核请耐心等待'
+          })
+          // href = "my_ruzhu_apply.html"
+        } else if (this.serverstore == 2) {
+          this.$dialog.alert({
+            message: this.remark + '请从新编辑'
+          }).then(() => {
+            location.href = "my_ruzhu_apply.html?sign=1"
+          })
+        } else {
+          location.href = "my_ruzhu_apply.html"
+        }
+      },
+      dianpu() {
+        if (this.objectstore == 0) {
+          this.$dialog.alert({
+            message: '正在审核请耐心等待'
+          })
+        } else if (this.objectstore == 2) {
+          this.$dialog.alert({
+            message: this.objectremark + '请从新编辑'
+          }).then(() => {
+            location.href = "my_ruzhu_apply2.html?sign=1"
+          })
+        }
+
+        // href="my_ruzhu_apply2.html"
+      }
+    },
+  })
+</script>
