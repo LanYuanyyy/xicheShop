@@ -1,32 +1,101 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
+
 <head>
   <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-  <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" name="viewport" id="viewport"/>
+  <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no"
+    name="viewport" id="viewport" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="format-detection" content="telephone=no,email=no,adress=no">
   <title>洗车商城</title>
-  <link rel="stylesheet" href="css/style.css" type="text/css"/>
+  <script src="js/vue.min.js"></script>
+  <link rel="stylesheet" href="css/style.css" type="text/css" />
+  <script src="http://res.wx.qq.com/open/js/jweixin-1.6.0.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vant@1.6/lib/index.css">
+  <script src="https://cdn.jsdelivr.net/npm/vant@1.6/lib/vant.min.js"></script>
+  <script src="js/jquery.min.js"></script>
+  <style>
+    .van-popup {
+      background-color: rgba(0, 0, 0, 0);
+    }
+  </style>
 </head>
+
 <body class="white">
-<div class="body-container">
-  <div class="rfd_descrip noradius">
-    <textarea rows="7" placeholder="详细说明（200字以内）"></textarea>
-    <div class="upload_pic">
-      <ul>
-        <li><img src="images/shop.png"><a class="close"></a></li>
-        <li><img src="images/upload.png"><input type="file" class="file"></li>
-      </ul>
+  <div class="body-container" id="app">
+    <div class="rfd_descrip noradius">
+      <textarea rows="7" placeholder="详细说明（200字以内）" v-model='content'></textarea>
+      <!-- <div class="upload_pic">
+        <ul>
+          <li v-for='item in imgList'><img :src="item"><a class="close"></a></li>
+          <li><img src="images/upload.png">
+            <van-uploader :after-read="onReadfanOne" class="file">
+              <van-icon name="photograph" />
+            </van-uploader>
+          </li>
+        </ul>
+      </div> -->
     </div>
+    <div class="submitbtn fixed">
+      <button class="loginsubmit" @click='apply'>提交申请</button>
+    </div>
+    <div class="btnline"></div>
   </div>
-  <div class="submitbtn fixed">
-    <button class="loginsubmit">提交申请</button>
-  </div>
-  <div class="btnline"></div>
-</div>
 </body>
+
 </html>
-<script src="js/vue.min.js"></script>
-<script src="js/jquery.min.js"></script>
-<script src="js/template-web.js"></script>
-<script src="js/layer_mobile/layer.js"></script>
+<script src="js/common.js"></script>
+<script src="js/md5.js"></script>
+<script src="js/ran.util.js"></script>
+<script src="js/app.js"></script>
+<script src="js/axios.js"></script>
+<script src="js/axios.conf.js"></script>
+<script>
+  new Vue({
+    el: '#app',
+    data: {
+      uid: '',
+      rid: '',
+      content: '',
+      imgList: []
+    },
+    created() {
+      this.uid = getItem('uid')
+      this.rid = getQueryValue('rid')
+      console.log(this.uid)
+      console.log(this.rid)
+    },
+    methods: {
+      onReadfanOne(file) {
+        this.uploadImage(file,)
+      },
+      uploadImage(file, isImg) {
+        let params = new FormData()
+        params.append('file', file.file)
+        axios.post(
+          '/app/upload/image',
+          params,
+          { headers: { 'Content-Type': 'multipart/form-data' } }).then((res) => {
+            console.log(res.data.data.url)
+            this.imgList.push(res.data.data.url)
+          })
+      },
+      async apply() {
+        const res = await axios.patch('app/returnorder/apply', {
+          uid: this.uid,
+          rid: this.rid,
+          content: this.content
+        })
+        const { data, code } = res.data
+        if (code == 200) {
+          this.$dialog.alert({
+            message: '提交成功请等待审核'
+          }).then(() => {
+            location.href = 'my.html'
+          })
+        }
+      }
+    },
+  })
+</script>

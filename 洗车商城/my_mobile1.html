@@ -63,6 +63,7 @@
           phone: this.phone,
           type: this.type
         })
+        console.log(res)
         if (res.data.code == 200) {
           layer.open({
             content: '发送成功请注意查收',
@@ -87,6 +88,12 @@
         })
         if (res.data.code == 200) {
           location.href = `my_mobile2.html?oldphone=${this.phone}&oldcode=${this.code}`
+        } else {
+          layer.open({
+            content: res.data.message,
+            skin: 'msg',
+            time: 2
+          })
         }
       },
     }

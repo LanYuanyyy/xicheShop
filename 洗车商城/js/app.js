@@ -38,10 +38,10 @@ function AppConf() {
      * @param secret
      */
     const c = function (props, timestamp, secret) {
-        // debugger
         secret = secret || '';
         let propStr = '';
-        if (props) {
+        // debugger
+        if (props && !(props instanceof Array)) {
             propStr = Object.keys(props).sort(function (a, b) { return a.toLowerCase() > b.toLowerCase() ? 1 : -1; }).reduce((body, key) => {
                 let value = props[key];
                 value = value === null || value === undefined ? '' : value;

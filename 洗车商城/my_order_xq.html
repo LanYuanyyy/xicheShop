@@ -1,180 +1,338 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
+
 <head>
   <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-  <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" name="viewport" id="viewport"/>
+  <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no"
+    name="viewport" id="viewport" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="format-detection" content="telephone=no,email=no,adress=no">
   <title>洗车商城</title>
-  <link rel="stylesheet" href="css/style.css" type="text/css"/>
+  <script src="js/vue.min.js"></script>
+  <link rel="stylesheet" href="css/style.css" type="text/css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vant@1.6/lib/index.css">
+  <script src="https://cdn.jsdelivr.net/npm/vant@1.6/lib/vant.min.js"></script>
+  <script src="js/jquery.min.js"></script>
+  <style>
+    .van-popup {
+      background-color: rgba(0, 0, 0, 0);
+    }
+  </style>
 </head>
+
 <body>
-<div class="body-container">
-  <div class="order-box1">
-    <div class="ord-situ">
-      <h1>待付款</h1>
-      <p>将在 <strong>12小时26分钟</strong> 后自动取消</p>
-    </div>
-    <div class="choose_address">
-      <div class="address">
-        <h1>江苏省徐州市泉山区淮海西路120号颖都大厦1106</h1>
-        <p>李蜀水    188****7575</p>
+  <div class="body-container" id="app">
+    <div class="order-box1">
+      <div class="ord-situ">
+        <h1 v-if='OrderDetails.orderstatus == 1'>待付款</h1>
+        <h1 v-if='OrderDetails.orderstatus == 2'>待收货</h1>
+        <h1 v-if='OrderDetails.orderstatus == 3'>待评价</h1>
+        <h1 v-if='OrderDetails.orderstatus == 4'>已取消</h1>
+        <h1 v-if='OrderDetails.orderstatus == 5'>已评价</h1>
+        <h1 v-if='OrderDetails.orderstatus == 7'>待发货</h1>
+        <h1 v-if='OrderDetails.orderstatus == 8'>退款申请中</h1>
+        <h1 v-if='OrderDetails.orderstatus == 9'>已退款</h1>
+        <p v-if='OrderDetails.orderstatus == 1'>将在 <strong>12小时26分钟</strong> 后自动取消</p>
+      </div>
+      <div class="choose_address">
+        <div class="address">
+          <h1>{{OrderDetails.addressinfo}}</h1>
+          <p>{{OrderDetails.receiver}} {{OrderDetails.mobile}}</p>
+        </div>
       </div>
     </div>
-  </div>
-  <div class="sumbit-box">
-    <a href="" class="logistics">物流信息</a>
-  </div>
-  <div class="make_sure_order">
-    <div class="str-name">
-      <p class="eps">低价论汽车用品店</p>
+    <div class="sumbit-box">
+      <a href="my_jindu.html" class="logistics">物流信息</a>
     </div>
-    <ul>
-      <li>
-        <a href="mall_product_xq.html"><img src="images/pro2.png"></a>
-        <div class="info long">
-          <a href="mall_product_xq.html">
-            <h1 class="clamp2">斯麦欧（Simaiou）汽车头枕腰靠套装太空记忆棉车用座...</h1>
-            <p class="gg eps">规格一</p>
-          </a>
-          <div class="weight">
-            <p class="p1"><em>￥</em>237.9</p>
-            <p class="fr num">×1</p>
+    <div class="make_sure_order">
+      <div class="str-name">
+        <p class="eps">低价论汽车用品店</p>
+      </div>
+      <ul>
+        <li v-for='(item,index) in orderInfo'>
+          <a @click='goods(item.gid)'><img :src="item.goodsimage"></a>
+          <div class="info long">
+            <a @click='goods(item.gid)'>
+              <h1 class="clamp2">{{item.goodsname}}</h1>
+              <p class="gg eps">{{item.skuinfo}}</p>
+            </a>
+            <div class="weight">
+              <p class="p1"><em>￥</em>{{item.goodsprice}}</p>
+              <p class="fr num">×{{item.goodsnum}}</p>
+            </div>
           </div>
-        </div>
-        <div class="btns">
-          <a href="my_shouhou.html" class="fr loginsubmit cancel">申请退款</a>
-        </div>
+          <div class="btns">
+            <a class="fr loginsubmit cancel"
+              v-if='OrderDetails.orderstatus !== 8 && OrderDetails.orderstatus !== 9 && OrderDetails.orderstatus !== 4 && OrderDetails.orderstatus !== 5 &&  OrderDetails.ispartactivity !== 1 && index > 1'
+              @click='refund(OrderDetails.orderid,OrderDetails.sid)'>申请退款</a>
+          </div>
+        </li>
+        <!-- <li>
+          <a href="mall_product_xq.html"><img src="images/pro2.png"></a>
+          <div class="info long">
+            <a href="mall_product_xq.html">
+              <h1 class="clamp2">斯麦欧（Simaiou）汽车头枕腰靠套装太空记忆棉车用座...</h1>
+              <p class="gg eps">规格一</p>
+            </a>
+            <div class="weight">
+              <p class="p1"><em>￥</em>237.9</p>
+              <p class="fr num">×1</p>
+            </div>
+          </div>
+          <div class="btns">
+            <a href="my_shouhou.html" class="fr loginsubmit cancel">申请售后</a>
+          </div>
+        </li> -->
+      </ul>
+      <!-- <div class="order-item">
+        <ul>
+          <li>
+            <p class="fl">运费</p>
+            <p class="fr">免邮</p>
+          </li>
+          <li>
+            <p class="fl">优惠券</p>
+            <p class="fr choose">- ￥ 5.00</p>
+          </li>
+          <li>
+            <p class="fl">备注</p>
+            <input type="text" placeholder="选填" class="liuyan" readonly="value">
+          </li>
+        </ul>
+      </div> -->
+    </div>
+    <ul class="sumbit-box">
+      <li>
+        <p class="fl">订单编号</p>
+        <p class="fr">{{OrderDetails.orderno}}</p>
       </li>
       <li>
-        <a href="mall_product_xq.html"><img src="images/pro2.png"></a>
-        <div class="info long">
-          <a href="mall_product_xq.html">
-            <h1 class="clamp2">斯麦欧（Simaiou）汽车头枕腰靠套装太空记忆棉车用座...</h1>
-            <p class="gg eps">规格一</p>
-          </a>
-          <div class="weight">
-            <p class="p1"><em>￥</em>237.9</p>
-            <p class="fr num">×1</p>
-          </div>
-        </div>
-        <div class="btns">
-          <a href="my_shouhou.html" class="fr loginsubmit cancel">申请售后</a>
-        </div>
+        <p class="fl">下单时间</p>
+        <p class="fr">{{OrderDetails.createtime}}</p>
       </li>
     </ul>
-    <div class="order-item">
-      <ul>
-        <li>
-          <p class="fl">运费</p>
-          <p class="fr">免邮</p>
-        </li>
-        <li>
-          <p class="fl">优惠券</p>
-          <p class="fr choose">- ￥ 5.00</p>
-        </li>
-        <li>
-          <p class="fl">备注</p>
-          <input type="text" placeholder="选填" class="liuyan">
-        </li>
-      </ul>
-    </div>
+    <ul class="sumbit-box">
+      <li>
+        <p class="fl">商品总额</p>
+        <p class="fr">￥{{OrderDetails.finalamount}}</p>
+      </li>
+      <li>
+        <p class="fl">运费</p>
+        <p class="fr price">+￥{{OrderDetails.freight}}</p>
+      </li>
+      <li>
+        <p class="fl">优惠券</p>
+        <p class="fr price">-￥{{OrderDetails.voucherprice}}</p>
+      </li>
+    </ul>
+    <ul class="sumbit-box">
+      <li>
+        <p class="fl">必净币抵用</p>
+        <p class="fr price">-￥{{OrderDetails.ordercouponmoney}}</p>
+      </li>
+    </ul>
+    <ul class="sumbit-box">
+      <li>
+        <p class="fl">实付款</p>
+        <p class="fr price">￥{{OrderDetails.orderamount}}</p>
+      </li>
+    </ul>
+    <nav class="nav_list">
+      <a class="buy rads" v-if='OrderDetails.orderstatus == 1'
+        @click='pay(OrderDetails.orderid,OrderDetails.finalamount)'>去支付</a>
+      <a class="cancel" v-if='OrderDetails.orderstatus == 1' @click='cancelorder(OrderDetails.orderid)'>取消订单</a>
+      <!-- <a class="cancel" v-if='OrderDetails.orderstatus == 8'>取消退款</a> -->
+      <a class="cancel" v-if='OrderDetails.orderstatus == 4' @click='deleteOrder(OrderDetails.orderid)'>删除订单</a><a
+        class="cancel" v-if='OrderDetails.orderstatus == 3'
+        @click='evaluate(OrderDetails.orderid,orderInfo[0].goodsimage)'>去评价</a>
+      <a class="cancel"
+        v-if='OrderDetails.orderstatus !== 1 && OrderDetails.orderstatus !== 8 && OrderDetails.orderstatus !== 9 && OrderDetails.orderstatus !== 4 && OrderDetails.orderstatus !== 5 &&  OrderDetails.ispartactivity !== 1'
+        @click='refund(OrderDetails.orderid,OrderDetails.sid)'>申请退款</a>
+      <a href="javascript:void(0)" class="blue" v-if='OrderDetails.orderstatus == 2'
+        @click='ConfirmReceipt(OrderDetails.orderid)'>确认收货</a>
+      <a href="javascript:void(0)" class="blue" v-if='OrderDetails.orderstatus == 7'>提醒发货</a>
+    </nav>
+    <div class="footline"></div>
+    <!-- <div class="tips-pop winbox1">
+      <div class="ifjoin">
+        是否参与十返一或十返十的活动？
+      </div>
+      <div class="bottoms">
+        <a href="javascript:void(0)" id="cancel">取消</a>
+        <a href="javascript:void(0)" class="now" onclick="joinnow()">立即参加</a>
+      </div>
+    </div> -->
+    <!-- <div class="tips-pop winbox2">
+      <a class="add_cart_btn"></a>
+      <h1 class="h1">提示</h1>
+      <div class="unenough">
+        <img src="images/tip.png" alt="">
+        <p>此次金额不足，累计下次参与~</p>
+      </div>
+    </div> -->
   </div>
-  <ul class="sumbit-box">
-    <li>
-      <p class="fl">订单编号</p>
-      <p class="fr">1116223212356</p>
-    </li>
-    <li>
-      <p class="fl">下单时间</p>
-      <p class="fr">2020-03-30  21:30:12</p>
-    </li>
-  </ul>
-  <ul class="sumbit-box">
-    <li>
-      <p class="fl">商品总额</p>
-      <p class="fr">￥79.00</p>
-    </li>
-    <li>
-      <p class="fl">运费</p>
-      <p class="fr price">+￥5.00</p>
-    </li>
-    <li>
-      <p class="fl">优惠券</p>
-      <p class="fr price">-￥20.00</p>
-    </li>
-  </ul>
-  <ul class="sumbit-box">
-    <li>
-      <p class="fl">必净币抵用</p>
-      <p class="fr price">-￥2.09</p>
-    </li>
-  </ul>
-  <ul class="sumbit-box">
-    <li>
-      <p class="fl">实付款</p>
-      <p class="fr price">￥59.00</p>
-    </li>
-  </ul>
-  <nav class="nav_list">
-    <a href="pay.html" class="buy rads">去支付</a>
-    <a href="" class="cancel">取消订单</a>
-    <a href="javascript:void(0)" class="blue" onclick="confirm()">确认发货</a>
-  </nav>
-  <div class="footline"></div>
-  <div class="tips-pop winbox1">
-    <div class="ifjoin">
-      是否参与十返一或十返十的活动？
-    </div>
-    <div class="bottoms">
-      <a href="javascript:void(0)" id="cancel">取消</a>
-      <a href="javascript:void(0)" class="now" onclick="joinnow()">立即参加</a>
-    </div>
-  </div>
-  <div class="tips-pop winbox2">
-    <a class="add_cart_btn"></a>
-    <h1 class="h1">提示</h1>
-    <div class="unenough">
-      <img src="images/tip.png" alt="">
-      <p>此次金额不足，累计下次参与~</p>
-    </div>
-  </div>
-</div>
 </body>
+
 </html>
-<script src="js/vue.min.js"></script>
-<script src="js/jquery.min.js"></script>
 <script src="js/template-web.js"></script>
-<script src="js/layer_mobile/layer.js"></script>
+<script src="js/common.js"></script>
+<script src="js/md5.js"></script>
+<script src="js/ran.util.js"></script>
+<script src="js/app.js"></script>
+<script src="js/axios.js"></script>
+<script src="js/axios.conf.js"></script>
+
 <script>
-  function confirm(){
+  new Vue({
+    el: '#app',
+    data: {
+      uid: '',
+      oid: '',
+      OrderDetails: {},
+      orderInfo: []
+    },
+    created() {
+      this.uid = getItem('uid')
+      this.oid = getQueryValue('oid')
+      this.getOrderinfo()
+    },
+    methods: {
+      async getOrderinfo() {
+        const res = await axios.get('/app/order/orderinfo', {
+          params: {
+            oid: this.oid,
+            uid: this.uid
+          }
+        })
+        const { data, code } = res.data
+        this.OrderDetails = data.model
+        this.orderInfo = data.orderinfo
+        console.log(this.OrderDetails)
+        console.log(this.orderInfo)
+      },
+      // 去商品详情
+      goods(gid) {
+        location.href = `mall_product_xq.html?gid=${gid}`
+        // href = "mall_product_xq.html"
+      },
+      refund(oid, sid) {
+        location.href = `my_shouhou.html?oid=${oid}&sid=${sid}`
+        console.log(oid, sid)
+      },
+      // 去支付
+      pay(oid, paymoney) {
+        let payInfo = {
+          oid,
+          paymoney
+        }
+        sessionStorage.setItem("payInfo", JSON.stringify(payInfo));
+        location.href = `pay.html?`
+      },
+      cancelorder(oid) {
+        this.$dialog.confirm({
+          message: '是否取消该订单'
+        }).then(() => {
+          this.setCancelorder(oid)
+        }).catch(() => {
+        });
+      },
+      // 取消订单接口
+      async setCancelorder(oid) {
+        const res = await axios.patch('app/order/cancelorder', {
+          uid: this.uid,
+          oid: oid + ''
+        })
+        const { code, message } = res.data
+        if (code == 200) {
+          this.getOrderinfo()
+        } else {
+          this.$toast(message)
+        }
+      },
+      deleteOrder(oid) {
+        this.$dialog.confirm({
+          message: '是否删除该订单'
+        }).then(() => {
+          this.del(oid)
+        }).catch(() => {
+        });
+      },
+      async del(oid) {
+        console.log(oid)
+        const res = await axios.delete('/app/order/deleteorder', {
+          params: {
+            uid: this.uid,
+            oid: oid
+          }
+        })
+        console.log(res)
+        const { code, message } = res.data
+        if (code == 200) {
+          location.href = 'my_order.html'
+        } else {
+          this.$toast(message)
+        }
+      },
+      ConfirmReceipt(oid) {
+        this.$dialog.confirm({
+          message: '是否确认收货'
+        }).then(() => {
+          this.Confirm(oid)
+        }).catch(() => {
+        });
+      },
+      // 确认收货接口
+      async Confirm(oid) {
+        const res = await axios.patch('/app/order/sureorder', {
+          uid: this.uid,
+          oid: oid
+        })
+        console.log(res)
+        const { code, message } = res.data
+        if (code == 200) {
+          this.getOrderinfo()
+        } else {
+          this.$toast(message)
+        }
+      },
+      // 去评价
+      evaluate(oid, img) {
+        location.href = `evaluate.html?oid=${oid}&img=${img}`
+      },
+    },
+  })
+</script>
+
+<!-- <script>
+  function confirm() {
     $(".winbox1").addClass("tip-active");
-    if($(".popupbox").length>0){
+    if ($(".popupbox").length > 0) {
       $(".popupbox").addClass("show");
-    }else{
+    } else {
       $("body").append('<div class="popupbox"></div>');
       $(".popupbox").addClass("show");
     }
-    $(".popupbox,#cancel").click(function(){
+    $(".popupbox,#cancel").click(function () {
       $(".winbox1").removeClass("tip-active");
       $(".popupbox").removeClass("show");
       $(".popupbox").remove();
     })
   }
 
-  function joinnow(){
+  function joinnow() {
     $(".winbox2").addClass("tip-active");
     $(".winbox1").removeClass("tip-active");
-    if($(".popupbox").length>0){
+    if ($(".popupbox").length > 0) {
       $(".popupbox").addClass("show");
-    }else{
+    } else {
       $("body").append('<div class="popupbox"></div>');
       $(".popupbox").addClass("show");
     }
-    $(".popupbox,.add_cart_btn").click(function(){
+    $(".popupbox,.add_cart_btn").click(function () {
       $(".winbox2").removeClass("tip-active");
       $(".popupbox").removeClass("show");
       $(".popupbox").remove();
     })
   }
-</script>
+</script> -->

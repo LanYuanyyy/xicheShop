@@ -1,97 +1,232 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
+
 <head>
   <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-  <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" name="viewport" id="viewport"/>
+  <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no"
+    name="viewport" id="viewport" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="format-detection" content="telephone=no,email=no,adress=no">
   <title>洗车商城</title>
-  <link rel="stylesheet" href="css/style.css" type="text/css"/>
+  <script src="js/vue.min.js"></script>
+  <link rel="stylesheet" href="css/style.css" type="text/css" />
+  <script src="http://res.wx.qq.com/open/js/jweixin-1.6.0.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vant@1.6/lib/index.css">
+  <script src="https://cdn.jsdelivr.net/npm/vant@1.6/lib/vant.min.js"></script>
+  <script src="js/jquery.min.js"></script>
+  <style>
+    .van-popup {
+      background-color: rgba(0, 0, 0, 0);
+    }
+
+    .haveno-reward {
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: url(../images/noreward.png) no-repeat center;
+      background-size: 100%;
+      line-height: 1;
+      z-index: 998;
+      display: none;
+    }
+
+    .isshow {
+      display: block;
+    }
+  </style>
 </head>
+
 <body>
-<div class="body-container">
-  <div class="activity-box">
-    <p class="endtime">活动截止：2020-06-20</p>
-    <div class="active-detail">
-      <div class="join-down">
-        <h2 class="act-tit fl">已参与人数</h2>
-        <div class="fr">
-          剩余时间：
-          <div class="downup"><span>00</span>:<span>29</span>:<span>59</span></div>
+  <div class="body-container" id="app">
+    <div class="activity-box">
+      <p class="endtime">活动截止：{{info.endtime}}</p>
+      <div class="active-detail">
+        <div class="join-down">
+          <h2 class="act-tit fl">已参与人数</h2>
+          <div class="fr" v-if='info.isopen == 0'>
+            剩余时间：
+            <div class="downup">
+              <span>{{hour < 10 ? '0' + hour : hour}}</span>:
+              <span>{{minute < 10 ? '0' + minute : minute}}</span>:
+              <span>{{second < 10 ? '0' + second : second}}</span>
+            </div>
+          </div>
+        </div>
+        <div class="active-proce">
+          <!-- <p class="process"><em style="width:80%"></em></p> -->
+          <p class="num">{{info.partnums}}人</p>
+          <van-progress class="process" :percentage="proportion" :show-pivot='false' pivot-color="#7232dd"
+            color="linear-gradient(to right, #be99ff, #7232dd)" />
+        </div>
+        <ul class="join-number">
+          <li v-for='item in userList'>
+            <img :src="item.useravatar" alt="">
+            <div class="user">
+              <h1 class="eps">{{item.username}}</h1>
+              <p>{{item.useracct}}</p>
+            </div>
+          </li>
+
+        </ul>
+      </div>
+      <div class="active-detail">
+        <h2 class="act-tit">十返十活动</h2>
+        <div class="act-rule">
+          <p>活动规则</p>
+          <p v-html='info.activityinfo'></p>
         </div>
       </div>
-      <div class="active-proce">
-        <p class="process"><em style="width: 60%"></em></p>
-        <p class="num">6人</p>
-      </div>
-      <ul class="join-number">
-        <li>
-          <img src="images/user.png" alt="">
-          <div class="user">
-            <h1 class="eps">祘祘十路丶</h1>
-            <p>189****7575</p>
-          </div>
-        </li>
-        <li>
-          <img src="images/user.png" alt="">
-          <div class="user">
-            <h1 class="eps">祘祘十路丶</h1>
-            <p>189****7575</p>
-          </div>
-        </li>
-        <li>
-          <img src="images/user.png" alt="">
-          <div class="user">
-            <h1 class="eps">祘祘十路丶</h1>
-            <p>189****7575</p>
-          </div>
-        </li>
-        <li>
-          <img src="images/user.png" alt="">
-          <div class="user">
-            <h1 class="eps">祘祘十路丶</h1>
-            <p>189****7575</p>
-          </div>
-        </li>
-        <li>
-          <img src="images/user.png" alt="">
-          <div class="user">
-            <h1 class="eps">祘祘十路丶</h1>
-            <p>189****7575</p>
-          </div>
-        </li>
-        <li>
-          <img src="images/user.png" alt="">
-          <div class="user">
-            <h1 class="eps">祘祘十路丶</h1>
-            <p>189****7575</p>
-          </div>
-        </li>
-      </ul>
     </div>
-    <div class="active-detail">
-      <h2 class="act-tit">十返十活动</h2>
-      <div class="act-rule">
-        <p>活动规则</p>
-        <p>xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</p>
-        <br>
-        <p>活动规则</p>
-        <p>xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</p>
-        <br>
-        <p>活动规则</p>
-        <p>xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</p>
-      </div>
+    <div class="submitbtn fixed">
+      <a v-if='info.isopen == 1' href="javascript:void(0)" class="loginsubmit redradiu" @click='DrawPrize'>立即开奖</a>
+      <a v-if='info.isopen == 0' href="javascript:void(0)" class="loginsubmit plan">{{info.bottomtitle}}</a>
     </div>
+    <div class="btnline"></div>
+    <div class="reward-det " :class='{show:isShowMoney}'>
+      <p>恭喜您，中奖啦！</p>
+      <h1><em>¥</em>{{info.win_money}}</h1>
+    </div>
+    <div class="open-reward fixed " :class='{show:isShowMoney}'></div>
+    <div class="haveno-reward fixed " :class='{isshow:isShowNo}'></div>
   </div>
-  <div class="submitbtn fixed">
-    <!--<a href="" class="loginsubmit redradiu">立即开奖</a>--><!--开奖按钮-->
-    <a href="javascript:void(0)" class="loginsubmit plan">预计开奖时间：2020-06-01 18:08:08</a>
-  </div>
-  <div class="btnline"></div>
-</div>
+  <script src="js/common.js"></script>
+  <script src="js/md5.js"></script>
+  <script src="js/ran.util.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/axios.js"></script>
+  <script src="js/axios.conf.js"></script>
+  <script>
+    new Vue({
+      el: '#app',
+      data: {
+        isShowMoney: false,
+        isShowNo: false,
+        uid: '',
+        id: '',
+        info: '',
+        userList: [],
+        proportion: 0,
+        minute: 0,
+        hour: 0,
+        second: 0,
+        timer: ''
+      },
+      created() {
+        this.uid = getItem('uid')
+        this.id = getQueryValue('id')
+        this.getMypartactivityinfo()
+      },
+      methods: {
+        DrawPrize() {
+          if (this.info.iswin == 1) {
+            if (this.isShowMoney === false) {
+              this.isShowMoney = true
+            } else {
+              this.isShowMoney = false
+            }
+          } else {
+            if (this.isShowMoney === false) {
+              this.isShowNo = true
+            } else {
+              this.isShowNo = false
+            }
+          }
+
+        },
+        async getMypartactivityinfo() {
+          const res = await axios.get('/app/activity/mypartactivityinfo', {
+            params: {
+              uid: this.uid,
+              id: this.id
+            }
+          })
+          console.log(res)
+          const { data, code } = res.data
+          this.info = data.activityinfo
+          this.userList = data.info
+          this.proportion = (this.info.partnums / this.info.totalnums) * 100
+          console.log(this.proportion)
+          console.log(this.userList)
+          console.log(this.info)
+          if (this.info.isopen === 0) {         // 开奖倒计时
+            this.hour = Math.floor(this.info.seconds / 3600)
+            this.minute = parseInt(this.info.seconds / 60) % 60
+            this.second = this.info.seconds % 60
+            this.timer = setInterval(() => {
+              --this.second
+              if (this.second === 0) {
+                this.second = 60
+                --this.minute
+              }
+              if (this.methods === 0) {
+                this.minute = 60
+                --this.hour
+              }
+              if (this.hour < 0) {
+                clearInterval(this.timer)
+              }
+              // console.log(this.second)
+            }, 1000);
+          }
+        },
+        processingtime(startTime) {
+          startTime = new Date(startTime.replace(/-/g, "/"))
+          console.log(this.startTime)
+          let dateEnd = new Date();//获取当前时间
+          let dateDiff = dateEnd.getTime() - startTime.getTime();//时间差的毫秒数
+          var dayDiff = Math.floor(dateDiff / (24 * 3600 * 1000));//计算出相差天数
+          var leave1 = dateDiff % (24 * 3600 * 1000)     //计算天数后剩余的毫秒数
+          var hours = Math.floor(leave1 / (3600 * 1000)) //计算出小时数
+          var leave2 = leave1 % (3600 * 1000)    //计算小时数后剩余的毫秒数
+          var minutes = Math.floor(leave2 / (60 * 1000))//计算相差分钟数
+          //计算相差秒数
+          var leave3 = leave2 % (60 * 1000)      //计算分钟数后剩余的毫秒数
+          var seconds = Math.round(leave3 / 1000)
+          this.yt = dayDiff
+          this.yh = hours
+          this.yf = minutes
+          this.ys = seconds
+          this.tiemset = setInterval(() => {
+            ++this.ys
+            if (this.ys == 60) {
+              this.ys = 0
+              ++this.yf
+            }
+            if (this.yf == 60) {
+              this.yf = 0
+              ++this.yh
+            }
+            // console.log(" 相差 " + this.yt + "天 " + this.yh + "小时 " + this.yf + " 分钟" + this.ys + " 秒")
+          }, 1000)
+          // console.log(dateDiff + "时间差的毫秒数", dayDiff + "计算出相差天数", leave1 + "计算天数后剩余的毫秒数"
+          //   , hours + "计算出小时数", minutes + "计算相差分钟数", seconds + "计算相差秒数");
+        },
+      },
+    })
+  </script>
+  <!-- <script>
+  function prize(){
+    $(".open-reward").show();
+    $(".open-reward").click(function(){
+      $(".open-reward").hide();
+    })
+
+    $(".reward-det").addClass("show");
+    if($(".open-reward").length>0){
+      $(".open-reward").addClass("show");
+    }else{
+      $("body").append('<div class="open-reward fixed"></div>');
+      $(".open-reward").addClass("show");
+    }
+    $(".open-reward").click(function(){
+      $(".open-reward").removeClass("show");
+      $(".reward-det").removeClass("show");
+      $(".open-reward").remove();
+    })
+  }
+</script> -->
 </body>
+
 </html>
-<script src="js/vue.min.js"></script>
-<script src="js/jquery.min.js"></script>
-<script src="js/template-web.js"></script>
-<script src="js/layer_mobile/layer.js"></script>

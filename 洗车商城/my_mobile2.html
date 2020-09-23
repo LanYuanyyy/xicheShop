@@ -54,16 +54,31 @@
       type: 2,
       oldPhone: '',
       oldCode: '',
-      uid: ''
+      uid: '',
+      openid: ''
     },
     created() {
       this.oldPhone = getQueryValue('oldphone')
       this.oldCode = getQueryValue('oldcode')
       this.uid = getItem("uid");
+      this.openid = getItem('openid')
+      console.log(this.openid)
       console.log(this.oldPhone)
       console.log(this.oldCode)
     },
     methods: {
+      // 同步数据接口
+      async updatephone() {
+        const res = await axios.post('http://bj.zlla.cn/api/web/updatephone', {
+          openid: this.openid,
+          oldmobile: this.oldPhone,
+          newmobile: this.phone
+        })
+        console.log(res)
+        if (res.data.code == 200) {
+          location.href = 'my.html'
+        }
+      },
       async getCode() {
         const res = await axios.post('/app/sms/sendcode/', {
           phone: this.phone,
@@ -96,18 +111,20 @@
           this.$dialog.alert({
             message: res.data.message
           }).then(() => {
-            location.href = 'my_profile.html'
-          });
-        } else if (res.data.code == 422) {
-          this.$dialog.confirm({
-            title: '标题',
-            message: res.data.message
-          }).then(() => {
-            location.href = `my_mobile1.html?mobeil=${this.oldPhone}`
-          }).catch(() => {
-            location.href = 'my_profile.html'
+            // location.href = 'my_profile.html'
+            this.updatephone()
           });
         }
+        // else if (res.data.code == 422) {
+        //   this.$dialog.confirm({
+        //     title: '标题',
+        //     message: res.data.message
+        //   }).then(() => {
+        //     location.href = `my_mobile1.html?mobeil=${this.oldPhone}`
+        //   }).catch(() => {
+        //     location.href = 'my_profile.html'
+        //   });
+        // }
       },
     }
 

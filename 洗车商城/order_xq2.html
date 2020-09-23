@@ -1,0 +1,138 @@
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no"
+    name="viewport" id="viewport" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <title>洗车商城</title>
+  <script src="js/vue.min.js"></script>
+  <link rel="stylesheet" href="css/style.css" type="text/css" />
+  <script src="http://res.wx.qq.com/open/js/jweixin-1.6.0.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vant@1.6/lib/index.css">
+  <script src="https://cdn.jsdelivr.net/npm/vant@1.6/lib/vant.min.js"></script>
+  <script src="js/jquery.min.js"></script>
+  <style>
+    .van-popup {
+      background-color: rgba(0, 0, 0, 0);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="body-container" id="app">
+    <div class="order-status">
+      <div class="flex">
+        <h1 v-if='returninfo.returnstate == 1'>待处理</h1>
+        <h1 v-if='returninfo.returnstate == 3'>已退款</h1>
+        <h1 v-if='returninfo.returnstate == 5'>已取消</h1>
+        <h1 v-if='returninfo.returnstate == 6'>平台已拒绝</h1>
+        <h1 v-if='returninfo.returnstate == 2 && returninfo.returnordersubstate == 1'>卖家拒绝退款</h1>
+        <h1 v-if='returninfo.returnstate == 2 && returninfo.returnordersubstate == 3'>卖家同意退款</h1>
+        <h1 v-if='returninfo.returnstate == 2 && returninfo.returnordersubstate == 2'>平台审核中</h1>
+        <!-- <p>退款已完成，预计3-7个工作日到账</p> -->
+      </div>
+    </div>
+    <div class="business-list margtfu">
+      <div class="order-top">
+        <h1 class="fl eps name">订单列表</h1>
+      </div>
+      <div class="bus-top" v-for='item in list'>
+        <a>
+          <img :src="item.goodsimage" class="small">
+          <div class="txt">
+            <h2 class="eps">{{item.goodsname}}</h2>
+          </div>
+        </a>
+      </div>
+      <!-- <div class="coupon-code">
+        <h2 class="qmxx">券码信息</h2>
+        <div class="cell" v-for='item in list'>
+          <p class="fl"><em>·</em> 2762 7729 6703</p>
+        </div>
+      </div> -->
+    </div>
+    <ul class="sumbit-box">
+      <li>
+        <p class="fl">订单编号</p>
+        <p class="fr">{{returninfo.orderno}}</p>
+      </li>
+      <li>
+        <p class="fl">申请时间</p>
+        <p class="fr">{{returninfo.addtime}}</p>
+      </li>
+      <li>
+        <p class="fl">申请原因</p>
+        <p class="fr">{{returninfo.buyermessage}}</p>
+      </li>
+      <li>
+        <p class="fl">退款金额</p>
+        <p class="fr">￥{{returninfo.amountapplication}}</p>
+      </li>
+    </ul>
+    <ul class="sumbit-box">
+      <li>
+        <p class="fl">详细说明</p>
+        <p class="fr">{{returninfo.buyermessage}}</p>
+        <div class="clear img-info">
+          <!-- <p>临时有事，用不上了，以后再来~</p> -->
+          <div class="flex-album">
+            <div class="pic" v-for='item in returninfo.imagelists'>
+              <img :src="item">
+            </div>
+          </div>
+        </div>
+      </li>
+    </ul>
+    <!-- <nav class="nav_list">
+      <a href="pay.html" class="buy rads">向平台申诉</a>
+      <a href="" class="cancel">取消售后</a>
+    </nav> -->
+    <div class="footline"></div>
+  </div>
+  <script src="js/common.js"></script>
+  <script src="js/md5.js"></script>
+  <script src="js/ran.util.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/axios.js"></script>
+  <script src="js/axios.conf.js"></script>
+  <script>
+    new Vue({
+      el: '#app',
+      data: {
+        uid: '',
+        rid: '',
+        returninfo: '',
+        list: []
+      },
+      created() {
+        this.uid = getItem('uid')
+        this.rid = getQueryValue('rid')
+        console.log(this.uid)
+        console.log(this.rid)
+        this.getReturninfo()
+      },
+      methods: {
+        // my_ptjr.html 平台申请
+        async getReturninfo() {
+          const res = await axios.get('app/returnorder/returninfo', {
+            params: {
+              uid: this.uid,
+              rid: this.rid
+            }
+          })
+          console.log(res)
+          const { data, code } = res.data
+          this.returninfo = data.returnorder
+          this.list = data.goods
+          console.log(this.returninfo)
+        }
+      },
+    })
+  </script>
+</body>
+
+</html>

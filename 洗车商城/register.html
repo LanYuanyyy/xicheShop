@@ -48,14 +48,35 @@
         uid: '',
         type: 2,
         phone: '',
-        code: ''
+        code: '',
+        openid: '',
+        nickname: '',
+        head_photo: '',
+        sex: ''
       },
       created() {
         this.uid = getItem("uid");
         console.log(this.uid)
+        this.openid = getItem('openid')
+        this.nickname = getItem('nickname')
+        this.head_photo = getItem('head_photo')
+        this.sex = getItem('sex')
         // this.getUserHome()
       },
       methods: {
+        async registernewaccount() {
+          const res = await axios.post('http://bj.zlla.cn/api/web/registernewaccount', {
+            openid: this.openid,
+            mobile: this.phone,
+            nickname: this.nickname,
+            head_photo: this.head_photo,
+            sex: this.sex
+          })
+          console.log(res)
+          if (res.data.code == 200) {
+            location.href = 'my.html'
+          }
+        },
         async getCode() {
           if (this.phone === '') {
             layer.open({
@@ -94,7 +115,8 @@
             code: this.code
           })
           if (res.data.code == 200) {
-            location.href = 'my.html'
+            this.registernewaccount()
+            // location.href = 'my.html'
           }
           console.log(res)
         }

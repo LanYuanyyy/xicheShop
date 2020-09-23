@@ -22,13 +22,13 @@
   <div class="body-container" id="app">
     <div class="navs fixed">
       <ul class="shop-navs flex">
-        <li class="active"><a href="">服务评价</a></li>
-        <li><a href="">商品评价</a></li>
+        <li :class="{active : index === 1}"><a href="">服务评价</a></li>
+        <li :class="{active : index === 2}" @click='goodsEval'><a>商品评价</a></li>
       </ul>
     </div>
     <div class="topline"></div>
     <div class="my-evalut">
-      <div class="eval_list">
+      <!-- <div class="eval_list">
         <h1 class="eps shopname">畅途养护·淮海西路店</h1>
         <div class="shoptop">
           <img src="images/shop.png">
@@ -45,38 +45,32 @@
           </div>
         </div>
         <div class="pl-main">
-          <p class="comments">您没有填写评价内容</p>
           <p class="fr format">2019-06-28 14:00</p>
         </div>
-      </div>
-      <div class="eval_list">
-        <h1 class="eps shopname">畅途养护·淮海西路店</h1>
-        <div class="shoptop">
-          <img src="images/shop.png">
-          <div class="eps info">
-            <h1 class="eps">微镀晶洗车</h1>
-            <span class="starbox">
-              评分
-              <em class="red"></em>
-              <em class="red"></em>
-              <em class="red"></em>
-              <em class="red"></em>
-              <em class="gray"></em>
-            </span>
+      </div> -->
+      <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad" :immediate-check='false'>
+        <div class="eval_list" v-for='item in newsList'>
+          <h1 class="eps shopname">{{item.store_name}}</h1>
+          <div class="shoptop">
+            <img :src="item.goods_cover">
+            <div class="eps info">
+              <h1 class="eps">微镀晶洗车</h1>
+              <span class="starbox">
+                评分
+                <van-rate v-model="item.score" readonly :size='15' />
+              </span>
+            </div>
+          </div>
+          <div class="pl-main">
+            <p class="comments" v-if='item.comment == ""'>您没有填写评价内容</p>
+            <p class="comments" v-if='item.comment'>{{item.comment}}</p>
+            <div class="baguetteBoxOne">
+              <a v-for='value in item.images' :href="value"><img :src="value"></a>
+            </div>
+            <p class="fr format">{{item.comment_time}}</p>
           </div>
         </div>
-        <div class="pl-main">
-          <p class="comments">洗车真的是超干净，服务真的是一级棒，下次还选这家~</p>
-          <div class="baguetteBoxOne">
-            <a href="images/shop.png"><img src="images/shop.png"></a>
-            <a href="images/shop.png"><img src="images/shop.png"></a>
-            <a href="images/shop.png"><img src="images/shop.png"></a>
-            <a href="images/shop.png"><img src="images/shop.png"></a>
-            <a href="images/shop.png"><img src="images/shop.png"></a>
-          </div>
-          <p class="fr format">2019-06-28 14:00</p>
-        </div>
-      </div>
+      </van-list>
     </div>
   </div>
   </div>
@@ -98,7 +92,12 @@
     data: {
       uid: '',
       page: 1,
-      type: 1
+      type: 1,
+      newsList: [],
+      loading: false,
+      finished: false,
+      isLogin: false,
+      index: 1
     },
     created() {
       this.uid = getItem('uid')
@@ -106,6 +105,14 @@
       this.getMyevaluates()
     },
     methods: {
+      goodsEval() {
+        this.index = 2
+        this.type = 2
+        this.page = 1
+        this.loading = true;
+        this.newsList = []
+        this.getMyevaluates()
+      },
       async getMyevaluates() {
         const res = await axios.get('/app/user/myevaluates', {
           params: {
@@ -115,7 +122,21 @@
           }
         })
         console.log(res)
-      }
+        const { data, code } = res.data
+        console.log(data)
+        let list = data
+        this.loading = false;
+        if (list.length == 0) {
+          console.log("到底了");
+          this.finished = true;
+        }
+        this.newsList = this.newsList.concat(list)
+      },
+      onLoad() {
+        this.page++;
+        this.loading = true;
+        this.getMyevaluates();
+      },
     },
   })
 </script>

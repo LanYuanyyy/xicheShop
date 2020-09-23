@@ -1,103 +1,234 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
+
 <head>
   <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-  <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" name="viewport" id="viewport"/>
+  <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no"
+    name="viewport" id="viewport" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="format-detection" content="telephone=no,email=no,adress=no">
   <title>洗车商城</title>
-  <link rel="stylesheet" href="css/style.css" type="text/css"/>
+  <script src="js/vue.min.js"></script>
+  <link rel="stylesheet" href="css/style.css" type="text/css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vant@1.6/lib/index.css">
+  <script src="https://cdn.jsdelivr.net/npm/vant@1.6/lib/vant.min.js"></script>
+  <script src="js/jquery.min.js"></script>
+  <style>
+    .van-popup {
+      background-color: rgba(0, 0, 0, 0);
+    }
+  </style>
 </head>
+
 <body>
-<div class="body-container">
-  <div class="linerbg">
-    <div class="ord-situ">
-      <h1>待处理</h1>
-      <p>剩余 <strong>9 天 12 小时 32 分钟</strong></p>
+  <div class="body-container" id="app">
+    <div class="linerbg">
+      <div class="ord-situ">
+        <h1 v-if='order.returnstate == 1'>待处理</h1>
+        <h1 v-if='order.returnstate == 2'>处理中</h1>
+        <h1 v-if='order.returnstate == 3'>已退款</h1>
+        <h1 v-if='order.returnstate == 5'>已取消</h1>
+        <h1 v-if='order.returnstate == 6'>平台已拒绝</h1>
+        <p v-if='order.returnstate == 1'>剩余
+          <strong>{{day}} 天 {{hour}} 小时 {{minute}} 分钟</strong>
+        </p>
+      </div>
+      <div class="ord-flex" v-if='order.returnstate == 1'>
+        买家申请退款，请尽快处理
+      </div>
     </div>
-    <div class="ord-flex">
-      买家申请退款，请尽快处理
+    <div class="make_sure_order martfu">
+      <div class="my_title bleft">
+        <h1>商品信息</h1>
+      </div>
+      <ul>
+        <li v-for='item in goods'>
+          <a href="mall_product_xq.html"><img :src="item.goodsimage"></a>
+          <div class="info long">
+            <a href="mall_product_xq.html">
+              <h1 class="clamp2">{{item.goodsname}}</h1>
+            </a>
+            <div class="weight">
+              <p class="p1"><em>￥</em>237</p>
+            </div>
+          </div>
+        </li>
+      </ul>
     </div>
-  </div>
-  <div class="make_sure_order martfu">
-    <div class="my_title bleft">
-      <h1>商品信息</h1>
-    </div>
-    <ul>
+    <ul class="sumbit-box">
       <li>
-        <a href="mall_product_xq.html"><img src="images/pro2.png"></a>
-        <div class="info long">
-          <a href="mall_product_xq.html">
-            <h1 class="clamp2">斯麦欧（Simaiou）汽车头枕腰靠套装太空记忆棉车用座...</h1>
-          </a>
-          <div class="weight">
-            <p class="p1"><em>￥</em>237</p>
+        <p class="fl">退款总额</p>
+        <p class="fr price">￥{{order.amountapplication}}</p>
+      </li>
+    </ul>
+    <ul class="sumbit-box">
+      <!-- <li>
+        <a href="my_jindu.html" class="select">进度详情</a>
+      </li> -->
+    </ul>
+    <ul class="sumbit-box noborder">
+      <li>
+        <p class="fl">服务单号</p>
+        <p class="fr">{{order.orderno}}</p>
+      </li>
+      <li>
+        <p class="fl">申请时间</p>
+        <p class="fr">{{order.createtime}}</p>
+      </li>
+      <li>
+        <p class="fl">申请原因</p>
+        <p class="fr">{{order.buyermessage}}</p>
+      </li>
+      <li>
+        <p class="fl">详细说明</p>
+        <p class="fr">{{order.paymenttime}}</p>
+        <div class="clear img-info">
+          <p>{{order.buyermessage}}</p>
+          <div class="flex-album">
+            <div class="pic" v-for='item in order.imagelists'><img :src="item"></div>
+            <!-- <div class="pic"><img src="images/shop.png"></div>
+            <div class="pic"><img src="images/shop.png"></div> -->
           </div>
         </div>
       </li>
     </ul>
-  </div>
-  <ul class="sumbit-box">
-    <li>
-      <p class="fl">退款总额</p>
-      <p class="fr price">￥59.00</p>
-    </li>
-  </ul>
-  <ul class="sumbit-box">
-    <li>
-      <a href="my_jindu.html" class="select">进度详情</a>
-    </li>
-  </ul>
-  <ul class="sumbit-box noborder">
-    <li>
-      <p class="fl">服务单号</p>
-      <p class="fr">1116223212356</p>
-    </li>
-    <li>
-      <p class="fl">申请时间</p>
-      <p class="fr">2020-03-30  21:30:12</p>
-    </li>
-    <li>
-      <p class="fl">申请原因</p>
-      <p class="fr">其他</p>
-    </li>
-    <li>
-      <p class="fl">详细说明</p>
-      <p class="fr">2020-03-30  21:30:12</p>
-      <div class="clear img-info">
-        <p>临时有事，用不上了，以后再来~</p>
-        <div class="flex-album">
-          <div class="pic"><img src="images/shop.png"></div>
-          <div class="pic"><img src="images/shop.png"></div>
-          <div class="pic"><img src="images/shop.png"></div>
+    <!--已完成开始-->
+    <ul class="sumbit-box">
+      <li v-if='order.sellername && order.sellertel && order.backaddress'>
+        <p>退货地址</p>
+        <div class="detail-addr">
+          <h1>{{order.sellername}} {{order.sellertel}}</h1>
+          <h5>{{order.backaddress}}</h5>
         </div>
-      </div>
-    </li>
-  </ul>
-  <!--已完成开始-->
-  <ul class="sumbit-box">
-    <li>
-      <p>退货地址</p>
-      <div class="detail-addr">
-        <h1>李束水   18896967575</h1>
-        <h5>江苏省徐州市泉山区淮海西路120号颖都大厦1105</h5>
-      </div>
-    </li>
-  </ul>
-  <div class="sumbit-box">
-    <a href="" class="logistics">物流信息</a>
+      </li>
+    </ul>
+    <div class="sumbit-box">
+      <a href="" class="logistics">物流信息</a>
+    </div>
+    <!--已完成结束-->
+    <nav class="nav_list">
+      <a href="javascript:void(0)" class="cancel" v-if='order.returnstate == 1' @click='Rejected'>拒绝</a>
+      <a class="blue" v-if='order.returnstate == 1' @click='agree'>同意退款</a>
+      <a class="blue" v-if='order.returnstate == 2 && order.returnordersubstate == 6' @click='agree'>确认收货</a>
+    </nav>
+    <div class="footline"></div>
+    <van-dialog v-model="dialogShow" title="拒绝退款理由" show-cancel-button @confirm='determineRejected'>
+      <van-cell-group>
+        <van-field v-model="content" placeholder="拒绝原因" />
+      </van-cell-group>
+    </van-dialog>
   </div>
-  <!--已完成结束-->
-  <nav class="nav_list">
-    <a href="javascript:void(0)" class="cancel">拒绝</a>
-    <a href="" class="blue">同意退款</a>
-    <a href="" class="sendaddr">同意退货，发送退货地址</a>
-  </nav>
-  <div class="footline"></div>
-</div>
 </body>
+
 </html>
-<script src="js/vue.min.js"></script>
-<script src="js/jquery.min.js"></script>
 <script src="js/template-web.js"></script>
-<script src="js/layer_mobile/layer.js"></script>
+<script src="js/common.js"></script>
+<script src="js/md5.js"></script>
+<script src="js/ran.util.js"></script>
+<script src="js/app.js"></script>
+<script src="js/axios.js"></script>
+<script src="js/axios.conf.js"></script>
+<script>
+  new Vue({
+    el: '#app',
+    data: {
+      uid: '',
+      rid: '',
+      sid: '',
+      order: {},
+      goods: [],
+      dialogShow: false,
+      content: '',
+      hour: 0,
+      minute: 0,
+      second: 0,
+      day: 0
+    },
+    created() {
+      this.uid = getItem('uid')
+      this.rid = getQueryValue('rid')
+      this.sid = getQueryValue('sid')
+      console.log(this.rid)
+      console.log(this.sid)
+      this.getReturninfo()
+    },
+    methods: {
+      async getReturninfo() {
+        const res = await axios.get('app/returnorder/returninfo', {
+          params: {
+            uid: this.uid,
+            rid: this.rid
+          }
+        })
+        const { data, code } = res.data
+        this.order = data.returnorder
+        this.goods = data.goods
+        if (this.order.returnstate === 1) {         // 待处理状态 倒计时处理
+          this.day = parseInt(this.order.seconds / 3600 / 24)
+          this.hour = parseInt(this.order.seconds / 3600) % 24
+          this.minute = parseInt(this.order.seconds / 60) % 60
+          this.second = this.order.seconds % 60
+          this.timer = setInterval(() => {
+            --this.second
+            if (this.second === 0) {
+              this.second = 60
+              --this.minute
+            }
+            if (this.minute === 0) {
+              this.minute = 60
+              --this.hour
+            }
+            if (this.hour === 0) {
+              this.hour = 24
+              --this.day
+            }
+            if (this.day < 0) {
+              clearInterval(this.timer)
+            }
+            // console.log(this.second)
+          }, 1000);
+        }
+        console.log(this.order)
+        console.log(this.goods)
+      },
+      // 拒绝退款
+      Rejected() {
+        this.$dialog.confirm({
+          message: '是否拒绝退款'
+        }).then(() => {
+          this.dialogShow = true
+        }).catch(() => {
+        })
+      },
+      // 提交拒绝
+      determineRejected() {
+        setOperationreturnfirst(2)
+      },
+      // 同意退款
+      agree() {
+        this.$dialog.confirm({
+          message: '是否同意退款'
+        }).then(() => {
+          this.setOperationreturnfirst(1)
+        }).catch(() => {
+        })
+      },
+      async setOperationreturnfirst(state) {
+        const res = await axios.post('app/returnorder/operationreturnfirst', {
+          rid: this.rid,
+          sid: this.sid,
+          state: state,
+          content: this.content || ''
+        })
+        const { code, message } = res.data
+        if (code == 200) {
+          this.$toast(message)
+          this.getReturninfo()
+        } else {
+          this.$toast(message)
+        }
+      },
+    },
+  })
+</script>

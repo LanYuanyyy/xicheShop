@@ -95,13 +95,34 @@
       name: '',
       mobile: '',
       number: '',                // 身份证号码
-      uid: ''
+      uid: '',
+      type: ''
     },
     created() {
       this.uid = getItem('uid')
+      this.type = getQueryValue('type')
+      console.log(this.type)
       console.log(this.uid)
+      this.getSecondhandstore()
     },
     methods: {
+      async getSecondhandstore() {
+        const res = await axios.get('/app/apply/secondhandstore', {
+          params: {
+            uid: this.uid
+          }
+        })
+        console.log(res)
+        const { data, code } = res.data
+        this.name = data.name
+        this.mobile = data.mobile
+        this.imageBack = data.imageback
+        this.imageTop = data.imagepositive
+        this.number = data.idcardnum
+        this.$refs.upload1.src = this.imageBack
+        this.$refs.upload2.src = this.imageTop
+      },
+
       apply() {
         if (!this.name) {
           this.$toast('请输入姓名');
@@ -127,10 +148,10 @@
         })
         console.log(res)
         const { data, code } = res.data
-        // if (code == 200) {
-        //   location.href = 'my_store.html'
-        //   提示 提交成功等待审核 返回个人中心 
-        // }
+        if (code == 200) {
+          location.href = 'my.html'
+          // 提示 提交成功等待审核 返回个人中心 
+        }
       },
       onReadfan(file) {
         // console.log(file)

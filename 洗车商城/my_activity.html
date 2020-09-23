@@ -34,15 +34,14 @@
               <h1 class="eps">{{item.name}}</h1>
               <p class="reword none" v-if='state == 0'>{{item.subtitle}}</p>
               <p class="reword already" v-if='state == 1'>{{item.subtitle}}</p>
-              <p class="if" v-if='item.iswin == 0'>未中奖</p>
-              <p class="if" v-if='item.iswin == 1'>中奖：<span>￥{{item.win_money}}</span></p>
+              <p class="if" v-if='item.iswin == 0 && state == 1'>未中奖</p>
+              <p class="if" v-if='item.iswin == 1 && state == 1'>中奖：<span>￥{{item.win_money}}</span></p>
             </div>
           </a>
         </div>
       </div>
     </van-list>
-    <!--已开奖未中奖-->
-    <div class="business-list marg">
+    <!-- <div class="business-list marg">
       <div class="bus-top">
         <a href="my_activity_xq.html">
           <img src="images/active.png">
@@ -54,7 +53,6 @@
         </a>
       </div>
     </div>
-    <!--已开奖中奖-->
     <div class="business-list marg">
       <div class="bus-top">
         <a href="my_activity_xq.html">
@@ -66,7 +64,7 @@
           </div>
         </a>
       </div>
-    </div>
+    </div> -->
   </div>
   </div>
 </body>

@@ -1,201 +1,350 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
+
 <head>
   <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-  <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" name="viewport" id="viewport"/>
+  <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no"
+    name="viewport" id="viewport" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="format-detection" content="telephone=no,email=no,adress=no">
   <title>洗车商城</title>
-  <link rel="stylesheet" href="css/style.css" type="text/css"/>
+  <script src="js/vue.min.js"></script>
+  <link rel="stylesheet" href="css/style.css" type="text/css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vant@1.6/lib/index.css">
+  <script src="https://cdn.jsdelivr.net/npm/vant@1.6/lib/vant.min.js"></script>
+  <script src="js/jquery.min.js"></script>
+  <style>
+    .van-popup {
+      background-color: rgba(0, 0, 0, 0);
+    }
+  </style>
 </head>
+
 <body>
-<div class="body-container">
-  <div class="navs fixed">
-    <ul class="shop-navs flex">
-      <li><a href="my_store_order.html">订单</a></li>
-      <li class="active"><a href="my_store_shouhou.html">售后</a></li>
+  <div class="body-container" id="app">
+    <div class="navs fixed">
+      <ul class="shop-navs flex">
+        <li><a href="my_store_order.html">订单</a></li>
+        <li class="active"><a href="my_store_shouhou.html">售后</a></li>
+      </ul>
+    </div>
+    <ul id="order_num" class="eval-type fixed oreder-mange">
+      <li :class="{active : index == 1}"> <a href="">待处理</a> </li>
+      <li :class="{active : index == 2}" @click='GoodsReceived'>处理中</li>
+      <li :class="{active : index == 3}" @click='IsCompleted'>已完成</li>
     </ul>
+    <div class="topline"></div>
+    <div class="topline"></div>
+    <div id="order_num_Content0">
+      <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad" :immediate-check='false'>
+        <div class="make_sure_order" v-for='item in newsList'>
+          <div class="my-desc">
+            <img :src="item.buyerimage" class="img">
+            <p class="name eps fl">{{item.buyername}}</p>
+            <p class="fr" v-if='item.returnstate == 1'>待处理</p>
+            <p class="fr" v-if='item.returnstate == 1 && item.returnordertype == 2'>退货退款</p>
+            <p class="fr" v-if='item.returnstate == 2'>处理中</p>
+            <p class="fr" v-if='item.returnstate == 3'>已退款</p>
+            <p class="fr" v-if='item.returnstate == 5'>已取消</p>
+            <p class="fr" v-if='item.returnstate == 6'>平台已拒绝</p>
+          </div>
+          <ul>
+            <li v-for='val in item.order_infos'>
+              <a @click='toGoodsxq(item.id,item.storeid)'><img :src="val.goodsimage"></a>
+              <div class="info long">
+                <a @click='toGoodsxq(item.id,item.storeid)'>
+                  <h1 class="clamp2">{{val.goodsname}}</h1>
+                </a>
+                <div class="weight">
+                  <p class="p1"><em>￥</em>{{val.finalprice}}</p>
+                </div>
+              </div>
+            </li>
+          </ul>
+          <div class="btns radius">
+            <a class="fr loginsubmit cancel" v-if='item.returnstate == 1' @click='Rejected(item.id,item.storeid)'>拒绝</a>
+            <a class="fr loginsubmit blue" v-if='item.returnstate == 1' @click='agree(item.id,item.storeid)'>同意退款</a>
+            <a class="fr loginsubmit blue" v-if='item.returnstate == 2 && item.returnordersubstate == 6'
+              @click='agree(item.id,item.storeid)'>确认收货</a>
+          </div>
+        </div>
+      </van-list>
+      <!-- <div class="make_sure_order">
+        <div class="my-desc">
+          <img src="images/user.png" class="img">
+          <p class="name eps fl">xi淑芬</p>
+          <p class="fr">待处理</p>
+        </div>
+        <ul>
+          <li>
+            <a href="my_store_shouhou_xq.html"><img src="images/pro2.png"></a>
+            <div class="info long">
+              <a href="my_store_shouhou_xq.html">
+                <h1 class="clamp2">斯麦欧（Simaiou）汽车头枕腰靠套装太空记忆棉车用座...</h1>
+              </a>
+              <div class="weight">
+                <p class="p1"><em>￥</em>237.9</p>
+              </div>
+            </div>
+          </li>
+        </ul>
+        <div class="btns radius">
+          <a href="" class="fr loginsubmit cancel">拒绝</a>
+          <a href="" class="fr loginsubmit sendaddr">同意退货，发送退货地址</a>
+        </div>
+      </div>
+      <div class="make_sure_order">
+        <div class="my-desc">
+          <img src="images/user.png" class="img">
+          <p class="name eps fl">xi淑芬</p>
+          <p class="fr">待处理</p>
+        </div>
+        <ul>
+          <li>
+            <a href="my_store_shouhou_xq.html"><img src="images/pro2.png"></a>
+            <div class="info long">
+              <a href="my_store_shouhou_xq.html">
+                <h1 class="clamp2">斯麦欧（Simaiou）汽车头枕腰靠套装太空记忆棉车用座...</h1>
+              </a>
+              <div class="weight">
+                <p class="p1"><em>￥</em>237.9</p>
+              </div>
+            </div>
+          </li>
+        </ul>
+        <div class="btns radius">
+          <p class="ping fl">平台介入，判定退款</p>
+          <a href="" class="fr loginsubmit blue">同意退款</a>
+        </div>
+      </div>
+      <div class="make_sure_order">
+        <div class="my-desc">
+          <img src="images/user.png" class="img">
+          <p class="name eps fl">xi淑芬</p>
+          <p class="fr">待处理</p>
+        </div>
+        <ul>
+          <li>
+            <a href="my_store_shouhou_xq.html"><img src="images/pro2.png"></a>
+            <div class="info long">
+              <a href="my_store_shouhou_xq.html">
+                <h1 class="clamp2">斯麦欧（Simaiou）汽车头枕腰靠套装太空记忆棉车用座...</h1>
+              </a>
+              <div class="weight">
+                <p class="p1"><em>￥</em>237.9</p>
+              </div>
+            </div>
+          </li>
+        </ul>
+        <div class="btns radius">
+          <p class="ping fl">平台介入，判定退款</p>
+          <a href="" class="fr loginsubmit sendaddr">同意退货，发送退货地址</a>
+        </div>
+      </div> -->
+    </div>
+    <!-- <div id="order_num_Content1" class="undis">
+      <div class="make_sure_order">
+        <div class="my-desc">
+          <img src="images/user.png" class="img">
+          <p class="name eps fl">xi淑芬</p>
+          <p class="fr">待收货</p>
+        </div>
+        <ul>
+          <li>
+            <a href="my_store_shouhou_xq.html"><img src="images/pro2.png"></a>
+            <div class="info long">
+              <a href="my_store_shouhou_xq.html">
+                <h1 class="clamp2">斯麦欧（Simaiou）汽车头枕腰靠套装太空记忆棉车用座...</h1>
+              </a>
+              <div class="weight">
+                <p class="p1"><em>￥</em>237.9</p>
+              </div>
+            </div>
+          </li>
+        </ul>
+        <div class="btns radius">
+          <a href="" class="fr loginsubmit blue">确认收货</a>
+        </div>
+      </div>
+    </div>
+    <div id="order_num_Content2" class="undis">
+      <div class="make_sure_order">
+        <div class="my-desc">
+          <img src="images/user.png" class="img">
+          <p class="name eps fl">xi淑芬</p>
+          <p class="fr">已完成</p>
+        </div>
+        <ul>
+          <li>
+            <a href="my_store_shouhou_xq.html"><img src="images/pro2.png"></a>
+            <div class="info long">
+              <a href="my_store_shouhou_xq.html">
+                <h1 class="clamp2">斯麦欧（Simaiou）汽车头枕腰靠套装太空记忆棉车用座...</h1>
+              </a>
+              <div class="weight">
+                <p class="p1"><em>￥</em>237.9</p>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div class="make_sure_order">
+        <div class="my-desc">
+          <img src="images/user.png" class="img">
+          <p class="name eps fl">xi淑芬</p>
+          <p class="fr">已完成</p>
+        </div>
+        <ul>
+          <li>
+            <a href="my_store_shouhou_xq.html"><img src="images/pro2.png"></a>
+            <div class="info long">
+              <a href="my_store_shouhou_xq.html">
+                <h1 class="clamp2">斯麦欧（Simaiou）汽车头枕腰靠套装太空记忆棉车用座...</h1>
+              </a>
+              <div class="weight">
+                <p class="p1"><em>￥</em>237</p>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div> -->
+    <van-dialog v-model="dialogShow" title="拒绝退款理由" show-cancel-button @confirm='determineRejected'>
+      <van-cell-group>
+        <van-field v-model="content" placeholder="拒绝原因" />
+      </van-cell-group>
+    </van-dialog>
   </div>
-  <ul id="order_num" class="eval-type fixed oreder-mange">
-    <li class="active" onclick="nTabs(this,0)">待处理（3）</li>
-    <li onclick="nTabs(this,1)">待收货（1）</li>
-    <li onclick="nTabs(this,2)">已完成（2）</li>
-  </ul>
-  <div class="topline"></div>
-  <div class="topline"></div>
-  <div id="order_num_Content0">
-    <div class="make_sure_order">
-      <div class="my-desc">
-        <img src="images/user.png" class="img">
-        <p class="name eps fl">xi淑芬</p>
-        <p class="fr">待处理</p>
-      </div>
-      <ul>
-        <li>
-          <a href="my_store_shouhou_xq.html"><img src="images/pro2.png"></a>
-          <div class="info long">
-            <a href="my_store_shouhou_xq.html">
-              <h1 class="clamp2">斯麦欧（Simaiou）汽车头枕腰靠套装太空记忆棉车用座...</h1>
-            </a>
-            <div class="weight">
-              <p class="p1"><em>￥</em>237.9</p>
-            </div>
-          </div>
-        </li>
-      </ul>
-      <div class="btns radius">
-        <a href="" class="fr loginsubmit cancel">拒绝</a>
-        <a href="" class="fr loginsubmit blue">同意退款</a>
-      </div>
-    </div>
-    <div class="make_sure_order">
-      <div class="my-desc">
-        <img src="images/user.png" class="img">
-        <p class="name eps fl">xi淑芬</p>
-        <p class="fr">待处理</p>
-      </div>
-      <ul>
-        <li>
-          <a href="my_store_shouhou_xq.html"><img src="images/pro2.png"></a>
-          <div class="info long">
-            <a href="my_store_shouhou_xq.html">
-              <h1 class="clamp2">斯麦欧（Simaiou）汽车头枕腰靠套装太空记忆棉车用座...</h1>
-            </a>
-            <div class="weight">
-              <p class="p1"><em>￥</em>237.9</p>
-            </div>
-          </div>
-        </li>
-      </ul>
-      <div class="btns radius">
-        <a href="" class="fr loginsubmit cancel">拒绝</a>
-        <a href="" class="fr loginsubmit sendaddr">同意退货，发送退货地址</a>
-      </div>
-    </div>
-    <div class="make_sure_order">
-      <div class="my-desc">
-        <img src="images/user.png" class="img">
-        <p class="name eps fl">xi淑芬</p>
-        <p class="fr">待处理</p>
-      </div>
-      <ul>
-        <li>
-          <a href="my_store_shouhou_xq.html"><img src="images/pro2.png"></a>
-          <div class="info long">
-            <a href="my_store_shouhou_xq.html">
-              <h1 class="clamp2">斯麦欧（Simaiou）汽车头枕腰靠套装太空记忆棉车用座...</h1>
-            </a>
-            <div class="weight">
-              <p class="p1"><em>￥</em>237.9</p>
-            </div>
-          </div>
-        </li>
-      </ul>
-      <div class="btns radius">
-        <p class="ping fl">平台介入，判定退款</p>
-        <a href="" class="fr loginsubmit blue">同意退款</a>
-      </div>
-    </div>
-    <div class="make_sure_order">
-      <div class="my-desc">
-        <img src="images/user.png" class="img">
-        <p class="name eps fl">xi淑芬</p>
-        <p class="fr">待处理</p>
-      </div>
-      <ul>
-        <li>
-          <a href="my_store_shouhou_xq.html"><img src="images/pro2.png"></a>
-          <div class="info long">
-            <a href="my_store_shouhou_xq.html">
-              <h1 class="clamp2">斯麦欧（Simaiou）汽车头枕腰靠套装太空记忆棉车用座...</h1>
-            </a>
-            <div class="weight">
-              <p class="p1"><em>￥</em>237.9</p>
-            </div>
-          </div>
-        </li>
-      </ul>
-      <div class="btns radius">
-        <p class="ping fl">平台介入，判定退款</p>
-        <a href="" class="fr loginsubmit sendaddr">同意退货，发送退货地址</a>
-      </div>
-    </div>
-  </div>
-  <div id="order_num_Content1" class="undis">
-    <div class="make_sure_order">
-      <div class="my-desc">
-        <img src="images/user.png" class="img">
-        <p class="name eps fl">xi淑芬</p>
-        <p class="fr">待收货</p>
-      </div>
-      <ul>
-        <li>
-          <a href="my_store_shouhou_xq.html"><img src="images/pro2.png"></a>
-          <div class="info long">
-            <a href="my_store_shouhou_xq.html">
-              <h1 class="clamp2">斯麦欧（Simaiou）汽车头枕腰靠套装太空记忆棉车用座...</h1>
-            </a>
-            <div class="weight">
-              <p class="p1"><em>￥</em>237.9</p>
-            </div>
-          </div>
-        </li>
-      </ul>
-      <div class="btns radius">
-        <a href="" class="fr loginsubmit blue">确认收货</a>
-      </div>
-    </div>
-  </div>
-  <div id="order_num_Content2" class="undis">
-    <div class="make_sure_order">
-      <div class="my-desc">
-        <img src="images/user.png" class="img">
-        <p class="name eps fl">xi淑芬</p>
-        <p class="fr">已完成</p>
-      </div>
-      <ul>
-        <li>
-          <a href="my_store_shouhou_xq.html"><img src="images/pro2.png"></a>
-          <div class="info long">
-            <a href="my_store_shouhou_xq.html">
-              <h1 class="clamp2">斯麦欧（Simaiou）汽车头枕腰靠套装太空记忆棉车用座...</h1>
-            </a>
-            <div class="weight">
-              <p class="p1"><em>￥</em>237.9</p>
-            </div>
-          </div>
-        </li>
-      </ul>
-    </div>
-    <div class="make_sure_order">
-      <div class="my-desc">
-        <img src="images/user.png" class="img">
-        <p class="name eps fl">xi淑芬</p>
-        <p class="fr">已完成</p>
-      </div>
-      <ul>
-        <li>
-          <a href="my_store_shouhou_xq.html"><img src="images/pro2.png"></a>
-          <div class="info long">
-            <a href="my_store_shouhou_xq.html">
-              <h1 class="clamp2">斯麦欧（Simaiou）汽车头枕腰靠套装太空记忆棉车用座...</h1>
-            </a>
-            <div class="weight">
-              <p class="p1"><em>￥</em>237.9</p>
-            </div>
-          </div>
-        </li>
-      </ul>
-    </div>
-  </div>
-</div>
 </body>
+
 </html>
-<script src="js/vue.min.js"></script>
-<script src="js/jquery.min.js"></script>
 <script src="js/template-web.js"></script>
-<script src="js/layer_mobile/layer.js"></script>
+<script src="js/common.js"></script>
+<script src="js/md5.js"></script>
+<script src="js/ran.util.js"></script>
+<script src="js/app.js"></script>
+<script src="js/axios.js"></script>
+<script src="js/axios.conf.js"></script>
 <script>
+  new Vue({
+    el: '#app',
+    data: {
+      uid: '',
+      page: 1,
+      state: 1,
+      newsList: [],
+      loading: false,
+      finished: false,
+      isLogin: false,
+      index: 1,
+      dialogShow: false,
+      content: '',
+      rid: '',
+      sid: ''
+    },
+    created() {
+      this.uid = getItem('uid')
+      this.getReturnlist()
+    },
+    methods: {
+      // 拒绝退款
+      Rejected(id, storeid) {
+        this.$dialog.confirm({
+          message: '是否拒绝退款'
+        }).then(() => {
+          this.rid = id
+          this.sid = storeid
+          this.dialogShow = true
+        }).catch(() => {
+        })
+      },
+      determineRejected() {
+        console.log(this.rid)
+        console.log(this.sid)
+        this.setOperationreturnfirst(2)
+      },
+      // 同意退款
+      agree(id, storeid) {
+        this.$dialog.confirm({
+          message: '是否同意退款'
+        }).then(() => {
+          this.rid = id
+          this.sid = storeid
+          this.setOperationreturnfirst(1)
+        }).catch(() => {
+        })
+      },
+      // 卖家操作:同意&拒绝
+      async setOperationreturnfirst(state) {
+        const res = await axios.post('app/returnorder/operationreturnfirst', {
+          rid: this.rid,
+          sid: this.sid,
+          state: state,
+          content: this.content || ''
+        })
+        const { code, message } = res.data
+        if (code == 200) {
+          this.$toast(message)
+          this.page = 1
+          this.finished = false
+          this.loading = true
+          this.newsList = []
+          this.getReturnlist()
+        } else {
+          this.$toast(message)
+        }
+      },
+      async getReturnlist() {
+        const res = await axios.get('/app/returnorder/returnlist', {
+          params: {
+            uid: this.uid,
+            pageindex: this.page,
+            state: this.state
+          }
+        })
+        console.log(res)
+        const { data, code } = res.data
+        let list = data
+        this.loading = false;
+        if (list.length == 0) {
+          console.log("到底了");
+          this.finished = true;
+        }
+        this.newsList = this.newsList.concat(list)
+        console.log(this.newsList)
+      },
+      onLoad() {
+        this.page++;
+        this.loading = true;
+        this.getReturnlist();
+      },
+      GoodsReceived() {
+        this.index = 2
+        this.state = 2
+        this.page = 1
+        this.finished = false
+        this.loading = true
+        this.newsList = []
+        this.getReturnlist()
+      },
+      IsCompleted() {
+        this.index = 3
+        this.state = 3
+        this.page = 1
+        this.finished = false
+        this.loading = true
+        this.newsList = []
+        this.getReturnlist()
+      },
+      toGoodsxq(rid, sid) {
+        location.href = `my_store_shouhou_xq.html?rid=${rid}&sid=${sid}`
+        // href = "my_store_shouhou_xq.html"
+      }
+    },
+  })
+</script>
+<!-- <script>
   function nTabs(thisObj, Num) {
     if (thisObj.className == "active") return;
     var tabObj = thisObj.parentNode.id;
@@ -210,4 +359,4 @@
       }
     }
   }
-</script>
+</script> -->

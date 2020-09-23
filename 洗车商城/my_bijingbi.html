@@ -28,10 +28,10 @@
       <h1 class="tit"><span>必净币明细</span></h1>
       <ul>
         <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad" :immediate-check='false'>
-          <li>
-            <p class="fl eps">消费赠送</p>
-            <p class="fr add">+100</p>
-            <p class="time">2019-06-28</p>
+          <li v-for='item in recordList'>
+            <p class="fl eps">{{item.remark}}</p>
+            <p class="fr add">+{{item.scores}}</p>
+            <p class="time">{{item.addtime}}</p>
           </li>
         </van-list>
         <!-- <li>
@@ -67,7 +67,7 @@
     el: '#app',
     data: {
       uid: '',
-      page: 0,
+      page: 1,
       loading: false,
       finished: false,
       isLogin: false,
@@ -78,7 +78,7 @@
       this.uid = getItem('uid')
       this.bjingb = getQueryValue('bjb')
       console.log(this.uid)
-      this.onLoad()
+      this.getscorebill()
     },
     methods: {
       async getscorebill() {

@@ -26,11 +26,11 @@
   <div class="body-container" id="app">
     <div class="navs fixed">
       <ul class="shop-navs flex">
-        <li class="active"><a href="">全部</a></li>
-        <li><a href="">待付款</a></li>
-        <li><a href="">待使用</a></li>
-        <li><a href="">待评价</a></li>
-        <li><a href="">退款</a></li>
+        <li :class="{active:index == 0}"><a href="order.html">全部</a></li>
+        <li :class="{active:index == 1}" @click='Tobepaid'><a>待付款</a></li>
+        <li :class="{active:index == 2}" @click='Tobeused'><a>待使用</a></li>
+        <li :class="{active:index == 3}" @click='Tobeevaluated'><a>待评价</a></li>
+        <li @click='toAftersale'><a>售后</a></li>
       </ul>
     </div>
     <div class="topline"></div>
@@ -39,11 +39,14 @@
         <div class="order-top">
           <h1 class="fl eps name">{{item.infos[0].goodsname}}</h1>
           <p class="fr" v-if='item.orderstatus == 1'>待付款</p>
-          <p class="fr red" v-if='item.orderstatus == 4'>已取消-订单号{{item.orderid}}</p>
-          <p class="fr" v-if='item.orderstatus !== 4 && item.orderstatus !== 1'>已付款-订单号{{item.orderid}}</p>
-          <p class="fr" v-if='item.orderstatus == 7'>代发货-订单号{{item.orderid}}</p>
-          <p class="fr" v-if='item.orderstatus == 3'>去评价-订单号{{item.orderid}}</p>
-          <p class="fr" v-if='item.orderstatus == 8'>已申请售后-订单号{{item.orderid}}</p>
+          <p class="fr red" v-if='item.orderstatus == 4'>已取消</p>
+          <p class="fr" v-if='item.orderstatus == 2'>已付款</p>
+          <p class="fr" v-if='item.orderstatus == 7'>待使用</p>
+          <p class="fr" v-if='item.orderstatus == 3'>去评价</p>
+          <p class="fr" v-if='item.orderstatus == 8'>已申请售后</p>
+          <p class="fr" v-if='item.orderstatus == 3'>已完成</p>
+          <p class="fr" v-if='item.orderstatus == 9'>已退款</p>
+          <p class="fr" v-if='item.orderstatus == 5'>已取消售后</p>
         </div>
         <div class="bus-top">
           <a @click='orderXq(item.orderid)'>
@@ -58,12 +61,16 @@
         <div class="btns">
           <a class="fr loginsubmit" v-if='item.orderstatus == 1' @click='pay(item.orderid,item.finalamount)'>立即支付</a>
           <!-- 只有未付款的可以取消订单 -->
-          <a class="fr loginsubmit cancel" v-if='item.orderstatus == 1' @click='cancelOrder(item.orderid)'>取消订单</a>
+          <a class="fr loginsubmit cancel" v-if='item.orderstatus == 1 || item.orderstatus == 7 '
+            @click='cancelOrder(item.orderid)'>取消订单</a>
           <a class="fr loginsubmit cancel"
-            v-if='item.orderstatus !== 4 && item.orderstatus !== 1 && item.ispartactivity !== 1 && item.orderstatus !== 8'
-            @click='refund(item.orderid,item.storeid)'>申请退款</a>
+            v-if='item.orderstatus !== 4 && item.orderstatus !== 1 && item.ispartactivity !== 1 && item.orderstatus !== 8 && item.orderstatus !== 9&& item.orderstatus !== 5'
+            @click=' refund(item.orderid,item.storeid)'>申请退款</a>
           <!-- orderstatus == 3 时显示去评价 -->
-          <a href="evaluate.html" class="fr loginsubmit blue">去评价</a>
+          <a @click='evaluate(item.orderid,item.infos[0].goodsimage)' v-if='item.orderstatus == 3'
+            class="fr loginsubmit blue">去评价</a>
+          <!-- <a v-if='item.orderstatus == 3 || item.orderstatus == 4' class="fr loginsubmit blue"
+            @click='deleOrder(item.orderid)'>删除订单</a> -->
         </div>
       </div>
     </van-list>
@@ -160,6 +167,8 @@
       loading: false,
       finished: false,
       isLogin: false,
+      state: '',
+      index: 0
     },
     created() {
       this.uid = getItem('uid')
@@ -175,7 +184,8 @@
           params: {
             uid: this.uid,
             pageindex: this.page,
-            type: 1
+            type: 1,
+            state: this.state || ''
           }
         })
         const { data, code } = res.data
@@ -192,6 +202,50 @@
         this.page++;
         this.loading = true;
         this.getOrderlist();
+      },
+      deleOrder(oid) {
+        this.$dialog.confirm({
+          message: '是否删除该订单'
+        }).then(() => {
+          // on confirm
+          this.dele(oid)
+        }).catch(() => {
+          // on cancel
+        });
+      },
+      async dele(oid) {
+        const res = await axios.delete('/app/order/deleteorder', {
+          uid: this.uid,
+          oid: oid
+        })
+        console.log(res)
+      },
+      Tobepaid() {
+        this.index = 1
+        this.state = 1
+        this.page = 1
+        this.newsList = []
+        this.loading = true
+        this.finished = false
+        this.getOrderlist()
+      },
+      Tobeused() {
+        this.index = 2
+        this.state = 7
+        this.page = 1
+        this.newsList = []
+        this.loading = true
+        this.finished = false
+        this.getOrderlist()
+      },
+      Tobeevaluated() {
+        this.index = 3
+        this.state = 3
+        this.page = 1
+        this.newsList = []
+        this.loading = true
+        this.finished = false
+        this.getOrderlist()
       },
       pay(oid, paymoney) {
         let payInfo = {
@@ -228,6 +282,12 @@
       },
       orderXq(oid) {
         location.href = `order_xq.html?oid=${oid}`
+      },
+      evaluate(oid, img) {
+        location.href = `evaluate.html?oid=${oid}&img=${img}`
+      },
+      toAftersale() {
+        location.href = 'servicerefund.html'
       }
     },
   })

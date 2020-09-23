@@ -58,24 +58,24 @@
     </ul>
     <div class="my_order">
       <div class="my_title">
-        <h1 class="fl">商品订单</h1>
+        <h1 class="fl">二手商品订单</h1>
         <a href="my_order.html" class="fr">全部订单</a>
       </div>
       <ul>
         <li><a href="my_order.html"><img src="images/order1.png">
-            <p>待付款</p><em class="num" v-if='objectorder.nopay > 0'>{{objectorder.nopay}}</em>
+            <p>待付款</p><em class="num" v-if='handsorder.nopay > 0'>{{handsorder.nopay}}</em>
           </a></li>
         <li><a href="my_order.html"><img src="images/order2.png">
-            <p>待发货</p><em class="num" v-if='objectorder.nosend > 0'>{{objectorder.nosend}}</em>
+            <p>待发货</p><em class="num" v-if='handsorder.nosend > 0'>{{handsorder.nosend}}</em>
           </a></li>
         <li><a href="my_order.html"><img src="images/order3.png">
-            <p>待收货</p><em class="num" v-if='objectorder.noreceive > 0'>{{objectorder.noreceive}}</em>
+            <p>待收货</p><em class="num" v-if='handsorder.noreceive > 0'>{{handsorder.noreceive}}</em>
           </a></li>
         <li><a href="my_order.html"><img src="images/order4.png">
-            <p>已完成</p><em class="num" v-if='objectorder.complete'>{{objectorder.complete}}</em>
+            <p>已完成</p><em class="num" v-if='handsorder.compelet'>{{handsorder.compelet}}</em>
           </a></li>
-        <li><a href="my_order.html"><img src="images/order5.png">
-            <p>售后</p><em class="num" v-if='objectorder.returnnums > 0'>{{objectorder.returnnums}}</em>
+        <li><a href="second-hand.html"><img src="images/order5.png">
+            <p>售后</p><em class="num" v-if='handsorder.returnnums > 0'>{{handsorder.returnnums}}</em>
           </a></li>
       </ul>
     </div>
@@ -176,12 +176,14 @@
       userInfo: '',
       objectorder: '',         //  商品订单
       serverorder: '',         //  服务订单
+      handsorder: '',          // 二手订单
       secondhandstore: '',     //  是否开通二手店铺
       serverstore: '',         // 是否开通服务类店铺
       objectstore: '',
       isshow: false
     },
     created() {
+      isLogin()
       this.uid = getItem("uid");
       this.getUserHome()
     },
@@ -197,6 +199,7 @@
         this.userInfo = data.userinfo
         this.objectorder = data.objectorder
         this.serverorder = data.serverorder
+        this.handsorder = data.handsorder
         this.secondhandstore = data.secondhandstore
         this.serverstore = data.serverstore
         this.objectstore = data.objectstore
@@ -204,6 +207,7 @@
         console.log('是否开通二手店铺，我的店铺', this.secondhandstore)
         console.log('商品订单', this.objectorder)
         console.log('我的服务', this.serverorder)
+        console.log('二手订单', this.handsorder)
         if (this.userInfo.i_d === '') {
           console.log('跳到注册手机号页码')
           location.href = 'register.html'
@@ -217,9 +221,15 @@
         } else if (this.secondhandstore.state === 1) {
           console.log('去二手商城管理页面')
           location.href = 'my_store.html'
-        } else if (this.secondhandstore == 2) {
-          console.log('正在审核')
-        } else if (this.secondhandstore == 3) {
+        } else if (this.secondhandstore.state === 0) {
+          this.$toast('正在审核')
+        } else if (this.secondhandstore.state === 2) {
+          this.$dialog.alert({
+            message: this.secondhandstore.remark
+          }).then(() => {
+            location.href = 'my_store_apply.html?type=1'
+            // on close
+          });
           console.log('审核被拒绝,去从新编辑页面')
         }
       },

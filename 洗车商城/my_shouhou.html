@@ -1,40 +1,88 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
+
 <head>
   <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-  <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" name="viewport" id="viewport"/>
+  <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no"
+    name="viewport" id="viewport" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="format-detection" content="telephone=no,email=no,adress=no">
   <title>洗车商城</title>
-  <link rel="stylesheet" href="css/style.css"/>
+  <script src="js/vue.min.js"></script>
+  <link rel="stylesheet" href="css/style.css" type="text/css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vant@1.6/lib/index.css">
+  <script src="https://cdn.jsdelivr.net/npm/vant@1.6/lib/vant.min.js"></script>
+  <script src="js/jquery.min.js"></script>
+  <style>
+    .van-popup {
+      background-color: rgba(0, 0, 0, 0);
+    }
+  </style>
 </head>
+
 <body>
-<div class="body-container">
-  <div class="make_sure_order nomarg">
-    <ul>
-      <li>
-        <img src="images/pro2.png">
-        <div class="info long">
-          <h1 class="clamp2">斯麦欧（Simaiou）汽车头枕腰靠套装太空记忆棉车用座...</h1>
-          <p class="gg eps">规格一</p>
-          <div class="weight">
-            <p class="p1"><em>￥</em>237.9</p>
-            <p class="fr num">×1</p>
+  <div class="body-container" id="app">
+    <div class="make_sure_order nomarg">
+      <ul>
+        <li v-for='item in infos'>
+          <img :src="item.goodsimage">
+          <div class="info long">
+            <h1 class="clamp2">{{item.goodsname}}</h1>
+            <p class="gg eps">{{item.skuinfo}}</p>
+            <div class="weight">
+              <p class="p1"><em>￥</em>{{item.finalprice}}</p>
+              <p class="fr num">×{{item.goodsnum}}</p>
+            </div>
           </div>
-        </div>
-      </li>
-    </ul>
+        </li>
+      </ul>
+    </div>
+    <div class="mynav lihgt">
+      <ul>
+        <li @click='onlyRefund(1)'><a><img src="images/icon21.png">
+            <p>仅退款</p>
+          </a></li>
+        <li @click='returnGoods'><a><img src="images/icon22.png">
+            <p>退货退款</p>
+          </a></li>
+      </ul>
+    </div>
   </div>
-  <div class="mynav lihgt">
-    <ul>
-      <li><a href="my_shouhou_tuikuan.html"><img src="images/icon21.png"><p>仅退款</p></a></li>
-      <li><a href="my_shouhou_tuihuo.html"><img src="images/icon22.png"><p>退货退款</p></a></li>
-    </ul>
-  </div>
-</div>
 </body>
+
 </html>
-<script src="js/vue.min.js"></script>
-<script src="js/jquery.min.js"></script>
 <script src="js/template-web.js"></script>
-<script src="js/layer_mobile/layer.js"></script>
+<script src="js/common.js"></script>
+<script src="js/md5.js"></script>
+<script src="js/ran.util.js"></script>
+<script src="js/app.js"></script>
+<script src="js/axios.js"></script>
+<script src="js/axios.conf.js"></script>
+<script>
+  new Vue({
+    el: '#app',
+    data: {
+      oid: '',
+      sid: '',
+      infos: {}
+    },
+    created() {
+      this.oid = getQueryValue('oid')
+      this.sid = getQueryValue('sid')
+      this.infos = JSON.parse(localStorage.getItem('infos'))
+      console.log(this.infos)
+    },
+    methods: {
+      onlyRefund(type) {
+        console.log(type)
+        location.href = `my_shouhou_tuikuan.html?oid=${this.oid}&sid=${this.sid}`
+        // href = "my_shouhou_tuikuan.html"
+      },
+      returnGoods() {
+        location.href = `my_shouhou_tuihuo.html?oid=${this.oid}&sid=${this.sid}`
+
+      }
+    },
+  })
+</script>

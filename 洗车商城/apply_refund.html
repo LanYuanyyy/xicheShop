@@ -78,12 +78,14 @@
       sid: '',
       name: '',
       returnmessage: '',
-      imageList: []
+      imageList: [],
+      childeroid: ''
     },
     created() {
       this.uid = getItem('uid')
       this.oid = getQueryValue('oid')
       this.sid = getQueryValue('sid')
+      this.childeroid = getQueryValue('childeroid')
       this.getReason()
       this.getApplyreturnmoney()
     },
@@ -97,7 +99,8 @@
           type: '1',
           returnmessage: this.returnmessage,
           imageList: this.imageList.join('|'),
-          backmoney: this.money + ''
+          backmoney: this.money + '',
+          childeroid: this.childeroid || ''
         })
         const { data, code } = res.data
         if (code == 200) {
@@ -133,6 +136,7 @@
             oid: this.oid,
             uid: this.uid,
             sid: this.sid,
+            childeroid: this.childeroid || ""
           }
         })
         const { data, code } = res.data

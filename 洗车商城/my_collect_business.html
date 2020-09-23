@@ -33,28 +33,23 @@
     <div class="topline"></div>
     <div class="topline"></div>
     <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad" :immediate-check='false'>
-      <div class="business-list">
+      <div class="business-list" v-for='item in recordList' :key="item.sid">
         <div class="bus-top">
-          <input type="checkbox" id="1" class="check">
-          <label for="1"></label>
-          <a href="business_xq.html">
-            <img src="images/shop.png">
+          <input type="checkbox" :id="item.sid" class="check" v-model='item.checked'
+            @change='handleCheckChange(item.gid,item.checked)'>
+          <label :for="item.sid" style="display: none;"></label>
+          <a @click='goodsinfo(item.sid)'>
+            <img :src="item.image">
             <div class="txt">
-              <h1 class="eps">畅途养护·淮海西路店</h1>
+              <h1 class="eps">{{item.name}}</h1>
               <div class="t_m">
-                <span class="score">4.0</span>
-                <span class="starbox">
-                  <em class="red"></em>
-                  <em class="red"></em>
-                  <em class="red"></em>
-                  <em class="red"></em>
-                  <em class="gray"></em>
-                </span>
-                <span class="price">人均:￥63.0</span>
+                <span class="score">{{item.score}}</span>
+                <van-rate class="starbox" v-model="item.score" :size='15' readonly />
+                <span class="price">人均:￥{{item.averageprice}}</span>
               </div>
               <div class="t_b">
-                <p class="fl eps">徐州市泉山区淮海西路120号颖都大厦1105</p>
-                <p class="fr kilm">1.8km</p>
+                <p class="fl eps">{{item.addressinfo}}</p>
+                <p class="fr kilm">{{item.distance}}</p>
               </div>
             </div>
           </a>
@@ -142,14 +137,15 @@
         </a>
       </div>
     </div> -->
+    <nav class="nav_list">
+      <input type="checkbox" id="all" class="check" v-model='checkedAll' @change='checkedAllChange'>
+      <label for="all" class="is_all">全选</label>
+      <a @click='deleteUser' class="buy rads red">删除</a>
+    </nav>
+    <div class="footline"></div>
   </div>
-  <nav class="nav_list">
-    <input type="checkbox" id="all" class="check">
-    <label for="all" class="is_all">全选</label>
-    <a href="mall_buy.html" class="buy rads red">删除</a>
-  </nav>
-  <div class="footline"></div>
   </div>
+
 </body>
 
 </html>
@@ -172,6 +168,8 @@
       finished: false,
       isLogin: false,
       recordList: [],
+      checkedAll: false,
+      idlist: []
     },
     created() {
       this.uid = getItem('uid')
@@ -181,10 +179,11 @@
     methods: {
       // 获取我是收藏得商家
       async getMycollectserverstore() {
+        console.log('获取收藏商家')
         const res = await axios.get('/app/user/mycollectserverstore', {
           params: {
             uid: this.uid,
-            pageidex: this.pageidex,
+            pageidex: this.page,
             longitude: this.longitude,
             latitude: this.latitude
           }
@@ -192,6 +191,7 @@
         console.log(res)
         const { data, code } = res.data
         let countList = data
+        countList.forEach(val => { val.checked = false });
         this.loading = false;
         if (countList.length == 0) {
           console.log("到底了");
@@ -205,13 +205,57 @@
         this.loading = true;
         this.getMycollectserverstore();
       },
+      handleCheckChange(gid, checked) {
+        this.idlist = []
+      },
+      checkedAllChange() {
+        if (this.checkedAll === true) {
+          this.recordList.forEach(item => { item.checked = true })
+        } else {
+          this.recordList.forEach(item => { item.checked = false })
+          this.idlist = []
+        }
+      },
+      deleteUser() {
+        let newList = new Array
+        newList = this.recordList.filter(item => item.checked)
+        newList.forEach(item => { this.idlist.push(item.gid) })
+        if (this.idlist.length <= 0) {
+          console.log('请选择要删除的商品')
+        } else {
+          this.$dialog.confirm({
+            message: '是否删除'
+          }).then(() => {
+            console.log('删除')
+            this.deleCollection()
+          }).catch(() => {
+            // on cancel
+          });
+        }
+      },
+      async deleCollection() {
+        const res = await axios.patch('/app/user/deletelist', {
+          uid: this.uid,
+          idlist: this.idlist.join(','),
+          favtype: 2
+        })
+        const { data, code, message } = res.data
+        if (code == 200) {
+          this.$toast('删除成功')
+          this.page = 1
+          this.recordList = []
+          this.getMycollectserverstore()
+        } else {
+          this.$toast(message)
+        }
+        console.log(res)
+      },
       // 获取经纬度
       async getWinXinInfo() {
         let that = this
         const res = await axios.get('/app/user/getwxinfo', { params: { url: location.href } })
         if (res.data.code == 200) {
           wx.config({
-            // debug: false,
             appId: AppID,
             timestamp: res.data.data.timestamp,
             nonceStr: res.data.data.nonce_str,
@@ -234,9 +278,11 @@
             console.log(res);
           });
         }
-
       }
     },
+    goodsinfo(sid) {
+      location.href = `business_xq.html?sid=${sid}`
+    }
   })
 </script>
 <script>

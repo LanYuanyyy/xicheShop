@@ -54,27 +54,27 @@
     el: '#app',
     data: {
       uid: '',
-      oid: '',
+      rid: '',
       isShow: false,
       expressList: [],
       name: '',
       expno: '',
-      expid: '',
-      logisticsList: []
+      logisticsList: [],
+      expid: ''
     },
     created() {
       this.uid = getItem('uid')
-      this.oid = getQueryValue('oid')
-      console.log(this.oid)
+      this.rid = getQueryValue('rid')
+      console.log(this.rid)
       this.getlogistics()
     },
     methods: {
       async getlogistics() {
         const res = await axios.get('app/tool/logistics')
         this.logisticsList = JSON.parse(JSON.stringify(res.data.data))
+
         res.data.data.forEach(item => this.expressList.push(item.name))
         console.log(this.expressList)
-        console.log(this.logisticsList)
       },
       onConfirmType(value) {
         let newList = new Array
@@ -87,19 +87,20 @@
         this.isShow = true
       },
       async isSubmit() {
-        const res = await axios.patch(`/app/order/delivergoods/${this.oid}`, {
+        const res = await axios.patch('app/returnorder/sureback', {
           uid: this.uid,
+          rid: this.rid,
           name: this.name,
-          expno: this.expno,
-          expid: this.expid
+          code: this.expno,
+          exportid: this.expid
         })
         console.log(res)
         const { data, code } = res.data
         if (code == 200) {
           this.$dialog.alert({
-            message: '发货成功'
+            message: '提交成功'
           }).then(() => {
-            location.href = 'my_store_order.html'
+            location.href = 'second-hand.html'
           });
         }
       }

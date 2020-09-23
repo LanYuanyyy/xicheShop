@@ -26,79 +26,88 @@
   <div class="body-container" id="app">
     <div class="order-status">
       <div class="flex">
-        <h1>待付款</h1>
-        <p>剩余时间 01:00:22</p>
+        <h1 v-if='order.orderstatus == 1'>待付款</h1>
+        <h1 v-if='order.orderstatus == 7'>待使用</h1>
+        <h1 v-if='order.orderstatus == 4'>已取消</h1>
+        <h1 v-if='order.orderstatus == 3'>已完成</h1>
+        <h1 v-if='order.orderstatus == 8'>退款申请中</h1>
+        <h1 v-if='order.orderstatus == 9'>已退款</h1>
+        <p v-if='order.orderstatus == 1'>剩余时间 01:00:22</p>
       </div>
     </div>
     <div class="business-list margtfu">
       <div class="order-top">
-        <h1 class="fl eps name">畅途养护·淮海西路店</h1>
+        <h1 class="fl eps name">{{order.storename}}</h1>
       </div>
       <div class="bus-top">
         <a href="order_xq.html">
-          <img src="images/shop.png" class="small">
+          <img :src="img" class="small">
           <div class="txt">
             <h2 class="eps">微镀晶洗车</h2>
-            <p class="num">× 1</p>
-            <p class="price">￥79.00</p>
+            <p class="num">× {{order.goodsnums}}</p>
+            <p class="price">￥{{order.orderamount}}</p>
           </div>
         </a>
       </div>
       <div class="coupon-code">
         <h2 class="qmxx">券码信息</h2>
-        <div class="cell">
-          <p class="fl"><em>·</em> 2762 7729 6703</p>
-          <a href="" class="fr return">退款</a>
+        <div class="cell" v-for='item in orderInfo'>
+          <p class="fl" v-if='item.usestate == 0 && item.cardcode '><em>·</em> {{item.cardcode}}</p>
+          <del class="fl" v-if='item.usestate == 1 && item.cardcode'><em>·</em> {{item.cardcode}}</del>
+          <a class="fr return" v-if='item.refundstatus == 0 && order.orderstatus == 7'
+            @click='singleRefund(item.childeroid)'>退款</a>
+          <a href="" class="fr used" v-if='item.usestate == 1'>已使用</a>
         </div>
-        <div class="cell">
+        <!-- <div class="cell">
           <del class="fl"><em>·</em> 2762 7729 6703</del>
           <a href="" class="fr used">已使用</a>
-        </div>
+        </div> -->
       </div>
     </div>
     <ul class="sumbit-box">
       <li>
         <p class="fl">手机号</p>
-        <p class="fr">18896967575</p>
+        <p class="fr">{{order.mobile}}</p>
       </li>
       <li>
         <p class="fl">备注</p>
-        <p class="fr">无</p>
+        <p class="fr" v-if='order.ordermessage == ""'>无</p>
+        <p class="fr" v-if='order.ordermessage'>{{order.ordermessage}}</p>
       </li>
     </ul>
     <ul class="sumbit-box">
       <li>
         <p class="fl">订单编号</p>
-        <p class="fr">1116223212356</p>
+        <p class="fr">{{order.orderno}}</p>
       </li>
       <li>
         <p class="fl">下单时间</p>
-        <p class="fr">2020-03-30 21:30:12</p>
+        <p class="fr">{{order.createtime}}</p>
       </li>
     </ul>
     <ul class="sumbit-box">
       <li>
         <p class="fl">商品总额</p>
-        <p class="fr">￥79.00</p>
+        <p class="fr">￥{{order.orderamount}}</p>
       </li>
       <li>
         <p class="fl">优惠券</p>
-        <p class="fr price">-￥20.00</p>
+        <p class="fr price">-￥{{order.voucherprice}}</p>
       </li>
     </ul>
     <ul class="sumbit-box">
       <li>
         <p class="fl">必净币抵用</p>
-        <p class="fr price">-￥2.09</p>
+        <p class="fr price">-￥{{order.ordercouponmoney}}</p>
       </li>
     </ul>
     <ul class="sumbit-box">
       <li>
         <p class="fl">实付款</p>
-        <p class="fr price">￥59.00</p>
+        <p class="fr price">￥{{order.finalamount}}</p>
       </li>
     </ul>
-    <ul class="sumbit-box">
+    <!-- <ul class="sumbit-box">
       <li>
         <p class="fl">详细说明</p>
         <p class="fr">详细说明详细说明详细说明</p>
@@ -111,11 +120,13 @@
           </div>
         </div>
       </li>
-    </ul>
+    </ul> -->
     <nav class="nav_list">
-      <a href="pay.html" class="buy rads">去支付</a>
-      <a href="" class="cancel">取消订单</a>
-      <a href="" class="cancel">申请退款</a>
+      <a @click='pay(order.orderid,order.finalamount)' class="buy rads" v-if='order.orderstatus == 1'>去支付</a>
+      <a @click='cancelOrder(order.orderid)' class="cancel"
+        v-if='order.orderstatus == 1 || order.orderstatus == 7'>取消订单</a>
+      <a @click='refund(order.orderid,order.sid)' class="cancel"
+        v-if='order.orderstatus !== 4 && order.orderstatus !== 1 && order.orderstatus !== 8 &&order.ispartactivity !== 1 && order.orderstatus !== 9 && order.orderstatus !== 5'>申请退款</a>
     </nav>
     <div class="footline"></div>
   </div>
@@ -133,7 +144,12 @@
     el: '#app',
     data: {
       uid: '',
-      oid: ''
+      oid: '',
+      order: {},
+      orderInfo: [],
+      orderid: '',
+      sid: '',
+      img: ''
     },
     created() {
       this.uid = getItem('uid')
@@ -149,7 +165,50 @@
           }
         })
         console.log(res)
-      }
+        const { data, code } = res.data
+        this.order = data.model
+        this.orderInfo = data.orderinfo
+        this.orderid = data.model.orderid
+        this.sid = data.model.sid
+        this.img = data.orderinfo[0].goodsimage
+        // console.log(this.img)
+        // console.log(this.orderid)
+        // console.log(this.orderInfo)
+        console.log(this.order)
+      },
+      singleRefund(childeroid) {
+        location.href = `apply_refund.html?oid=${this.orderid}&sid=${this.sid}&childeroid=${childeroid}`
+      },
+      pay(oid, paymoney) {
+        let payInfo = {
+          oid,
+          paymoney
+        }
+        sessionStorage.setItem("payInfo", JSON.stringify(payInfo));
+        location.href = `pay.html?`
+      },
+      cancelOrder(oid) {
+        this.$dialog.confirm({
+          message: '是否取消该订单'
+        }).then(() => {
+          this.cancelorder(oid)
+        }).catch(() => {
+          // on cancel
+        });
+      },
+      async cancelorder(oid) {
+        const res = await axios.patch(`app/order/cancelorder?uid=${this.uid}&oid=${oid}`)
+        console.log(res)
+        if (res.data.code == 200) {
+          this.$toast('已取消该订单')
+        } else {
+          this.$toast(res.data.message)
+          this.getOrderinfo()
+        }
+      },
+      refund(oid, sid) {
+        location.href = `apply_refund.html?oid=${oid}&sid=${sid}`
+      },
     },
   })
 </script>

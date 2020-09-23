@@ -33,10 +33,11 @@
     <div class="topline"></div>
     <div class="topline"></div>
     <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad" :immediate-check='false'>
-      <div class="business-list" v-for='item in recordList' :key="item.id">
+      <div class="business-list" v-for='(item,index) in recordList' :key="item.id">
         <div class="bus-top bt120">
-          <input type="checkbox" id="1" class="check">
-          <label for="1"></label>
+          <input type="checkbox" :id="item.gid" class="check" v-model='item.checked'
+            @change='handleCheckChange(item.gid,item.checked)'>
+          <label :for="item.gid" style="display: none;"></label>
           <a @click='goodsinfo(item.gid)'>
             <img :src="item.image" class="w120">
             <div class="txt">
@@ -110,14 +111,15 @@
         </a>
       </div>
     </div> -->
+    <nav class="nav_list">
+      <input type="checkbox" id="all" class="check" v-model='checkedAll' @change='checkedAllChange'>
+      <label for="all">全选</label>
+      <a class="buy rads red" @click='deleteUser'>删除</a>
+    </nav>
+    <div class="footline"></div>
   </div>
-  <nav class="nav_list">
-    <input type="checkbox" id="all" class="check">
-    <label for="all">全选</label>
-    <a href="mall_buy.html" class="buy rads red">删除</a>
-  </nav>
-  <div class="footline"></div>
   </div>
+
 </body>
 
 </html>
@@ -139,6 +141,8 @@
       finished: false,
       isLogin: false,
       recordList: [],
+      checkedAll: false,
+      idlist: []
     },
     created() {
       this.uid = getItem('uid')
@@ -157,6 +161,7 @@
         console.log(res)
         const { data, code } = res.data
         let countList = data
+        countList.forEach(val => { val.checked = false });
         this.loading = false;
         if (countList.length == 0) {
           console.log("到底了");
@@ -165,6 +170,50 @@
         this.recordList = this.recordList.concat(countList)
         console.log(this.recordList)
       },
+      handleCheckChange(gid, checked) {
+        this.idlist = []
+      },
+      checkedAllChange() {
+        if (this.checkedAll === true) {
+          this.recordList.forEach(item => { item.checked = true })
+        } else {
+          this.recordList.forEach(item => { item.checked = false })
+          this.idlist = []
+        }
+      },
+      deleteUser() {
+        let newList = new Array
+        newList = this.recordList.filter(item => item.checked)
+        newList.forEach(item => { this.idlist.push(item.gid) })
+        if (this.idlist.length <= 0) {
+          console.log('请选择要删除的商品')
+        } else {
+          this.$dialog.confirm({
+            message: '是否删除'
+          }).then(() => {
+            this.deleCollection()
+          }).catch(() => {
+            // on cancel
+          });
+        }
+      },
+      async deleCollection() {
+        const res = await axios.patch('/app/user/deletelist', {
+          uid: this.uid,
+          idlist: this.idlist.join(','),
+          favtype: 1
+        })
+        const { data, code, message } = res.data
+        if (code == 200) {
+          this.$toast('删除成功')
+          this.page = 1
+          this.recordList = []
+          this.getMycollectservergoods()
+        } else {
+          this.$toast(message)
+        }
+        console.log(res)
+      },
       onLoad() {
         this.page++;
         this.loading = true;
@@ -172,7 +221,7 @@
       },
       goodsinfo(id) {
         // href = "product_xq.html"
-        console.log(id)
+        location.href = `product_xq.html?gid=${id}`
       }
     },
   })

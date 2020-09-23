@@ -1,0 +1,172 @@
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no"
+    name="viewport" id="viewport" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <title>洗车商城</title>
+  <script src="js/vue.min.js"></script>
+  <link rel="stylesheet" href="css/style.css" type="text/css" />
+  <script src="http://res.wx.qq.com/open/js/jweixin-1.6.0.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vant@1.6/lib/index.css">
+  <script src="https://cdn.jsdelivr.net/npm/vant@1.6/lib/vant.min.js"></script>
+  <script src="js/jquery.min.js"></script>
+  <style>
+    .van-popup {
+      background-color: rgba(0, 0, 0, 0);
+    }
+
+    .price {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="body-container" id="app">
+    <div class="navs fixed">
+      <ul class="shop-navs flex">
+        <li><a href="my_order.html">全部</a></li>
+        <li class="active"><a href="">售后</a></li>
+      </ul>
+    </div>
+    <div class="topline"></div>
+    <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad" :immediate-check='false'>
+      <div class="business-list marg" v-for='item in newsList' :key="item.id">
+        <div class="order-top">
+          <p class="fr red" v-if='item.returnstate == 1'>待处理</p>
+          <p class="fr red" v-if='item.returnstate == 2 && item.returnordersubstate == 1'>卖家拒绝退款</p>
+          <p class="fr red" v-if='item.returnstate == 2 && item.returnordersubstate == 3'>卖家同意退款</p>
+          <p class="fr red" v-if='item.returnstate == 2 && item.returnordersubstate == 2'>平台审核中</p>
+          <p class="fr red" v-if='item.returnstate == 2 && item.returnordersubstate == 6'>等待商家确认</p>
+          <p class="fr red" v-if='item.returnstate == 3'>已退款</p>
+          <p class="fr red" v-if='item.returnstate == 5'>已取消</p>
+          <p class="fr red" v-if='item.returnstate == 6'>平台已拒绝</p>
+        </div>
+        <div class="bus-top">
+          <a @click='toXq(item.id)'>
+            <img :src="item.order_infos[0].goodsimage" class="small">
+            <div class="txt">
+              <h2 class="eps">{{item.order_infos[0].goodsname}}</h2>
+              <p class="price">退款金额￥{{item.amountapplication}}</p>
+            </div>
+          </a>
+        </div>
+        <div class="btns">
+          <a class="fr loginsubmit" v-if='item.returnstate == 2 && item.returnordersubstate == 1'
+            @click='toPlatform(item.id)'>向平台申诉</a>
+          <a class="fr loginsubmit" v-if='item.returnstate == 2 && item.returnordersubstate == 3'
+            @click='Delivery(item.id)'>物流信息</a>
+          <a class="fr loginsubmit cancel" v-if='item.returnstate == 1' @click='onCancel(item.id)'>取消售后</a>
+        </div>
+      </div>
+    </van-list>
+    <nav class="nav_list">
+      <ul>
+        <li>
+          <a href="index.html" class="nav1">首页</a>
+        </li>
+        <li class="on">
+          <a href="order.html" class="nav2">订单</a>
+        </li>
+        <li>
+          <a href="my.html" class="nav3">我的</a>
+        </li>
+      </ul>
+    </nav>
+    <div class="footline"></div>
+  </div>
+  <script src="js/common.js"></script>
+  <script src="js/md5.js"></script>
+  <script src="js/ran.util.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/axios.js"></script>
+  <script src="js/axios.conf.js"></script>
+  <script>
+    new Vue({
+      el: '#app',
+      data: {
+        uid: '',
+        page: 1,
+        newsList: [],
+        loading: false,
+        finished: false,
+        isLogin: false,
+      },
+      created() {
+        this.uid = getItem('uid')
+        console.log(this.uid)
+        this.getMyreturnlist()
+      },
+      methods: {
+        async getMyreturnlist() {
+          const res = await axios.get('app/returnorder/myreturnlist', {
+            params: {
+              uid: this.uid,
+              pageindex: this.page,
+              type: 3
+            }
+          })
+          console.log(res)
+          const { data, code } = res.data
+          console.log(data)
+          let list = data
+          this.loading = false;
+          if (list.length == 0) {
+            console.log("到底了");
+            this.finished = true;
+          }
+          this.newsList = this.newsList.concat(list)
+        },
+        onLoad() {
+          this.page++;
+          this.loading = true;
+          this.getMyreturnlist();
+        },
+        toXq(rid) {
+          console.log(rid)
+          location.href = `order_xq2.html?rid=${rid}`
+        },
+        toPlatform(rid) {
+          console.log(rid)
+          location.href = `my_ptjr.html?rid=${rid}`
+        },
+        // 取消退款操作
+        onCancel(rid) {
+          this.$dialog.confirm({
+            message: '是否取消退款'
+          }).then(() => {
+            console.log(rid)
+            this.cancelreturn(rid)
+          }).catch(() => {
+            // on cancel
+          });
+        },
+        async cancelreturn(rid) {
+          const res = await axios.patch('app/returnorder/cancelreturn', {
+            uid: this.uid,
+            rid: rid
+          })
+          const { data, code } = res.data
+          if (code == 200) {
+            this.$toast('取消成功')
+            this.getMyreturnlist()
+          } else {
+            this.$toast(res.data.message)
+          }
+        },
+        // 填写物流信息
+        Delivery(rid) {
+          location.href = `my_danhao2.html?rid=${rid}`
+          // href = "my_danhao2.html"
+        }
+      },
+    })
+  </script>
+</body>
+
+</html>

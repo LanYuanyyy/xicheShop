@@ -33,10 +33,10 @@
     <div class="topline"></div>
     <div class="topline"></div>
     <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad" :immediate-check='false'>
-      <div class="business-list">
+      <div class="business-list" v-for='item in recordList'>
         <div class="bus-top bt100">
           <input type="checkbox" id="1" class="check">
-          <label for="1"></label>
+          <label for="1" style="display: none;"></label>
           <a href="business_xq.html">
             <img src="images/spxq.jpg" class="w100">
             <div class="txt">
@@ -117,7 +117,7 @@
     el: '#app',
     data: {
       uid: '',
-      page: '',
+      page: 1,
       loading: false,
       finished: false,
       isLogin: false,
@@ -133,7 +133,7 @@
         const res = await axios.get('/app/user/mycollectobjectstore', {
           params: {
             uid: this.uid,
-            pageindex: this.page
+            pageidex: this.page
           }
         })
         console.log(res)
